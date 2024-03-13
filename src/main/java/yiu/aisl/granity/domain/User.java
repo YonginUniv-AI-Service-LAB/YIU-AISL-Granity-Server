@@ -56,4 +56,7 @@ public class User {
     @Column
     @ColumnDefault("0")
     private Integer push;
+
+    private String refreshToken;
+    private String accessToken;
 }
