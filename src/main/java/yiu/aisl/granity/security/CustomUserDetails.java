@@ -9,8 +9,17 @@ import java.util.Collections;
 
 public class CustomUserDetails implements UserDetails {
     private final User user;
+    private String role;
     public CustomUserDetails(User user) {
         this.user = user;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public final User getUser() {

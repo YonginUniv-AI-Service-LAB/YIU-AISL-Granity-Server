@@ -1,5 +1,8 @@
 package yiu.aisl.granity.config;
 
+import yiu.aisl.granity.security.JwtAuthenticationFilter;
+import yiu.aisl.granity.security.JwtProvider;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,10 +13,10 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -24,8 +27,6 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import yiu.aisl.granity.security.JwtAuthenticationFilter;
-import yiu.aisl.granity.security.JwtProvider;
 
 @Configuration
 @RequiredArgsConstructor
@@ -40,11 +41,11 @@ public class SecurityConfig {
                 // ID, Password 문자열을 Base64로 인코딩하여 전달하는 구조
                 //  아래가 안되서 이와 같이 변경 '버전 문제인듯?'
                 // .httpBasic().disable()
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic(HttpBasicConfigurer::disable)
                 // 쿠키 기반이 아닌 JWT 기반이므로 사용하지 않음
                 //  아래가 안되서 이와 같이 변경 '버전 문제인듯?'
                 //.csrf().disable()
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(CsrfConfigurer::disable)
                 // CORS 설정
                 .cors(c -> {
                             CorsConfigurationSource source = request -> {
@@ -69,8 +70,9 @@ public class SecurityConfig {
                 // 조건별로 요청 허용/제한 설정
                 .authorizeHttpRequests(authorize -> authorize
                         // 회원가입과 로그인은 모두 승인
-                        .requestMatchers("/login", "/register", "/join/email").permitAll()
-                        // /admin으로 시작하는 요청은 ADMIN 권한이 있는 유저에게만 허용
+                        .requestMatchers("/login", "/register", "/join/email", "/token/refresh").permitAll()
+                        // /manager로 시작하는 요청은 ADMIN 권한이 있는 유저에게만 허용
+//                        .requestMatchers("/token/refresh").permitAll()
                         .requestMatchers("/manager/**").hasRole("MANAGER")
                         .anyRequest().authenticated())
                 // JWT 인증 필터 적용

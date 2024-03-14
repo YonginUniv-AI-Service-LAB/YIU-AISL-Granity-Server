@@ -58,5 +58,4 @@ public class User {
     private Integer push;
 
     private String refreshToken;
-    private String accessToken;
 }

@@ -1,7 +1,10 @@
 package yiu.aisl.granity.service;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.*;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import yiu.aisl.granity.dto.TokenDto;
@@ -26,6 +29,7 @@ public class MainService {
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
     private final JwtProvider jwtProvider;
+    private final PasswordEncoder passwordEncoder;
 
     private long exp_refreshToken = Duration.ofDays(14).toMillis();
 
@@ -42,7 +46,7 @@ public class MainService {
                     .major_id2(major_id2)
                     .major_id3(major_id3)
                     .grade(request.getGrade())
-                    .pwd(request.getPwd())
+                    .pwd(passwordEncoder.encode(request.getPwd()))
                     .role(request.getRole())
                     .status(request.getStatus())
                     .createdAt(createdAt)
@@ -57,23 +61,57 @@ public class MainService {
     }
 
     // [API] 로그인
+    @Transactional
     public LoginResponseDto login(LoginRequestDto request) {
         User user = userRepository.findById(request.getId()).orElseThrow();
         user.setRefreshToken(createRefreshToken(user));
         return LoginResponseDto.builder()
                 .id(user.getId())
                 .name(user.getName())
-                .major_id1(user.getMajor_id1())
-                .major_id2(user.getMajor_id2())
-                .major_id3(user.getMajor_id3())
-                .grade(user.getGrade())
-                .role(user.getRole())
-                .status(user.getStatus())
                 .token(TokenDto.builder()
-                        .accessToken(jwtProvider.createToken(user.getId()))
+                        .accessToken(jwtProvider.createToken(user))
                         .refreshToken(user.getRefreshToken())
                         .build())
                 .build();
+    }
+
+    // [API] accessToken 재발급
+    public TokenDto tokenRefresh(TokenDto token) throws Exception {
+        String id = jwtProvider.getId(token.getAccessToken());
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new BadCredentialsException("잘못된 계정정보입니다."));
+        Token refreshToken = validRefreshToken(user, token.getRefreshToken());
+
+        if (refreshToken != null) {
+            return TokenDto.builder()
+                    .accessToken(jwtProvider.createToken(user))
+                    .refreshToken(refreshToken.getRefreshToken())
+                    .build();
+        } else {
+            throw new IllegalArgumentException("로그인을 해주세요");
+        }
+    }
+
+    public Token validRefreshToken(User user, String refreshToken) throws Exception {
+        Token token = tokenRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception("만료된 계정입니다. 로그인을 다시 시도하세요"));
+        // 해당유저의 Refresh 토큰 만료 : Redis에 해당 유저의 토큰이 존재하지 않음
+        if (token.getRefreshToken() == null) {
+            return null;
+        } else {
+            // 리프레시 토큰 만료일자가 얼마 남지 않았을 때 만료시간 연장..?
+            if (token.getExpiration() < 10) {
+                token.setExpiration(1000);
+                tokenRepository.save(token);
+            }
+
+            // 토큰이 같은지 비교
+            if (!token.getRefreshToken().equals(refreshToken)) {
+                return null;
+            } else {
+                return token;
+            }
+        }
     }
 
     public String createRefreshToken(User user) {

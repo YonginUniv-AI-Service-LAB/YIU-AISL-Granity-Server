@@ -28,6 +28,7 @@ public class Token {
     private String id;
 
     private String refreshToken;
+    private String accessToken;
 
     @TimeToLive(unit = TimeUnit.SECONDS)
     private Integer expiration;

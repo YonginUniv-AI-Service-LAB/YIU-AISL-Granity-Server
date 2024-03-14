@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import yiu.aisl.granity.dto.LoginRequestDto;
 import yiu.aisl.granity.dto.LoginResponseDto;
 import yiu.aisl.granity.dto.RegisterRequestDto;
+import yiu.aisl.granity.dto.TokenDto;
 import yiu.aisl.granity.service.MainService;
 import org.springframework.http.MediaType;
 
@@ -27,4 +29,15 @@ public class MainController {
     public ResponseEntity<LoginResponseDto> login(LoginRequestDto request) throws Exception {
         return new ResponseEntity<LoginResponseDto>(mainService.login(request), HttpStatus.OK);
     }
+
+    // accessToken 재발급
+    @PostMapping(value = "/token/refresh", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<TokenDto> refresh(TokenDto token) throws Exception {
+        return new ResponseEntity<>(mainService.tokenRefresh(token), HttpStatus.OK);
+    }
+
+//    @PostMapping("/token/refresh")
+//    public ResponseEntity<TokenDto> refresh(@RequestBody TokenDto token) throws Exception {
+//        return new ResponseEntity<>( mainService.tokenRefresh(token), HttpStatus.OK);
+//    }
 }

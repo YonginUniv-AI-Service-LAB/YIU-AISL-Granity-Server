@@ -10,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import yiu.aisl.granity.domain.User;
 import yiu.aisl.granity.service.JpaUserDetailsService;
 
 import javax.annotation.PostConstruct;
@@ -22,13 +23,15 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Component
 public class JwtProvider {
+    private final JwtProperties jwtProperties;
     @Value("${jwt.secret.key}")
     private String salt;
 
     private Key secretKey;
 
+
     // accessToken 만료 시간 : 30분으로 설정
-    private long accessTokenValidTime = Duration.ofMinutes(30).toMillis();
+    private long accessTokenValidTime = Duration.ofMinutes(1).toMillis();
 
     // refreshToken 만료 시간 : 14일로 설정
     private long refreshTokenValidTime = Duration.ofDays(14).toMillis();
@@ -41,15 +44,18 @@ public class JwtProvider {
     }
 
     // token 생성
-    public String createToken(String id) {
-        Claims claims = Jwts.claims().setSubject(id);
+    public String createToken(User user) {
         Date now = new Date();
-        return Jwts.builder()
-                .setClaims(claims)
+
+        JwtBuilder jwtBuilder = Jwts.builder()
+                .setIssuer(jwtProperties.getIssuer())
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + accessTokenValidTime))
-                .signWith(secretKey, SignatureAlgorithm.HS256)
-                .compact();
+                .setExpiration(new Date(System.currentTimeMillis() + accessTokenValidTime))
+                .setSubject(user.getId())
+                .claim("id", user.getId())
+                .signWith(secretKey, SignatureAlgorithm.HS256);
+
+        return jwtBuilder.compact();
     }
 
     // 권한 정보 획득
@@ -61,13 +67,14 @@ public class JwtProvider {
 
     // 토큰에 담겨있는 유저 권한 획득
     public String getId(String token) {
-        // 만료된 토큰에 대해 parseClaimsJws를 수행하면 io.jsonwebtoken.ExpiredJwtException 이 발생
+        System.out.println(token);
+        // 만료된 토큰에 대해 parseClaimsJws를 수행하면 io.jsonwebtoken.ExpiredJwtException이 발생한다.
         try {
             Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().getSubject();
         } catch (ExpiredJwtException e) {
             e.printStackTrace();
             return e.getClaims().getSubject();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().getSubject();
