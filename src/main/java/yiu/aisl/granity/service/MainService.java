@@ -1,8 +1,11 @@
 package yiu.aisl.granity.service;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.*;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ import yiu.aisl.granity.security.JwtProvider;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -31,7 +35,10 @@ public class MainService {
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
 
+    private final JavaMailSender emailSender;
+
     private long exp_refreshToken = Duration.ofDays(14).toMillis();
+    private String authNum;
 
     // [API] 회원가입
     public boolean register(RegisterRequestDto request) {
@@ -92,6 +99,26 @@ public class MainService {
         }
     }
 
+    // [API] 회원가입 시 인증 메일 전송
+    public String joinEmail(String id) throws  MessagingException {
+        id = id+"@yiu.ac.kr";
+        MimeMessage emailForm = createEmailForm(id);
+        emailSender.send(emailForm);
+
+        return authNum;
+    }
+
+    // [API] 비밀번호 변경 시 인증 메일 전송
+    public String pwdEmail(String id) throws  MessagingException {
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new BadCredentialsException("해당 아이디의 회원이 존재하지 않습니다."));
+        id = id+"@yiu.ac.kr";
+        MimeMessage emailForm = createEmailForm(id);
+        emailSender.send(emailForm);
+
+        return authNum;
+    }
+
     public Token validRefreshToken(User user, String refreshToken) throws Exception {
         Token token = tokenRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception("만료된 계정입니다. 로그인을 다시 시도하세요"));
@@ -123,5 +150,48 @@ public class MainService {
                         .build()
         );
         return token.getRefreshToken();
+    }
+
+    public void createCode() {
+        Random random = new Random();
+        StringBuilder key = new StringBuilder();
+
+        for(int i = 0; i < 6; i++) {
+            int digit = random.nextInt(10);
+            key.append(digit);
+        }
+        authNum = key.toString();
+    }
+
+    public MimeMessage createEmailForm(String email) throws MessagingException {
+        // 코드 생성
+        createCode();
+        String setFrom = "callikys@naver.com";
+        String toEmail = email;
+        String title = "YDRIVE 이메일 인증";
+
+        jakarta.mail.internet.MimeMessage message = emailSender.createMimeMessage();
+        message.addRecipients(MimeMessage.RecipientType.TO, toEmail);
+        message.setSubject(title);
+
+        // 메일 내용 설정
+        String msgOfEmail="";
+        msgOfEmail += "<div style='margin:20px;'>";
+        msgOfEmail += "<h1> 안녕하세요 YDRIVE 입니다. </h1>";
+        msgOfEmail += "<br>";
+        msgOfEmail += "<p>아래 코드를 입력해주세요<p>";
+        msgOfEmail += "<br>";
+        msgOfEmail += "<p>감사합니다.<p>";
+        msgOfEmail += "<br>";
+        msgOfEmail += "<div align='center' style='border:1px solid black; font-family:verdana';>";
+        msgOfEmail += "<h3 style='color:blue;'>회원가입 인증 코드입니다.</h3>";
+        msgOfEmail += "<div style='font-size:130%'>";
+        msgOfEmail += "CODE : <strong>";
+        msgOfEmail += authNum + "</strong><div><br/> ";
+        msgOfEmail += "</div>";
+
+        message.setFrom(setFrom);
+        message.setText(msgOfEmail, "utf-8", "html");
+        return message;
     }
 }
