@@ -119,6 +119,19 @@ public class MainService {
         return authNum;
     }
 
+    // [API] 비밀번호 변경
+    public boolean pwdChange(String id) throws Exception {
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new BadCredentialsException("해당 아이디의 회원이 존재하지 않습니다."));
+
+        LocalDateTime updatedAt = LocalDateTime.now();
+        user.setPwd(passwordEncoder.encode(user.getPwd()));
+        user.setUpdatedAt(updatedAt);
+
+        userRepository.save(user);
+        return true;
+    }
+
     public Token validRefreshToken(User user, String refreshToken) throws Exception {
         Token token = tokenRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception("만료된 계정입니다. 로그인을 다시 시도하세요"));

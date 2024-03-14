@@ -42,6 +42,16 @@ public class MainController {
         return new ResponseEntity<String>(mainService.pwdEmail(request.getId()), HttpStatus.OK);
     }
 
+//    @PostMapping(value = "/pwd/change", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+//    public ResponseEntity<Boolean> pwdChange(LoginRequestDto request) throws Exception {
+//        return new ResponseEntity<Boolean>(mainService.pwdChange(request.getId()), HttpStatus.OK);
+//    }
+
+    @PostMapping(value = "/pwd/change", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Boolean> pwdChange(PwdChangeRequestDto request) throws Exception {
+        return new ResponseEntity<Boolean>(mainService.pwdChange(request.getId()), HttpStatus.OK);
+    }
+
     // accessToken 재발급
     @PostMapping("/token/refresh")
     public ResponseEntity<TokenDto> refresh(@RequestBody TokenDto token) throws Exception {

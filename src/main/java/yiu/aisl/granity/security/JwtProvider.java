@@ -31,7 +31,7 @@ public class JwtProvider {
 
 
     // accessToken 만료 시간 : 30분으로 설정
-    private long accessTokenValidTime = Duration.ofMinutes(1).toMillis();
+    private long accessTokenValidTime = Duration.ofMinutes(30).toMillis();
 
     // refreshToken 만료 시간 : 14일로 설정
     private long refreshTokenValidTime = Duration.ofDays(14).toMillis();
