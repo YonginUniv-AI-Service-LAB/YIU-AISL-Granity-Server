@@ -10,12 +10,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
-import yiu.aisl.granity.dto.TokenDto;
+import yiu.aisl.granity.dto.*;
 import yiu.aisl.granity.domain.User;
 import yiu.aisl.granity.domain.Token;
-import yiu.aisl.granity.dto.LoginRequestDto;
-import yiu.aisl.granity.dto.LoginResponseDto;
-import yiu.aisl.granity.dto.RegisterRequestDto;
 import yiu.aisl.granity.repository.TokenRepository;
 import yiu.aisl.granity.repository.UserRepository;
 import yiu.aisl.granity.security.JwtProvider;
@@ -68,9 +65,13 @@ public class MainService {
     }
 
     // [API] 로그인
-    @Transactional
     public LoginResponseDto login(LoginRequestDto request) {
         User user = userRepository.findById(request.getId()).orElseThrow();
+
+        if (!passwordEncoder.matches(request.getPwd(), user.getPwd())) {
+            throw new IllegalArgumentException("아이디와 비밀번호 불일치.");
+        }
+
         user.setRefreshToken(createRefreshToken(user));
         return LoginResponseDto.builder()
                 .id(user.getId())
@@ -120,12 +121,12 @@ public class MainService {
     }
 
     // [API] 비밀번호 변경
-    public boolean pwdChange(String id) throws Exception {
-        User user = userRepository.findById(id).orElseThrow(() ->
+    public Boolean pwdChange(PwdChangeRequestDto dto) throws Exception {
+        User user = userRepository.findById(dto.getId()).orElseThrow(() ->
                 new BadCredentialsException("해당 아이디의 회원이 존재하지 않습니다."));
 
         LocalDateTime updatedAt = LocalDateTime.now();
-        user.setPwd(passwordEncoder.encode(user.getPwd()));
+        user.setPwd(passwordEncoder.encode(dto.getPwd()));
         user.setUpdatedAt(updatedAt);
 
         userRepository.save(user);

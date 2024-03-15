@@ -31,4 +31,29 @@ public class UserService {
                 .status(user.get().getStatus())
                 .build();
     }
+
+    // [API] 내 정보 수정
+    public Boolean updateProfile(CustomUserDetails userDetails, MyProfileDto dto) {
+        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() ->
+                new BadCredentialsException("잘못된 계정정보입니다."));
+
+        System.out.println("이름: " +dto.getName());
+        System.out.println("전공1: " +dto.getMajor_id1());
+        System.out.println("전공2: " +dto.getMajor_id2());
+        System.out.println("전공3: " +dto.getMajor_id3());
+        System.out.println("학년: " +dto.getGrade());
+        System.out.println("역할: " +dto.getRole());
+        System.out.println("상태: " +dto.getStatus());
+
+        user.setName(dto.getName());
+        user.setMajor_id1(dto.getMajor_id1());
+        user.setMajor_id2(dto.getMajor_id2());
+        user.setMajor_id3(dto.getMajor_id3());
+        user.setGrade(dto.getGrade());
+        user.setRole(dto.getRole());
+        user.setStatus(dto.getStatus());
+
+        userRepository.save(user);
+        return true;
+    }
 }
