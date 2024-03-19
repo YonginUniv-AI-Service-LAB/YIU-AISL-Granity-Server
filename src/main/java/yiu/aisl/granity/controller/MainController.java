@@ -25,7 +25,7 @@ public class MainController {
     }
 
     // 인증코드 전송(회원가입)
-    @PostMapping(value = "/join/email")
+    @PostMapping(value = "/register/email")
     public ResponseEntity<String> email(@RequestBody EmailRequestDto request) throws Exception {
         return new ResponseEntity<String>(mainService.joinEmail(request.getId()), HttpStatus.OK);
     }
