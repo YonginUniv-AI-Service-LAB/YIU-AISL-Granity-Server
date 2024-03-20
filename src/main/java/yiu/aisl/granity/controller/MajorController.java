@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import yiu.aisl.granity.dto.MajorCurriculumRequestDto;
+import yiu.aisl.granity.dto.MajorLabRequestDto;
 import yiu.aisl.granity.dto.MajorMemberRegisterRequestDto;
 import yiu.aisl.granity.security.CustomUserDetails;
 import yiu.aisl.granity.service.MajorService;
@@ -54,6 +55,10 @@ public class MajorController {
     // 커리큘럼 조회
 
     // 연구실 등록
+    @PostMapping(value = "/manager/major/lab")
+    public ResponseEntity<Boolean> registerLab(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody MajorLabRequestDto request) {
+        return new ResponseEntity<Boolean>(majorService.registerLab(userDetails, request), HttpStatus.OK);
+    }
 
     // 연구실 수정
 
