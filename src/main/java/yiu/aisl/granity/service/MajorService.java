@@ -13,8 +13,6 @@ import yiu.aisl.granity.repository.MajorRepository;
 import yiu.aisl.granity.repository.UserRepository;
 import yiu.aisl.granity.security.CustomUserDetails;
 
-import java.util.Optional;
-
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -37,15 +35,45 @@ public class MajorService {
                     .role(request.getRole())
                     .name(request.getName())
                     .image(request.getImage())
-                    .content1(request.getContent1())
-                    .content2(request.getContent2())
-                    .content3(request.getContent3())
+                    .content1(request.getContent1()) // 커리어, 연구과제, 경력사항 등
+                    .content2(request.getContent2()) // 커리어, 연구과제, 경력사항 등
+                    .content3(request.getContent3()) // 커리어, 연구과제, 경력사항 등
                     .tel(request.getTel())
                     .address(request.getAddress())
                     .email(request.getEmail())
                     .build();
 
             majorMemberRepository.save(professor);
+        } catch (DataIntegrityViolationException e) {
+            System.out.println(e.getMessage());
+            throw new IllegalArgumentException("잘못된 요청입니다.");
+        }
+        return true;
+    }
+
+    // [API] 학생회 등록
+    public Boolean registerCouncil(CustomUserDetails userDetails, MajorMemberRegisterRequestDto request) {
+        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
+        if(user.getRole() != 3) {
+            new Exception("작업 권한 없음");
+        }
+        Major major = majorRepository.findById(request.getMajor()).orElseThrow();
+
+        try {
+            MajorMember council = MajorMember.builder()
+                    .major(major)
+                    .role(request.getRole())
+                    .name(request.getName())
+                    .image(request.getImage())
+                    .content1(request.getContent1()) // 커리어, 연구과제, 경력사항 등
+                    .content2(request.getContent2()) // 커리어, 연구과제, 경력사항 등
+                    .content3(request.getContent3()) // 커리어, 연구과제, 경력사항 등
+                    .tel(request.getTel())
+                    .address(request.getAddress())
+                    .email(request.getEmail())
+                    .build();
+
+            majorMemberRepository.save(council);
         } catch (DataIntegrityViolationException e) {
             System.out.println(e.getMessage());
             throw new IllegalArgumentException("잘못된 요청입니다.");

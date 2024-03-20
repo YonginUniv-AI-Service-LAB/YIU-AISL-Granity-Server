@@ -17,7 +17,7 @@ public class MajorController {
     private final MajorService majorService;
 
     // 교수님 등록
-    @PostMapping(value = "/major/professor")
+    @PostMapping(value = "/manager/major/professor")
     public ResponseEntity<Boolean> registerProfessor(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody MajorMemberRegisterRequestDto request) {
         return new ResponseEntity<Boolean>(majorService.registerProfessor(userDetails, request), HttpStatus.OK);
     }
@@ -29,6 +29,10 @@ public class MajorController {
     // 교수님 조회
 
     // 학생회 등록
+    @PostMapping(value = "/manager/major/council")
+    public ResponseEntity<Boolean> registerCouncil(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody MajorMemberRegisterRequestDto request) {
+        return new ResponseEntity<Boolean>(majorService.registerCouncil(userDetails, request), HttpStatus.OK);
+    }
 
     // 학생회 수정
 
