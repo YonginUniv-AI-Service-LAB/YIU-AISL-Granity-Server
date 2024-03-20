@@ -73,7 +73,7 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/register", "/join/email", "/token/refresh").permitAll()
                         // /manager로 시작하는 요청은 ADMIN 권한이 있는 유저에게만 허용
 //                        .requestMatchers("/token/refresh").permitAll()
-                        .requestMatchers("/manager/**").hasRole("MANAGER")
+//                        .requestMatchers("/manager/**").hasRole("MANAGER")
                         .anyRequest().authenticated())
                 // JWT 인증 필터 적용
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider),
