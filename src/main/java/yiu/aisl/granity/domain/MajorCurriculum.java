@@ -21,6 +21,9 @@ public class MajorCurriculum {
     private Major major;
 
     @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
     private Integer classification;
 
     @Column(nullable = false)

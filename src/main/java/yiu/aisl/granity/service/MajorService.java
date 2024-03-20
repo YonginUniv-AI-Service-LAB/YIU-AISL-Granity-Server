@@ -5,9 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import yiu.aisl.granity.domain.Major;
+import yiu.aisl.granity.domain.MajorCurriculum;
 import yiu.aisl.granity.domain.MajorMember;
 import yiu.aisl.granity.domain.User;
+import yiu.aisl.granity.dto.MajorCurriculumRequestDto;
 import yiu.aisl.granity.dto.MajorMemberRegisterRequestDto;
+import yiu.aisl.granity.repository.MajorCurriculumRepository;
 import yiu.aisl.granity.repository.MajorMemberRepository;
 import yiu.aisl.granity.repository.MajorRepository;
 import yiu.aisl.granity.repository.UserRepository;
@@ -20,6 +23,7 @@ public class MajorService {
     private final UserRepository userRepository;
     private final MajorMemberRepository majorMemberRepository;
     private final MajorRepository majorRepository;
+    private final MajorCurriculumRepository majorCurriculumRepository;
 
     // [API] 교수님 등록
     public Boolean registerProfessor(CustomUserDetails userDetails, MajorMemberRegisterRequestDto request) {
@@ -74,6 +78,35 @@ public class MajorService {
                     .build();
 
             majorMemberRepository.save(council);
+        } catch (DataIntegrityViolationException e) {
+            System.out.println(e.getMessage());
+            throw new IllegalArgumentException("잘못된 요청입니다.");
+        }
+        return true;
+    }
+
+    // [API] 커리큘럼 등록
+    public Boolean registerCurriculum(CustomUserDetails userDetails, MajorCurriculumRequestDto request) {
+        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
+        if(user.getRole() != 3) {
+            new Exception("작업 권한 없음");
+        }
+        Major major = majorRepository.findById(request.getMajor()).orElseThrow();
+
+        try {
+            MajorCurriculum council = MajorCurriculum.builder()
+                    .major(major)
+                    .classification(request.getClassification()) // 기초전공 인지 여부
+                    .name(request.getName()) // 과목명
+                    .grade(request.getGrade()) // 학년
+                    .semester(request.getSemester()) // 학기
+                    .code(request.getCode()) // 학수번호
+                    .credit(request.getCredit()) // 학점
+                    .theory(request.getTheory()) // 이론 몇 실기 몇 구부
+                    .practice(request.getPractice()) // 전공 or 실기 여부
+                    .build();
+
+            majorCurriculumRepository.save(council);
         } catch (DataIntegrityViolationException e) {
             System.out.println(e.getMessage());
             throw new IllegalArgumentException("잘못된 요청입니다.");

@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import yiu.aisl.granity.dto.MajorCurriculumRequestDto;
 import yiu.aisl.granity.dto.MajorMemberRegisterRequestDto;
 import yiu.aisl.granity.security.CustomUserDetails;
 import yiu.aisl.granity.service.MajorService;
@@ -41,6 +42,10 @@ public class MajorController {
     // 학생회 조회
 
     // 커리큘럼 등록
+    @PostMapping(value = "/manager/major/curriculum")
+    public ResponseEntity<Boolean> registerCurriculum(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody MajorCurriculumRequestDto request) {
+        return new ResponseEntity<Boolean>(majorService.registerCurriculum(userDetails, request), HttpStatus.OK);
+    }
 
     // 커리큘럼 수정
 
