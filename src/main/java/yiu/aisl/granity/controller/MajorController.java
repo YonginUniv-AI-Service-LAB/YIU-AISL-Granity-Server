@@ -71,6 +71,12 @@ public class MajorController {
     // 커리큘럼 삭제
 
     // 커리큘럼 조회
+    @GetMapping(value = "/major/curriculum")
+    public ResponseEntity<Object> getCurriculum(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+        return new ResponseEntity<Object>(majorService.getCurriculum(userDetails), headers, HttpStatus.OK);
+    }
 
     // 연구실 등록
     @PostMapping(value = "/manager/major/lab")
@@ -83,6 +89,12 @@ public class MajorController {
     // 연구실 삭제
 
     // 연구실 조회
+    @GetMapping(value = "/major/lab")
+    public ResponseEntity<Object> getLab(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+        return new ResponseEntity<Object>(majorService.getLab(userDetails), headers, HttpStatus.OK);
+    }
 
     // 학과 학생 조회
 

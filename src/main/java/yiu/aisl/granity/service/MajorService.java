@@ -6,10 +6,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.ls.LSOutput;
 import yiu.aisl.granity.domain.*;
-import yiu.aisl.granity.dto.MajorCurriculumRequestDto;
-import yiu.aisl.granity.dto.MajorLabRequestDto;
-import yiu.aisl.granity.dto.MajorMemberRegisterRequestDto;
-import yiu.aisl.granity.dto.MajorMemberRegisterResponseDto;
+import yiu.aisl.granity.dto.*;
 import yiu.aisl.granity.repository.*;
 import yiu.aisl.granity.security.CustomUserDetails;
 
@@ -135,6 +132,15 @@ public class MajorService {
         return true;
     }
 
+    // [API] 커리큘럼 조회
+    public List<MajorCurriculumResponseDto> getCurriculum(CustomUserDetails userDetails) {
+        List<MajorCurriculumResponseDto> curriculum = majorCurriculumRepository.findAll().stream()
+                .map(MajorCurriculumResponseDto::new)
+                .collect(Collectors.toList());
+
+        return curriculum;
+    }
+
     // [API] 랩실 등록
     public Boolean registerLab(CustomUserDetails userDetails, MajorLabRequestDto request) {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
@@ -160,5 +166,14 @@ public class MajorService {
             throw new IllegalArgumentException("잘못된 요청입니다.");
         }
         return true;
+    }
+
+    // [API] 랩실 조회
+    public List<MajorLabResponseDto> getLab(CustomUserDetails userDetails) {
+        List<MajorLabResponseDto> lab = majorLabRepository.findAll().stream()
+                .map(MajorLabResponseDto::new)
+                .collect(Collectors.toList());
+
+        return lab;
     }
 }
