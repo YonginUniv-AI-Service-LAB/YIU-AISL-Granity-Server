@@ -1,17 +1,19 @@
 package yiu.aisl.granity.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import yiu.aisl.granity.dto.MajorCurriculumRequestDto;
 import yiu.aisl.granity.dto.MajorLabRequestDto;
 import yiu.aisl.granity.dto.MajorMemberRegisterRequestDto;
 import yiu.aisl.granity.security.CustomUserDetails;
 import yiu.aisl.granity.service.MajorService;
+
+import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,10 +27,20 @@ public class MajorController {
     }
 
     // 교수님 수정
+//    @PutMapping(value = "/manager/major/professor")
+//    public ResponseEntity<Boolean> updateProfessor(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody MajorMemberRegisterRequestDto request) {
+//        return new ResponseEntity<Boolean>(majorService.updateProfessor(userDetails, request), HttpStatus.OK);
+//    }
 
     // 교수님 삭제
 
     // 교수님 조회
+    @GetMapping(value = "/major/professor")
+    public ResponseEntity<Object> getProfessor(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+        return new ResponseEntity<>(majorService.getProfessor(userDetails), headers, HttpStatus.OK);
+    }
 
     // 학생회 등록
     @PostMapping(value = "/manager/major/council")
@@ -41,6 +53,12 @@ public class MajorController {
     // 학생회 삭제
 
     // 학생회 조회
+    @GetMapping(value = "/major/council")
+    public ResponseEntity<Object> getCouncil(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+        return new ResponseEntity<>(majorService.getCouncil(userDetails), headers, HttpStatus.OK);
+    }
 
     // 커리큘럼 등록
     @PostMapping(value = "/manager/major/curriculum")

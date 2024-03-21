@@ -4,12 +4,17 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.ls.LSOutput;
 import yiu.aisl.granity.domain.*;
 import yiu.aisl.granity.dto.MajorCurriculumRequestDto;
 import yiu.aisl.granity.dto.MajorLabRequestDto;
 import yiu.aisl.granity.dto.MajorMemberRegisterRequestDto;
+import yiu.aisl.granity.dto.MajorMemberRegisterResponseDto;
 import yiu.aisl.granity.repository.*;
 import yiu.aisl.granity.security.CustomUserDetails;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -51,6 +56,16 @@ public class MajorService {
         return true;
     }
 
+    // [API] 교수님 조회
+    public List<MajorMemberRegisterResponseDto> getProfessor(CustomUserDetails userDetails) {
+        List<MajorMemberRegisterResponseDto> professor = majorMemberRepository.findAll().stream()
+                .filter(majorMember -> majorMember.getRole() == 2)
+                .map(MajorMemberRegisterResponseDto::new)
+                .collect(Collectors.toList());
+
+        return professor;
+    }
+
     // [API] 학생회 등록
     public Boolean registerCouncil(CustomUserDetails userDetails, MajorMemberRegisterRequestDto request) {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
@@ -79,6 +94,16 @@ public class MajorService {
             throw new IllegalArgumentException("잘못된 요청입니다.");
         }
         return true;
+    }
+
+    // [API] 학생회 조회
+    public List<MajorMemberRegisterResponseDto> getCouncil(CustomUserDetails userDetails) {
+        List<MajorMemberRegisterResponseDto> professor = majorMemberRepository.findAll().stream()
+                .filter(majorMember -> majorMember.getRole() == 1)
+                .map(MajorMemberRegisterResponseDto::new)
+                .collect(Collectors.toList());
+
+        return professor;
     }
 
     // [API] 커리큘럼 등록

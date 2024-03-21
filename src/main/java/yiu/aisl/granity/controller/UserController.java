@@ -28,6 +28,7 @@ public class UserController {
         return new ResponseEntity<>(userService.getMyProfile(customUserDetails), HttpStatus.OK);
     }
 
+    // 내 정보 수정
     @PutMapping(value = "")
     public ResponseEntity<Boolean> updateProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody MyProfileDto dto) throws Exception {
         return new ResponseEntity<Boolean>(userService.updateProfile(customUserDetails, dto), HttpStatus.OK);
