@@ -97,6 +97,12 @@ public class MajorController {
     }
 
     // 학과 학생 조회
+    @GetMapping(value = "/manager/major/student")
+    public ResponseEntity<Object> getStudent(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+        return new ResponseEntity<Object>(majorService.getStudent(userDetails), headers, HttpStatus.OK);
+    }
 
     // 학과 정보 수정
 

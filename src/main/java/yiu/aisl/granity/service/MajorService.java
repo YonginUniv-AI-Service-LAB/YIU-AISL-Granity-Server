@@ -176,4 +176,22 @@ public class MajorService {
 
         return lab;
     }
+
+    // [API] 학과 학생 조회
+    public List<MajorStudentResponseDto> getStudent(CustomUserDetails userDetails) {
+        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
+
+        // 조교만 접근할 수 있는 API 처리
+        if(user.getRole() != 3) {
+            new Exception("작업 권한 없음");
+        }
+
+        List<MajorStudentResponseDto> student = userRepository.findAll().stream()
+                .filter(user1 -> user1.getRole() == 1)
+                .filter(user1 -> user1.getMajor_id1() == user.getMajor_id1() || user1.getMajor_id2() == user.getMajor_id1() || user1.getMajor_id3() == user.getMajor_id1())
+                .map(MajorStudentResponseDto::new)
+                .collect(Collectors.toList());
+
+        return student;
+    }
 }
