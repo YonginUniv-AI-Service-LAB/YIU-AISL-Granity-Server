@@ -6,6 +6,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import yiu.aisl.granity.domain.User;
 import yiu.aisl.granity.dto.MyProfileDto;
+import yiu.aisl.granity.dto.MyProfileRequestDto;
+import yiu.aisl.granity.dto.MyProfileResponseDto;
 import yiu.aisl.granity.repository.UserRepository;
 import yiu.aisl.granity.security.CustomUserDetails;
 
@@ -20,12 +22,10 @@ public class UserService {
     // [API] 내 정보 조회
     public Object getMyProfile(CustomUserDetails userDetails) {
         Optional<User> user = userRepository.findById(userDetails.getUser().getId());
-        return MyProfileDto.builder()
+        return MyProfileResponseDto.builder()
                 .id(user.get().getId())
                 .name(user.get().getName())
-                .major_id1(user.get().getMajor_id1())
-                .major_id2(user.get().getMajor_id2())
-                .major_id3(user.get().getMajor_id3())
+                .major_id1(user.get().getMajor_id1().getMajor())
                 .grade(user.get().getGrade())
                 .role(user.get().getRole())
                 .status(user.get().getStatus())
@@ -33,7 +33,7 @@ public class UserService {
     }
 
     // [API] 내 정보 수정
-    public Boolean updateProfile(CustomUserDetails userDetails, MyProfileDto dto) {
+    public Boolean updateProfile(CustomUserDetails userDetails, MyProfileRequestDto dto) {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() ->
                 new BadCredentialsException("잘못된 계정정보입니다."));
 

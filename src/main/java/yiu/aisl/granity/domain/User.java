@@ -21,14 +21,17 @@ public class User {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private Integer major_id1;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Major major_id1;
 
-    @Column
-    private Integer major_id2;
+    @ManyToOne
+    @JoinColumn
+    private Major major_id2;
 
-    @Column
-    private Integer major_id3;
+    @ManyToOne
+    @JoinColumn
+    private Major major_id3;
 
     @Column(nullable = false)
     private Integer grade;

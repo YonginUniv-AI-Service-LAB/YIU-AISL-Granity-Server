@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import yiu.aisl.granity.dto.MyProfileDto;
+import yiu.aisl.granity.dto.MyProfileRequestDto;
 import yiu.aisl.granity.dto.PwdChangeRequestDto;
 import yiu.aisl.granity.security.CustomUserDetails;
 import yiu.aisl.granity.service.UserService;
@@ -30,7 +31,7 @@ public class UserController {
 
     // 내 정보 수정
     @PutMapping(value = "")
-    public ResponseEntity<Boolean> updateProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody MyProfileDto dto) throws Exception {
+    public ResponseEntity<Boolean> updateProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody MyProfileRequestDto dto) throws Exception {
         return new ResponseEntity<Boolean>(userService.updateProfile(customUserDetails, dto), HttpStatus.OK);
     }
 }

@@ -1,19 +1,20 @@
 package yiu.aisl.granity.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import yiu.aisl.granity.domain.Major;
 
-@Getter
-@Setter
-public class RegisterRequestDto {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class MyProfileRequestDto {
     private String id;
     private String name;
     private Major major_id1;
     private Major major_id2;
     private Major major_id3;
     private Integer grade;
-    private String pwd;
     private Integer role;
     private Integer status;
 }

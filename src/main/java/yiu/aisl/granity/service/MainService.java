@@ -10,6 +10,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
+import yiu.aisl.granity.domain.Major;
 import yiu.aisl.granity.dto.*;
 import yiu.aisl.granity.domain.User;
 import yiu.aisl.granity.domain.Token;
@@ -39,8 +40,8 @@ public class MainService {
 
     // [API] 회원가입
     public boolean register(RegisterRequestDto request) {
-        int major_id2 = Optional.ofNullable(request.getMajor_id2()).orElse(0); // 복수전공 or 부전공
-        int major_id3 = Optional.ofNullable(request.getMajor_id2()).orElse(0); // 복수전공 or 부전공
+        Major major_id2 = Optional.ofNullable(request.getMajor_id2()).orElse(null); // 복수전공 or 부전공
+        Major major_id3 = Optional.ofNullable(request.getMajor_id2()).orElse(null); // 복수전공 or 부전공
         try {
             LocalDateTime createdAt = LocalDateTime.now();
             User user = User.builder()
