@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.w3c.dom.ls.LSOutput;
 import yiu.aisl.granity.domain.*;
 import yiu.aisl.granity.dto.*;
@@ -63,6 +64,18 @@ public class MajorService {
         return professor;
     }
 
+    // [API] 교수님 삭제
+    public Boolean deleteProfessor(CustomUserDetails userDetails, MajorMemberRegisterRequestDto request) {
+        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
+        if(user.getRole() != 3) {
+            new Exception("작업 권한 없음");
+        }
+
+        majorMemberRepository.deleteById(String.valueOf(request.getId()));
+
+        return true;
+    }
+
     // [API] 학생회 등록
     public Boolean registerCouncil(CustomUserDetails userDetails, MajorMemberRegisterRequestDto request) {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
@@ -103,6 +116,18 @@ public class MajorService {
         return professor;
     }
 
+    // [API] 학생회 삭제
+    public Boolean deleteCouncil(CustomUserDetails userDetails, MajorMemberRegisterRequestDto request) {
+        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
+        if(user.getRole() != 3) {
+            new Exception("작업 권한 없음");
+        }
+
+        majorMemberRepository.deleteById(String.valueOf(request.getId()));
+
+        return true;
+    }
+
     // [API] 커리큘럼 등록
     public Boolean registerCurriculum(CustomUserDetails userDetails, MajorCurriculumRequestDto request) {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
@@ -141,6 +166,18 @@ public class MajorService {
         return curriculum;
     }
 
+    // [API] 학생회 삭제
+    public Boolean deleteCurriculum(CustomUserDetails userDetails, MajorMemberRegisterRequestDto request) {
+        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
+        if(user.getRole() != 3) {
+            new Exception("작업 권한 없음");
+        }
+
+        majorCurriculumRepository.deleteById(String.valueOf(request.getId()));
+
+        return true;
+    }
+
     // [API] 랩실 등록
     public Boolean registerLab(CustomUserDetails userDetails, MajorLabRequestDto request) {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
@@ -175,6 +212,18 @@ public class MajorService {
                 .collect(Collectors.toList());
 
         return lab;
+    }
+
+    // [API] 학생회 삭제
+    public Boolean deleteLab(CustomUserDetails userDetails, MajorMemberRegisterRequestDto request) {
+        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
+        if(user.getRole() != 3) {
+            new Exception("작업 권한 없음");
+        }
+
+        majorLabRepository.deleteById(String.valueOf(request.getId()));
+
+        return true;
     }
 
     // [API] 학과 학생 조회

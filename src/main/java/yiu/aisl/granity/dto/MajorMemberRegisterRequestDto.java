@@ -7,6 +7,7 @@ import yiu.aisl.granity.domain.Major;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MajorMemberRegisterRequestDto {
+    public Integer id;
     private Integer major;
     private Integer role;
     private String name;
