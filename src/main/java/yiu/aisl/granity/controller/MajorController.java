@@ -33,11 +33,11 @@ public class MajorController {
 //    }
 
     // 교수님 삭제
-    @DeleteMapping(value = "/manager/major/professor/{id}")
-    public ResponseEntity<Boolean> deleteProfessor(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody MajorMemberRegisterRequestDto request) {
+    @DeleteMapping(value = "/manager/major/professor")
+    public ResponseEntity<Boolean> deleteProfessor(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam(value = "id") Integer id) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
-        return new ResponseEntity<Boolean>(majorService.deleteProfessor(userDetails, request), HttpStatus.OK);
+        return new ResponseEntity<Boolean>(majorService.deleteProfessor(userDetails, id), HttpStatus.OK);
     }
 
     // 교수님 조회
@@ -57,9 +57,9 @@ public class MajorController {
     // 학생회 수정
 
     // 학생회 삭제
-    @DeleteMapping(value = "/manager/major/council/{id}")
-    public ResponseEntity<Boolean> deleteCouncil(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody MajorMemberRegisterRequestDto request) {
-        return new ResponseEntity<>(majorService.deleteCouncil(userDetails, request), HttpStatus.OK);
+    @DeleteMapping(value = "/manager/major/council")
+    public ResponseEntity<Boolean> deleteCouncil(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam(value = "id") Integer id) {
+        return new ResponseEntity<>(majorService.deleteCouncil(userDetails, id), HttpStatus.OK);
     }
 
     // 학생회 조회
@@ -79,9 +79,9 @@ public class MajorController {
     // 커리큘럼 수정
 
     // 커리큘럼 삭제
-    @DeleteMapping(value = "/manager/major/curriculum/{id}")
-    public ResponseEntity<Boolean> deleteCurriculum(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody MajorMemberRegisterRequestDto request) {
-        return new ResponseEntity<>(majorService.deleteCurriculum(userDetails, request), HttpStatus.OK);
+    @DeleteMapping(value = "/manager/major/curriculum")
+    public ResponseEntity<Boolean> deleteCurriculum(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam(value = "id") Integer id) {
+        return new ResponseEntity<>(majorService.deleteCurriculum(userDetails, id), HttpStatus.OK);
     }
 
     // 커리큘럼 조회
@@ -101,9 +101,9 @@ public class MajorController {
     // 연구실 수정
 
     // 연구실 삭제
-    @DeleteMapping(value = "/manager/major/lab/{id}")
-    public ResponseEntity<Boolean> deleteLab(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody MajorMemberRegisterRequestDto request) {
-        return new ResponseEntity<>(majorService.deleteLab(userDetails, request), HttpStatus.OK);
+    @DeleteMapping(value = "/manager/major/lab")
+    public ResponseEntity<Boolean> deleteLab(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam(value = "id") Integer id) {
+        return new ResponseEntity<>(majorService.deleteLab(userDetails, id), HttpStatus.OK);
     }
 
     // 연구실 조회

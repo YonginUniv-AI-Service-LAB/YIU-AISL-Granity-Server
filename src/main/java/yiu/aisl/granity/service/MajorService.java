@@ -65,13 +65,13 @@ public class MajorService {
     }
 
     // [API] 교수님 삭제
-    public Boolean deleteProfessor(CustomUserDetails userDetails, MajorMemberRegisterRequestDto request) {
+    public Boolean deleteProfessor(CustomUserDetails userDetails, Integer id) {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
         if(user.getRole() != 3) {
             new Exception("작업 권한 없음");
         }
 
-        majorMemberRepository.deleteById(String.valueOf(request.getId()));
+        majorMemberRepository.deleteById(String.valueOf(id));
 
         return true;
     }
@@ -117,13 +117,13 @@ public class MajorService {
     }
 
     // [API] 학생회 삭제
-    public Boolean deleteCouncil(CustomUserDetails userDetails, MajorMemberRegisterRequestDto request) {
+    public Boolean deleteCouncil(CustomUserDetails userDetails, Integer id) {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
         if(user.getRole() != 3) {
             new Exception("작업 권한 없음");
         }
 
-        majorMemberRepository.deleteById(String.valueOf(request.getId()));
+        majorMemberRepository.deleteById(String.valueOf(id));
 
         return true;
     }
@@ -166,14 +166,14 @@ public class MajorService {
         return curriculum;
     }
 
-    // [API] 학생회 삭제
-    public Boolean deleteCurriculum(CustomUserDetails userDetails, MajorMemberRegisterRequestDto request) {
+    // [API] 커리큘럼 삭제
+    public Boolean deleteCurriculum(CustomUserDetails userDetails, Integer id) {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
         if(user.getRole() != 3) {
             new Exception("작업 권한 없음");
         }
 
-        majorCurriculumRepository.deleteById(String.valueOf(request.getId()));
+        majorCurriculumRepository.deleteById(String.valueOf(id));
 
         return true;
     }
@@ -214,14 +214,14 @@ public class MajorService {
         return lab;
     }
 
-    // [API] 학생회 삭제
-    public Boolean deleteLab(CustomUserDetails userDetails, MajorMemberRegisterRequestDto request) {
+    // [API] 랩실 삭제
+    public Boolean deleteLab(CustomUserDetails userDetails, Integer id) {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
         if(user.getRole() != 3) {
             new Exception("작업 권한 없음");
         }
 
-        majorLabRepository.deleteById(String.valueOf(request.getId()));
+        majorLabRepository.deleteById(String.valueOf(id));
 
         return true;
     }
