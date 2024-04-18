@@ -7,5 +7,5 @@ import yiu.aisl.granity.domain.MajorMember;
 
 @Transactional
 public interface MajorMemberRepository extends JpaRepository<MajorMember, String> {
-
+    MajorMember findById(Integer id);
 }

@@ -6,4 +6,5 @@ import yiu.aisl.granity.domain.MajorLab;
 
 @Transactional
 public interface MajorLabRepository extends JpaRepository<MajorLab, String> {
+    MajorLab findById(Integer id);
 }

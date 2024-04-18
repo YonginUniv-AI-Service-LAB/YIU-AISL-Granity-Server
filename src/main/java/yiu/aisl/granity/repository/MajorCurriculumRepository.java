@@ -6,4 +6,5 @@ import yiu.aisl.granity.domain.MajorCurriculum;
 
 @Transactional
 public interface MajorCurriculumRepository extends JpaRepository<MajorCurriculum, String> {
+    MajorCurriculum findById(Integer id);
 }

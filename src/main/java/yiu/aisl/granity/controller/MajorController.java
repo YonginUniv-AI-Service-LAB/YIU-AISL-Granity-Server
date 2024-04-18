@@ -27,10 +27,10 @@ public class MajorController {
     }
 
     // 교수님 수정
-//    @PutMapping(value = "/manager/major/professor")
-//    public ResponseEntity<Boolean> updateProfessor(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody MajorMemberRegisterRequestDto request) {
-//        return new ResponseEntity<Boolean>(majorService.updateProfessor(userDetails, request), HttpStatus.OK);
-//    }
+    @PutMapping(value = "/manager/major/professor")
+    public ResponseEntity<Boolean> updateProfessor(@RequestParam(value = "id") Integer id,  @RequestBody MajorMemberRegisterRequestDto request) {
+        return new ResponseEntity<Boolean>(majorService.updateProfessor(id, request), HttpStatus.OK);
+    }
 
     // 교수님 삭제
     @DeleteMapping(value = "/manager/major/professor")
@@ -55,6 +55,10 @@ public class MajorController {
     }
 
     // 학생회 수정
+    @PutMapping(value = "/manager/major/council")
+    public ResponseEntity<Boolean> updateCouncil(@RequestParam(value = "id") Integer id,  @RequestBody MajorMemberRegisterRequestDto request) {
+        return new ResponseEntity<Boolean>(majorService.updateCouncil(id, request), HttpStatus.OK);
+    }
 
     // 학생회 삭제
     @DeleteMapping(value = "/manager/major/council")
@@ -77,6 +81,10 @@ public class MajorController {
     }
 
     // 커리큘럼 수정
+    @PutMapping(value = "/manager/major/curriculum")
+    public ResponseEntity<Boolean> updateCurriculum(@RequestParam(value = "id") Integer id, MajorCurriculumRequestDto request) {
+        return new ResponseEntity<>(majorService.updateCurriculum(id, request), HttpStatus.OK);
+    }
 
     // 커리큘럼 삭제
     @DeleteMapping(value = "/manager/major/curriculum")
@@ -99,6 +107,10 @@ public class MajorController {
     }
 
     // 연구실 수정
+    @PutMapping(value = "/manager/major/lab")
+    public ResponseEntity<Boolean> updateLab(@RequestParam(value = "id") Integer id, MajorLabRequestDto request) {
+        return new ResponseEntity<>(majorService.updateLab(id, request), HttpStatus.OK);
+    }
 
     // 연구실 삭제
     @DeleteMapping(value = "/manager/major/lab")
