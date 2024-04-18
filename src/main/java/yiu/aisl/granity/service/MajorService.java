@@ -25,11 +25,7 @@ public class MajorService {
     private final MajorLabRepository majorLabRepository;
 
     // [API] 교수님 등록
-    public Boolean registerProfessor(CustomUserDetails userDetails, MajorMemberRegisterRequestDto request) {
-        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
-//        if(user.getRole() != 3) {
-//            new Exception("작업 권한 없음");
-//        }
+    public Boolean registerProfessor(MajorMemberRegisterRequestDto request) {
         Major major = majorRepository.findById(request.getMajor()).orElseThrow();
 
         try {
@@ -65,23 +61,13 @@ public class MajorService {
     }
 
     // [API] 교수님 삭제
-    public Boolean deleteProfessor(CustomUserDetails userDetails, Integer id) {
-        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
-        if(user.getRole() != 3) {
-            new Exception("작업 권한 없음");
-        }
-
+    public Boolean deleteProfessor(Integer id) {
         majorMemberRepository.deleteById(String.valueOf(id));
-
         return true;
     }
 
     // [API] 학생회 등록
-    public Boolean registerCouncil(CustomUserDetails userDetails, MajorMemberRegisterRequestDto request) {
-        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
-        if(user.getRole() != 3) {
-            new Exception("작업 권한 없음");
-        }
+    public Boolean registerCouncil(MajorMemberRegisterRequestDto request) {
         Major major = majorRepository.findById(request.getMajor()).orElseThrow();
 
         try {
@@ -117,23 +103,13 @@ public class MajorService {
     }
 
     // [API] 학생회 삭제
-    public Boolean deleteCouncil(CustomUserDetails userDetails, Integer id) {
-        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
-        if(user.getRole() != 3) {
-            new Exception("작업 권한 없음");
-        }
-
+    public Boolean deleteCouncil(Integer id) {
         majorMemberRepository.deleteById(String.valueOf(id));
-
         return true;
     }
 
     // [API] 커리큘럼 등록
-    public Boolean registerCurriculum(CustomUserDetails userDetails, MajorCurriculumRequestDto request) {
-        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
-        if(user.getRole() != 3) {
-            new Exception("작업 권한 없음");
-        }
+    public Boolean registerCurriculum(MajorCurriculumRequestDto request) {
         Major major = majorRepository.findById(request.getMajor()).orElseThrow();
 
         try {
@@ -167,23 +143,13 @@ public class MajorService {
     }
 
     // [API] 커리큘럼 삭제
-    public Boolean deleteCurriculum(CustomUserDetails userDetails, Integer id) {
-        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
-        if(user.getRole() != 3) {
-            new Exception("작업 권한 없음");
-        }
-
+    public Boolean deleteCurriculum(Integer id) {
         majorCurriculumRepository.deleteById(String.valueOf(id));
-
         return true;
     }
 
     // [API] 랩실 등록
-    public Boolean registerLab(CustomUserDetails userDetails, MajorLabRequestDto request) {
-        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
-        if(user.getRole() != 3) {
-            new Exception("작업 권한 없음");
-        }
+    public Boolean registerLab(MajorLabRequestDto request) {
         Major major = majorRepository.findById(request.getMajor()).orElseThrow();
 
         try {
@@ -215,25 +181,14 @@ public class MajorService {
     }
 
     // [API] 랩실 삭제
-    public Boolean deleteLab(CustomUserDetails userDetails, Integer id) {
-        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
-        if(user.getRole() != 3) {
-            new Exception("작업 권한 없음");
-        }
-
+    public Boolean deleteLab(Integer id) {
         majorLabRepository.deleteById(String.valueOf(id));
-
         return true;
     }
 
     // [API] 학과 학생 조회
     public List<MajorStudentResponseDto> getStudent(CustomUserDetails userDetails) {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
-
-        // 조교만 접근할 수 있는 API 처리
-        if(user.getRole() != 3) {
-            new Exception("작업 권한 없음");
-        }
 
         List<MajorStudentResponseDto> student = userRepository.findAll().stream()
                 .filter(user1 -> user1.getRole() == 1)
