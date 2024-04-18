@@ -69,10 +69,10 @@ public class SecurityConfig {
 
                 // 조건별로 요청 허용/제한 설정
                 .authorizeHttpRequests(authorize -> authorize
-                        // 회원가입과 로그인은 모두 승인
+                        // 회원가입, 회원가입용 이메일 전송, 로그인은 모두 승인
                         .requestMatchers("/login", "/register", "/register/email", "/token/refresh").permitAll()
-                        // /manager로 시작하는 요청은 ADMIN 권한이 있는 유저에게만 허용
-//                        .requestMatchers("/token/refresh").permitAll()
+                        // /manager로 시작하는 요청은 ADMIN, MANAGER 권한이 있는 유저에게만 허용
+                        .requestMatchers("/manager/*").hasRole("ADMIN")
 //                        .requestMatchers("/manager/**").hasRole("MANAGER")
                         .anyRequest().authenticated())
                 // JWT 인증 필터 적용

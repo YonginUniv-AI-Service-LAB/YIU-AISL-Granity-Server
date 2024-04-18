@@ -27,9 +27,9 @@ public class MajorService {
     // [API] 교수님 등록
     public Boolean registerProfessor(CustomUserDetails userDetails, MajorMemberRegisterRequestDto request) {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow();
-        if(user.getRole() != 3) {
-            new Exception("작업 권한 없음");
-        }
+//        if(user.getRole() != 3) {
+//            new Exception("작업 권한 없음");
+//        }
         Major major = majorRepository.findById(request.getMajor()).orElseThrow();
 
         try {

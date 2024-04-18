@@ -29,6 +29,11 @@ public class JwtProvider {
 
     private Key secretKey;
 
+    @Value("${admin.id1}")
+    private String admin1;
+
+    @Value("${admin.id2}")
+    private String admin2;
 
     // accessToken 만료 시간 : 30분으로 설정
     private long accessTokenValidTime = Duration.ofMinutes(30).toMillis();
@@ -55,6 +60,21 @@ public class JwtProvider {
                 .claim("id", user.getId())
                 .signWith(secretKey, SignatureAlgorithm.HS256);
 
+        // 개발자에게 ADMIN (관리자 권한 부여)
+        if(user.getId().equals(admin1) || user.getId().equals(admin2)) {
+            jwtBuilder.claim("role",  "ADMIN");
+            System.out.println("관리자 권한이 부여됨");
+        }
+        // 교수와 조교 MANAGER (매니저 권한 부여)
+        else if(user.getRole() == 2 || user.getRole() == 3) {
+            jwtBuilder.claim("role", "MANAGER");
+            System.out.println("매니저 권한이 부여됨");
+        }
+        // 학생 USER (사용자 권한 부여)
+        else {
+            jwtBuilder.claim("role", "USER");
+            System.out.println("사용자 권한이 부여됨");
+        }
         return jwtBuilder.compact();
     }
 
