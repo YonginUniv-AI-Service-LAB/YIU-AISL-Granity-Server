@@ -82,7 +82,7 @@ public class MajorController {
 
     // 커리큘럼 수정
     @PutMapping(value = "/manager/major/curriculum")
-    public ResponseEntity<Boolean> updateCurriculum(@RequestParam(value = "id") Integer id, MajorCurriculumRequestDto request) {
+    public ResponseEntity<Boolean> updateCurriculum(@RequestParam(value = "id") Integer id, @RequestBody MajorCurriculumRequestDto request) {
         return new ResponseEntity<>(majorService.updateCurriculum(id, request), HttpStatus.OK);
     }
 
@@ -108,7 +108,7 @@ public class MajorController {
 
     // 연구실 수정
     @PutMapping(value = "/manager/major/lab")
-    public ResponseEntity<Boolean> updateLab(@RequestParam(value = "id") Integer id, MajorLabRequestDto request) {
+    public ResponseEntity<Boolean> updateLab(@RequestParam(value = "id") Integer id, @RequestBody MajorLabRequestDto request) {
         return new ResponseEntity<>(majorService.updateLab(id, request), HttpStatus.OK);
     }
 

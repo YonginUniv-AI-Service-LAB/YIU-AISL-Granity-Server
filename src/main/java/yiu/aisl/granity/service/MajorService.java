@@ -186,22 +186,22 @@ public class MajorService {
     }
 
     // [API] 커리큘럼 수정
-//    public Boolean updateCurriculum(Integer id, MajorCurriculumRequestDto request) {
-//        MajorCurriculum curriculum = majorCurriculumRepository.findById(id);
-//        Major major = majorRepository.findById(request.getMajor()).orElseThrow();
-//        curriculum.setMajor(major);
-//        curriculum.setName(request.getName());
-//        curriculum.setClassification(request.getClassification());
-//        curriculum.setGrade(request.getGrade());
-//        curriculum.setSemester(request.getSemester());
-//        curriculum.setCode(request.getCode());
-//        curriculum.setCredit(request.getCredit());
-//        curriculum.setTheory(request.getTheory());
-//        curriculum.setPractice(request.getPractice());
-//
-//        majorCurriculumRepository.save(curriculum);
-//        return true;
-//    }
+    public Boolean updateCurriculum(Integer id, MajorCurriculumRequestDto request) {
+        MajorCurriculum curriculum = majorCurriculumRepository.findById(id);
+        Major major = majorRepository.findById(request.getMajor()).orElseThrow();
+        curriculum.setId(id);
+        curriculum.setMajor(major);
+        curriculum.setName(request.getName());
+        curriculum.setClassification(request.getClassification());
+        curriculum.setGrade(request.getGrade());
+        curriculum.setSemester(request.getSemester());
+        curriculum.setCode(request.getCode());
+        curriculum.setCredit(request.getCredit());
+        curriculum.setTheory(request.getTheory());
+        curriculum.setPractice(request.getPractice());
+        majorCurriculumRepository.save(curriculum);
+        return true;
+    }
 
     // [API] 랩실 등록
     public Boolean registerLab(MajorLabRequestDto request) {
@@ -242,20 +242,21 @@ public class MajorService {
     }
 
     // [API] 랩실 수정
-//    public Boolean updateLab(Integer id, MajorLabRequestDto request) {
-//        MajorLab lab = majorLabRepository.findById(id);
-//        Major major = majorRepository.findById(request.getMajor()).orElseThrow();
-//        lab.setMajor(major);
-//        lab.setName(request.getName());
-//        lab.setDescription(request.getDescription());
-//        lab.setImage(request.getImage());
-//        lab.setLink(request.getLink());
-//        lab.setTel(request.getTel());
-//        lab.setEmail(request.getEmail());
-//
-//        majorLabRepository.save(lab);
-//        return true;
-//    }
+    public Boolean updateLab(Integer id, MajorLabRequestDto request) {
+        System.out.println(majorLabRepository.findById(id));
+        MajorLab lab = majorLabRepository.findById(id);
+        Major major = majorRepository.findById(request.getMajor()).orElseThrow();
+        lab.setMajor(major);
+        lab.setName(request.getName());
+        lab.setDescription(request.getDescription());
+        lab.setImage(request.getImage());
+        lab.setLink(request.getLink());
+        lab.setTel(request.getTel());
+        lab.setEmail(request.getEmail());
+
+        majorLabRepository.save(lab);
+        return true;
+    }
 
     // [API] 학과 학생 조회
     public List<MajorStudentResponseDto> getStudent(CustomUserDetails userDetails) {

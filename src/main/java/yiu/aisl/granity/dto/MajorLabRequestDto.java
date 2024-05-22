@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MajorLabRequestDto {
+    public Integer id;
     private Integer major;
     private String name;
     private String description;

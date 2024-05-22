@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MajorCurriculumRequestDto {
+    private Integer id;
     private Integer major;
     private String name;
     private Integer classification;
