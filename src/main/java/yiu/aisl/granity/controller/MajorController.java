@@ -134,7 +134,11 @@ public class MajorController {
         return new ResponseEntity<Object>(majorService.getStudent(userDetails), headers, HttpStatus.OK);
     }
 
-    // 학과 정보 수정
-
-    // 학과 정보 수정
+    // 학과 정보 조회
+    @GetMapping(value = "/major")
+    public ResponseEntity<Object> getMajor() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+        return new ResponseEntity<Object>(majorService.getMajor(), headers, HttpStatus.OK);
+    }
 }

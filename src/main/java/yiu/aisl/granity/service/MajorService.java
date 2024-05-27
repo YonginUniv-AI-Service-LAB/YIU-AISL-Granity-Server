@@ -270,4 +270,13 @@ public class MajorService {
 
         return student;
     }
+
+    // [API] 학과 정보 조회
+    public List<MajorResponseDto> getMajor() {
+        List<MajorResponseDto> major = majorRepository.findAll()
+                .stream().map(MajorResponseDto::new)
+                .collect(Collectors.toList());
+
+        return major;
+    }
 }
