@@ -26,7 +26,6 @@ public class JwtProvider {
     private final JwtProperties jwtProperties;
     @Value("${jwt.secret.key}")
     private String salt;
-
     private Key secretKey;
 
     // accessToken 만료 시간 : 30분으로 설정
@@ -55,12 +54,13 @@ public class JwtProvider {
                 .signWith(secretKey, SignatureAlgorithm.HS256);
 
         // 개발자에게 ADMIN (관리자 권한 부여)
-        if(user.getRole() == 0) {
-            jwtBuilder.claim("role",  "ADMIN");
+        if (user.getRole().equals(0)) {
+            jwtBuilder.claim("role", "ADMIN");
+            System.out.println("사용자 역할: " + user.getRole());
             System.out.println("관리자 권한이 부여됨");
         }
         // 교수와 조교 MANAGER (매니저 권한 부여)
-        else if(user.getRole() == 2 || user.getRole() == 3) {
+        else if (user.getRole().equals(2) || user.getRole().equals(3)) {
             jwtBuilder.claim("role", "MANAGER");
             System.out.println("매니저 권한이 부여됨");
         }
@@ -75,7 +75,10 @@ public class JwtProvider {
     // 권한 정보 획득
     // Spring Security 인증과정에서 권한확인을 위한 기능
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getId(token));
+        String userId = this.getId(token);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+        System.out.println("사용자 ID: " +userId);
+        System.out.println("사용자 인증 정보: " +userDetails);
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
