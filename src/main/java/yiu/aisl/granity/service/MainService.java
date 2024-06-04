@@ -14,6 +14,8 @@ import yiu.aisl.granity.domain.Major;
 import yiu.aisl.granity.dto.*;
 import yiu.aisl.granity.domain.User;
 import yiu.aisl.granity.domain.Token;
+import yiu.aisl.granity.exception.CustomException;
+import yiu.aisl.granity.exception.ErrorCode;
 import yiu.aisl.granity.repository.TokenRepository;
 import yiu.aisl.granity.repository.UserRepository;
 import yiu.aisl.granity.security.JwtProvider;
@@ -40,6 +42,17 @@ public class MainService {
 
     // [API] 회원가입
     public boolean register(RegisterRequestDto request) {
+        // 데이터 미입력 오류 - 400
+        if(request.getId().isEmpty() ||request.getPwd().isEmpty() || request.getName().isEmpty()
+        || request.getMajor_id1() == null || request.getGrade() == null || request.getRole() == null || request.getStatus() == null) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        // 데이터 중복 오류(id) - 409
+        if(userRepository.existsById(request.getId())) {
+            throw new CustomException(ErrorCode.DUPLICATE);
+        }
+
         Major major_id2 = Optional.ofNullable(request.getMajor_id2()).orElse(null); // 복수전공 or 부전공
         Major major_id3 = Optional.ofNullable(request.getMajor_id2()).orElse(null); // 복수전공 or 부전공
         try {
@@ -67,10 +80,21 @@ public class MainService {
 
     // [API] 로그인
     public LoginResponseDto login(LoginRequestDto request) {
+        // 회원없음 - 404
+        if(!userRepository.existsById(request.getId())) {
+            throw new CustomException(ErrorCode.NOT_EXIST_ID);
+        }
+
         User user = userRepository.findById(request.getId()).orElseThrow();
 
+        // 데이터 미입력 - 400
+        if(request.getPwd().isEmpty() || request.getId().isEmpty()) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        // 회원정보 불일치(id, pwd) - 401
         if (!passwordEncoder.matches(request.getPwd(), user.getPwd())) {
-            throw new IllegalArgumentException("아이디와 비밀번호 불일치.");
+            throw new CustomException(ErrorCode.USER_DATA_INCONSISTENCY);
         }
 
         user.setRefreshToken(createRefreshToken(user));
@@ -103,6 +127,15 @@ public class MainService {
 
     // [API] 회원가입 시 인증 메일 전송
     public String joinEmail(String id) throws  MessagingException {
+        // 이메일 미입력 - 400
+        if(id.isEmpty()) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        // 회원 중복 - 409
+        if(userRepository.existsById(id)) {
+            throw new CustomException(ErrorCode.DUPLICATE);
+        }
         id = id+"@yiu.ac.kr";
         MimeMessage emailForm = createEmailForm(id);
         emailSender.send(emailForm);
@@ -112,6 +145,16 @@ public class MainService {
 
     // [API] 비밀번호 변경 시 인증 메일 전송
     public String pwdEmail(String id) throws  MessagingException {
+        // 이메일 미입력 - 400
+        if(id.isEmpty()) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        // 회원 없음 - 404
+        if(!userRepository.existsById(id)) {
+            throw new CustomException(ErrorCode.NOT_EXIST_ID);
+        }
+
         User user = userRepository.findById(id).orElseThrow(() ->
                 new BadCredentialsException("해당 아이디의 회원이 존재하지 않습니다."));
         id = id+"@yiu.ac.kr";
@@ -126,6 +169,10 @@ public class MainService {
         User user = userRepository.findById(dto.getId()).orElseThrow(() ->
                 new BadCredentialsException("해당 아이디의 회원이 존재하지 않습니다."));
 
+        // 데이터 미입력 - 400
+        if(dto.getPwd().isEmpty()) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
         LocalDateTime updatedAt = LocalDateTime.now();
         user.setPwd(passwordEncoder.encode(dto.getPwd()));
         user.setUpdatedAt(updatedAt);
