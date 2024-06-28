@@ -6,12 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import yiu.aisl.granity.domain.User;
-import yiu.aisl.granity.service.JpaUserDetailsService;
 
 import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
@@ -34,7 +29,7 @@ public class JwtProvider {
     // refreshToken 만료 시간 : 14일로 설정
     private long refreshTokenValidTime = Duration.ofDays(14).toMillis();
 
-    private final JpaUserDetailsService userDetailsService;
+//    private final JpaUserDetailsService userDetailsService;
 
     @PostConstruct
     protected void init() {
@@ -42,45 +37,45 @@ public class JwtProvider {
     }
 
     // token 생성
-    public String createToken(User user) {
-        Date now = new Date();
-
-        JwtBuilder jwtBuilder = Jwts.builder()
-                .setIssuer(jwtProperties.getIssuer())
-                .setIssuedAt(now)
-                .setExpiration(new Date(System.currentTimeMillis() + accessTokenValidTime))
-                .setSubject(user.getId())
-                .claim("id", user.getId())
-                .signWith(secretKey, SignatureAlgorithm.HS256);
-
-        // 개발자에게 ADMIN (관리자 권한 부여)
-        if (user.getRole().equals(0)) {
-            jwtBuilder.claim("role", "ADMIN");
-            System.out.println("사용자 역할: " + user.getRole());
-            System.out.println("관리자 권한이 부여됨");
-        }
-        // 교수와 조교 MANAGER (매니저 권한 부여)
-        else if (user.getRole().equals(2) || user.getRole().equals(3)) {
-            jwtBuilder.claim("role", "MANAGER");
-            System.out.println("매니저 권한이 부여됨");
-        }
-        // 학생 USER (사용자 권한 부여)
-        else {
-            jwtBuilder.claim("role", "USER");
-            System.out.println("사용자 권한이 부여됨");
-        }
-        return jwtBuilder.compact();
-    }
+//    public String createToken(User user) {
+//        Date now = new Date();
+//
+//        JwtBuilder jwtBuilder = Jwts.builder()
+//                .setIssuer(jwtProperties.getIssuer())
+//                .setIssuedAt(now)
+//                .setExpiration(new Date(System.currentTimeMillis() + accessTokenValidTime))
+//                .setSubject(user.getId())
+//                .claim("id", user.getId())
+//                .signWith(secretKey, SignatureAlgorithm.HS256);
+//
+//        // 개발자에게 ADMIN (관리자 권한 부여)
+//        if (user.getRole().equals(0)) {
+//            jwtBuilder.claim("role", "ADMIN");
+//            System.out.println("사용자 역할: " + user.getRole());
+//            System.out.println("관리자 권한이 부여됨");
+//        }
+//        // 교수와 조교 MANAGER (매니저 권한 부여)
+//        else if (user.getRole().equals(2) || user.getRole().equals(3)) {
+//            jwtBuilder.claim("role", "MANAGER");
+//            System.out.println("매니저 권한이 부여됨");
+//        }
+//        // 학생 USER (사용자 권한 부여)
+//        else {
+//            jwtBuilder.claim("role", "USER");
+//            System.out.println("사용자 권한이 부여됨");
+//        }
+//        return jwtBuilder.compact();
+//    }
 
     // 권한 정보 획득
     // Spring Security 인증과정에서 권한확인을 위한 기능
-    public Authentication getAuthentication(String token) {
-        String userId = this.getId(token);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
-        System.out.println("사용자 ID: " +userId);
-        System.out.println("사용자 인증 정보: " +userDetails);
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-    }
+//    public Authentication getAuthentication(String token) {
+//        String userId = this.getId(token);
+//        UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+//        System.out.println("사용자 ID: " +userId);
+//        System.out.println("사용자 인증 정보: " +userDetails);
+//        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+//    }
 
     // 토큰에 담겨있는 유저 권한 획득
     public String getId(String token) {
