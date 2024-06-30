@@ -7,9 +7,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import yiu.aisl.granity.domain.User;
-import yiu.aisl.granity.domain.state.RoleCategory;
 import yiu.aisl.granity.repository.UserRepository;
-import yiu.aisl.granity.security.CustomUserDetails;
+import yiu.aisl.granity.config.CustomUserDetails;
 
 @Service
 @RequiredArgsConstructor
@@ -25,18 +24,18 @@ public class JpaUserDetailsService implements UserDetailsService {
     }
 
     @Transactional
-    public UserDetails loadUserByStudentId(String id) throws UsernameNotFoundException {
+    public UserDetails loadUserById(String id) throws UsernameNotFoundException {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new UsernameNotFoundException("사용자가 존재하지 않습니다.")
         );
         CustomUserDetails userDetails = new CustomUserDetails(user);
 
-        if (user.getRole().equals(RoleCategory.관리자)) {
-            userDetails.setRole("ADMIN");
-        } else if(user.getRole().equals(RoleCategory.학생)){
-            userDetails.setRole("USER");
-        } else if(user.getRole().equals(RoleCategory.조교및교수)) {
-            userDetails.setRole("MANAGER");
+        if (user.getRole() == 0) {
+            userDetails.setRole(0);
+        } else if(user.getRole() == 1){
+            userDetails.setRole(1);
+        } else if(user.getRole() == 2) {
+            userDetails.setRole(2);
         }
         return userDetails;
     }

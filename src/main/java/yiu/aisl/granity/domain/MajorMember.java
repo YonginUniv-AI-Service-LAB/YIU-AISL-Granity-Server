@@ -15,14 +15,14 @@ import java.time.LocalDateTime;
 public class MajorMember {
     @Id
     @Column(unique = true)
-    private int id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "major_group_id",nullable = false)
     private MajorGroup major_group_id;
 
     @Column(nullable = false)
-    private int role;
+    private Integer role;
 
     @Column(nullable = false)
     private String name;

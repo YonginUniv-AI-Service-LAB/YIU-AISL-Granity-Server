@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class UserGraduation {
     @Id
     @Column(unique = true)
-    private int id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -28,7 +28,7 @@ public class UserGraduation {
 
     @Column(nullable = false)
     @ColumnDefault("0")
-    private int status;
+    private Integer status;
 
     @Column(nullable = false)
     private String contents;

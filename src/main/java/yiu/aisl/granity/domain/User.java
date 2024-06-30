@@ -5,8 +5,6 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import yiu.aisl.granity.domain.state.RoleCategory;
-import yiu.aisl.granity.domain.state.StatusCategory;
 
 import java.time.LocalDateTime;
 
@@ -30,15 +28,13 @@ public class User {
     private String pwd;
 
     @Column(nullable = false) // 관리자(0), 학생(1), 조교 및 교수(2)
-    @Enumerated(EnumType.ORDINAL)
-    private RoleCategory role;
+    private int role;
 
     @Column(nullable = false) // 휴학(0), 재학(1)
-    @Enumerated(EnumType.ORDINAL)
-    private StatusCategory status;
+    private int status;
 
     @Column(nullable = false)
-    @ColumnDefault("1")
+    @ColumnDefault("0")
     private int push;
 
     @Column(columnDefinition = "TEXT")

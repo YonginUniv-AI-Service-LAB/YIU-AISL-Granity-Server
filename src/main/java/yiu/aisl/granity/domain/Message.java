@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class Message {
     @Id
     @Column(unique = true)
-    private int id;
+    private Integer id;
 
     @Column(nullable = false, length = 50)
     private String title;

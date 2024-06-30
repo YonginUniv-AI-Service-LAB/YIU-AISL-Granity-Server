@@ -11,10 +11,10 @@ import lombok.*;
 public class NoticePush {
     @Id
     @Column(unique = true)
-    private int id;
+    private Integer id;
 
     @Column(nullable = false)
-    private int type;
+    private Integer type;
 
     @ManyToOne
     @JoinColumn(name = "major_group_id", nullable = false)

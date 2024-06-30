@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class Faq {
     @Id
     @Column(unique = true)
-    private int id;
+    private Integer id;
 
     @Column(nullable = false, length = 50)
     private String title;
@@ -28,7 +28,7 @@ public class Faq {
     private MajorGroup major_group_id;
 
     @Column(nullable = false)
-    private int category;
+    private Integer category;
 
     @CreationTimestamp
     @Column

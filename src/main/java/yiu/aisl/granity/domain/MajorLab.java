@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class MajorLab {
     @Id
     @Column(unique = true)
-    private int id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "major_group_id", nullable = false)

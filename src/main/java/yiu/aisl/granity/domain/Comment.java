@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class Comment {
     @Id
     @Column(unique = true)
-    private int id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "board_id", nullable = false)
@@ -32,7 +32,7 @@ public class Comment {
 
     @Column(nullable = false)
     @ColumnDefault("0")
-    private int checks;
+    private Integer checks;
 
     @ManyToOne
     @JoinColumn(name = "check_user_id")

@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import yiu.aisl.granity.domain.User;
 import yiu.aisl.granity.service.JpaUserDetailsService;
+import yiu.aisl.granity.config.CustomUserDetails;
 
 import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
@@ -54,13 +55,13 @@ public class JwtProvider {
                 .signWith(secretKey, SignatureAlgorithm.HS256);
 
         // 개발자에게 ADMIN (관리자 권한 부여)
-        if (user.getRole().equals(0)) {
+        if (user.getRole() == 0) {
             jwtBuilder.claim("role", "ADMIN");
             System.out.println("사용자 역할: " + user.getRole());
             System.out.println("관리자 권한이 부여됨");
         }
         // 교수와 조교 MANAGER (매니저 권한 부여)
-        else if (user.getRole().equals(2) || user.getRole().equals(3)) {
+        else if (user.getRole() == 2) {
             jwtBuilder.claim("role", "MANAGER");
             System.out.println("매니저 권한이 부여됨");
         }
@@ -75,11 +76,15 @@ public class JwtProvider {
     // 권한 정보 획득
     // Spring Security 인증과정에서 권한확인을 위한 기능
     public Authentication getAuthentication(String token) {
-        String userId = this.getId(token);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
-        System.out.println("사용자 ID: " +userId);
-        System.out.println("사용자 인증 정보: " +userDetails);
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        Claims claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
+        String id = claims.get("email", String.class);
+        String role = claims.get("role", String.class); // role 값을 정수형으로 가져옴
+
+        UserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserById(id);
+        CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
+        customUserDetails.setRole(Integer.valueOf(role)); // CustomUserDetails에 role 설정
+
+        return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
     }
 
     // 토큰에 담겨있는 유저 권한 획득

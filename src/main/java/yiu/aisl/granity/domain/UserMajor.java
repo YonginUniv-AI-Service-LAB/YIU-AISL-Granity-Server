@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class UserMajor {
     @Id
     @Column(unique = true)
-    private int id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

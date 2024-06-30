@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class Token {
     @Id
     @JsonIgnore
-    private Long studentId;
+    private String id;
 
     private String refreshToken;
 

@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class Board {
     @Id
     @Column(unique = true)
-    private int id;
+    private Integer id;
 
     @Column(nullable = false, length = 50)
     private String title;
@@ -33,7 +33,7 @@ public class Board {
 
     @Column(nullable = false) // 조교 또는 교수의 승인 여부
     @ColumnDefault("0")
-    private int checks;
+    private Integer checks;
 
     @ManyToOne
     @JoinColumn(name = "major_group_id", nullable = false)
@@ -41,7 +41,7 @@ public class Board {
 
     @Column(nullable = false)
     @ColumnDefault("0")
-    private int hit;
+    private Integer hit;
 
     @CreationTimestamp
     @Column

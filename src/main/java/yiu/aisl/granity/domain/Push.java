@@ -15,23 +15,23 @@ import java.time.LocalDateTime;
 public class Push {
     @Id
     @Column(unique = true)
-    private int id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user_id;
 
     @Column(nullable = false)
-    private int type;
+    private Integer type;
 
     @Column(nullable = false)
-    private int type_id;
+    private Integer type_id;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String contents;
 
     @Column(nullable = false)
-    private int checks;
+    private Integer checks;
 
     @CreationTimestamp
     @Column

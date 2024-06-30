@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class MajorGroup {
     @Id
     @Column(unique = true)
-    private int id;
+    private Integer id;
 
     @Column(nullable = false)
     private String majorGroup;
@@ -25,7 +25,7 @@ public class MajorGroup {
     private Major major_id;
 
     @Column(nullable = false)
-    private int status;
+    private Integer status;
 
     @Column(nullable = false)
     private String greetings;

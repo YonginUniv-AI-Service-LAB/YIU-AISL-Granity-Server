@@ -11,17 +11,17 @@ import lombok.*;
 public class MajorHistory {
     @Id
     @Column(unique = true)
-    private int id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "major_group_id", nullable = false)
     private MajorGroup major_group_id;
 
     @Column(nullable = false)
-    private int year;
+    private Integer year;
 
     @Column(nullable = false)
-    private int month;
+    private Integer month;
 
     @Column(nullable = false)
     private String event;

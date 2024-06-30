@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class MajorCurriculum {
     @Id
     @Column(unique = true)
-    private int id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "major_group_id", nullable = false)
@@ -25,31 +25,31 @@ public class MajorCurriculum {
     private String subject; // 과목명
 
     @Column(nullable = false)
-    private int classification; // 기초전공 여부
+    private Integer classification; // 기초전공 여부
 
     @Column(nullable = false)
-    private int grade; // 학년
+    private Integer grade; // 학년
 
     @Column(nullable = false)
-    private int semester; // 학기
+    private Integer semester; // 학기
 
     @Column(nullable = false)
-    private int code; // 학수번호
+    private Integer code; // 학수번호
 
     @Column(nullable = false)
-    private int credit; // 학점
+    private Integer credit; // 학점
 
     @Column(nullable = false)
-    private int theory; // 이론 몇 실기 몇
+    private Integer theory; // 이론 몇 실기 몇
 
     @Column(nullable = false)
-    private int practice; // 전공 및 실기 여부
+    private Integer practice; // 전공 및 실기 여부
 
     @Column(nullable = false)
-    private int hidden; // 홈페이지 공개여부
+    private Integer hidden; // 홈페이지 공개여부
 
     @Column(nullable = false)
-    private int required; // 필수 이수 과목 여부
+    private Integer required; // 필수 이수 과목 여부
 
     @CreationTimestamp
     @Column

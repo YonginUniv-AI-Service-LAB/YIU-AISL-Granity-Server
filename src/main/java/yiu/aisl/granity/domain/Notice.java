@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class Notice {
     @Id
     @Column(unique = true)
-    private int id;
+    private Integer id;
 
     @Column(nullable = false, length = 50)
     private String title;
@@ -32,30 +32,30 @@ public class Notice {
     private User user_id;
 
     @Column(nullable = false)
-    private int category; // 뉴스 or 공지
+    private Integer category; // 뉴스 or 공지
 
     @Column(nullable = false)
-    private int status;
+    private Integer status;
 
     @Column(nullable = false)
     @ColumnDefault("0")
-    private int hit;
+    private Integer hit;
 
     @ManyToOne
     @JoinColumn(name = "major_group_id", nullable = false)
     private MajorGroup major_group_id;
 
     @Column(nullable = false)
-    private int grade1;
+    private Integer grade1;
 
     @Column(nullable = false)
-    private int grade2;
+    private Integer grade2;
 
     @Column(nullable = false)
-    private int grade3;
+    private Integer grade3;
 
     @Column(nullable = false)
-    private int grade4;
+    private Integer grade4;
 
     @CreationTimestamp
     @Column

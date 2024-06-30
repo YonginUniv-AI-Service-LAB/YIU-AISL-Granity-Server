@@ -11,7 +11,7 @@ import lombok.*;
 public class MajorGraduation {
     @Id
     @Column(unique = true)
-    private int id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "major_id", nullable = false)
@@ -24,5 +24,5 @@ public class MajorGraduation {
     private String contents;
 
     @Column(nullable = false)
-    private int target;
+    private Integer target;
 }
