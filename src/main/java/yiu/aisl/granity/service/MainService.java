@@ -87,6 +87,7 @@ public class MainService {
         }
 
         try {
+            String accessToken = jwtProvider.createToken(user);
             user.setRefreshToken(createRefreshToken(user));
             UserResponseDto response = UserResponseDto.builder()
                     .id(user.getId())
@@ -96,10 +97,11 @@ public class MainService {
                     .push(user.getPush())
                     .role(user.getRole())
                     .token(TokenDto.builder()
-                            .accessToken(jwtProvider.createToken(user))
+                            .accessToken(accessToken)
                             .refreshToken(user.getRefreshToken())
                             .build())
                     .build();
+            System.out.println("로그인 할 때 발급 받은 accessToken 확인 : " +accessToken);
             return response;
         } catch(Exception e) {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
@@ -160,32 +162,33 @@ public class MainService {
     }
 
     // [API] accessToken 재발급
-    public TokenDto reIssuanceAccessToken(TokenDto token) throws Exception {
-        String id = null;
-        try {
-            id = jwtProvider.getId(token.getAccessToken());
-        } catch (ExpiredJwtException e) {
-            id = e.getClaims().get("id", String.class);
-        }
-
-        User user = userRepository.findById(id).orElseThrow(() ->
-                new CustomException(ErrorCode.NOT_EXIST_ID));
-
-        Token refreshToken = validRefreshToken(user, token.getRefreshToken());
-
-        try {
-            if (refreshToken != null) {
-                return TokenDto.builder()
-                        .accessToken(jwtProvider.createToken(user))
-                        .refreshToken(refreshToken.getRefreshToken())
-                        .build();
-            } else {
-                throw new CustomException(ErrorCode.LOGIN_REQUIRED);
-            }
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    public TokenDto reIssuanceAccessToken(TokenDto token) throws Exception {
+//        String id = null;
+//        try {
+//            id = jwtProvider.getId(token.getAccessToken());
+//            System.out.println("id 확인: " +id);
+//        } catch (ExpiredJwtException e) {
+//            id = e.getClaims().get("id", String.class);
+//        }
+//
+//        User user = userRepository.findById(id).orElseThrow(() ->
+//                new CustomException(ErrorCode.NOT_EXIST_ID));
+//
+//        Token refreshToken = validRefreshToken(user, token.getRefreshToken());
+//
+//        try {
+//            if (refreshToken != null) {
+//                return TokenDto.builder()
+//                        .accessToken(jwtProvider.createToken(user))
+//                        .refreshToken(refreshToken.getRefreshToken())
+//                        .build();
+//            } else {
+//                throw new CustomException(ErrorCode.LOGIN_REQUIRED);
+//            }
+//        } catch (Exception e) {
+//            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     public String createRefreshToken(User user) {
         Token token = tokenRepository.save(
