@@ -22,7 +22,7 @@ public class MajorGroup {
 
     @ManyToOne
     @JoinColumn(name = "major_id", nullable = false)
-    private Major major_id;
+    private Major major;
 
     @Column(nullable = false)
     private Integer status;
