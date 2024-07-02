@@ -19,5 +19,5 @@ public class NoticePush {
 
     @ManyToOne
     @JoinColumn(name = "major_group_id", nullable = false)
-    private MajorGroup major_group_id;
+    private MajorGroup majorGroup;
 }

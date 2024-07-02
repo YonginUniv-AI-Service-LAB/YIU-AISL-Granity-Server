@@ -16,7 +16,7 @@ public class MajorHistory {
 
     @ManyToOne
     @JoinColumn(name = "major_group_id", nullable = false)
-    private MajorGroup major_group_id;
+    private MajorGroup majorGroup;
 
     @Column(nullable = false)
     private Integer year;

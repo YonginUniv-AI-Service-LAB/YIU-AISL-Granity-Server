@@ -20,7 +20,7 @@ public class MajorCurriculum {
 
     @ManyToOne
     @JoinColumn(name = "major_group_id", nullable = false)
-    private MajorGroup major_group_id;
+    private MajorGroup majorGroup;
 
     @Column(nullable = false)
     private String subject; // 과목명

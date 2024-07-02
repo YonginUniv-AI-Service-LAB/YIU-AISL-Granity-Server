@@ -30,7 +30,7 @@ public class Notice {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user_id;
+    private User user;
 
     @Column(nullable = false)
     private Integer category; // 뉴스 or 공지

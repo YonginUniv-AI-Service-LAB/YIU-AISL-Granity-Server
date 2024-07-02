@@ -22,14 +22,14 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "board_id", nullable = false)
-    private Board board_id;
+    private Board board;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String contents;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user_id;
+    private User user;
 
     @Column(nullable = false)
     @ColumnDefault("0")
@@ -37,7 +37,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "check_user_id")
-    private User check_user_id;
+    private User checkUser;
 
     @CreationTimestamp
     @Column

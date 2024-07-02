@@ -30,7 +30,7 @@ public class Board {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user_id;
+    private User user;
 
     @Column(nullable = false) // 조교 또는 교수의 승인 여부
     @ColumnDefault("0")
@@ -38,7 +38,7 @@ public class Board {
 
     @ManyToOne
     @JoinColumn(name = "major_group_id", nullable = false)
-    private MajorGroup major_group_id;
+    private MajorGroup majorGroup;
 
     @Column(nullable = false)
     @ColumnDefault("0")

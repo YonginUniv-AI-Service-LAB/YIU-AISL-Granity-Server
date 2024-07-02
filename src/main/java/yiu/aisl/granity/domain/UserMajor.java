@@ -20,11 +20,11 @@ public class UserMajor {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user_id;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "major_id", nullable = false)
-    private Major major_id;
+    private Major major;
 
     @CreationTimestamp
     @Column

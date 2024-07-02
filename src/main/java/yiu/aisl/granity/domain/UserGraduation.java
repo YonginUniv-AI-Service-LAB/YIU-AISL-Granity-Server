@@ -21,11 +21,11 @@ public class UserGraduation {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user_id;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "major_graduation_id", nullable = false)
-    private MajorGraduation major_graduation_id;
+    private MajorGraduation majorGraduation;
 
     @Column(nullable = false)
     @ColumnDefault("0")
