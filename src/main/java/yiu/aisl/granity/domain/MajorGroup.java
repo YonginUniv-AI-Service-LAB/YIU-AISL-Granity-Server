@@ -14,11 +14,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MajorGroup {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true)
     private Integer id;
 
     @Column(nullable = false)
     private String majorGroup;
+
+    @Column(nullable = false)
+    private Integer code;
 
     @ManyToOne
     @JoinColumn(name = "major_id", nullable = false)
