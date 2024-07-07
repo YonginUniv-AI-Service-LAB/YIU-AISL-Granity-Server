@@ -69,6 +69,18 @@ public class MajorService {
 
     // [API] 학과 그룹 생성
     public boolean registerMajorGroup(MajorGroupRequestDto request) throws Exception {
+        // 데이터 미입력 - 400
+        if(request.getMajorGroup().isEmpty() || request.getCode() == null || request.getMajor() == null ||
+        request.getGreetings().isEmpty() || request.getAddress().isEmpty() || request.getTel().isEmpty() ||
+        request.getEmail().isEmpty() || request.getFax().isEmpty()) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        // 해당 학과 존재 하지 않음 - 404
+        if(!majorRepository.existsById(request.getMajor().getId())) {
+            throw new CustomException(ErrorCode.NOT_EXIST_ID);
+        }
+
         try {
             MajorGroup majorGroup = MajorGroup.builder()
                     .majorGroup(request.getMajorGroup())
