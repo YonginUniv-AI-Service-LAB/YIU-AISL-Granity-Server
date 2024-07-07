@@ -5,8 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yiu.aisl.granity.config.CustomUserDetails;
 import yiu.aisl.granity.domain.Major;
+import yiu.aisl.granity.domain.MajorGroup;
 import yiu.aisl.granity.domain.User;
-import yiu.aisl.granity.dto.MajorRequestDto;
+import yiu.aisl.granity.dto.*;
 import yiu.aisl.granity.exception.CustomException;
 import yiu.aisl.granity.exception.ErrorCode;
 import yiu.aisl.granity.repository.*;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class MajorService {
     private final MajorRepository majorRepository;
+    private final MajorGroupRepository majorGroupRepository;
 
     // [API] 학과 정보 등록
     public boolean registerMajor(MajorRequestDto request) throws Exception {
@@ -59,6 +61,31 @@ public class MajorService {
         try {
             major.setMajor(request.getMajor());
             major.setUpdatedAt(LocalDateTime.now());
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+        return true;
+    }
+
+    // [API] 학과 그룹 생성
+    public boolean registerMajorGroup(MajorGroupRequestDto request) throws Exception {
+        try {
+            MajorGroup majorGroup = MajorGroup.builder()
+                    .majorGroup(request.getMajorGroup())
+                    .code(request.getCode())
+                    .major(request.getMajor())
+                    .status(1)
+                    .greetings(request.getGreetings())
+                    .address(request.getAddress())
+                    .tel(request.getTel())
+                    .email(request.getEmail())
+                    .fax(request.getFax())
+                    .color(request.getColor())
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+
+            majorGroupRepository.save(majorGroup);
         } catch (Exception e) {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }

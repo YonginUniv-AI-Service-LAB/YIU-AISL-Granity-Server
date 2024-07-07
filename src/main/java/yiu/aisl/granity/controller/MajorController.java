@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import yiu.aisl.granity.dto.MajorGroupRequestDto;
 import yiu.aisl.granity.dto.MajorRequestDto;
 import yiu.aisl.granity.service.MajorService;
 
@@ -26,5 +27,16 @@ public class MajorController {
     @PutMapping(value = "/manager/major", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<Boolean> updateMajor(@RequestParam(value = "id") Integer majorId, MajorRequestDto request) throws Exception {
         return new ResponseEntity<>(majorService.updateMajor(majorId, request), HttpStatus.OK);
+    }
+
+    // 학과 그룹 생성
+    @PostMapping(value = "/manager/majorGroup", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Boolean> registerMajorGroup(MajorGroupRequestDto request) throws Exception {
+        return new ResponseEntity<>(majorService.registerMajorGroup(request), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/manager/majorGroup", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Boolean> updateMajorGroup(@RequestParam(value = "id") Integer majorGroupId, MajorGroupRequestDto request) throws Exception {
+        return new ResponseEntity<>(majorService.updateMajorGroup(majorGroupId, request), HttpStatus.OK);
     }
 }
