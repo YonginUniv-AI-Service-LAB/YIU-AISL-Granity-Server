@@ -19,8 +19,8 @@ public class MajorCurriculum {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "major_group_id", nullable = false)
-    private MajorGroup majorGroup;
+    @JoinColumn(name = "major_group_code_id",nullable = false)
+    private MajorGroupCode majorGroupCode;
 
     @Column(nullable = false)
     private String subject; // 과목명

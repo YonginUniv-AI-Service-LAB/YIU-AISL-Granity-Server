@@ -56,27 +56,27 @@ public class MajorController {
         return new ResponseEntity<>(majorService.deleteCouncil(majorMemberId), HttpStatus.OK);
     }
 
-//    // 커리큘럼 등록
-//    @PostMapping(value = "/manager/major/curriculum", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-//    public ResponseEntity<Boolean> registerCurriculum(MajorCurriculumRequestDto request) throws Exception {
-//        return new ResponseEntity<>(majorService.registerCurriculum(request), HttpStatus.OK);
-//    }
-//
-//    // 커리큘럼 삭제
-//    @DeleteMapping(value = "/manager/major/curriculum")
-//    public ResponseEntity<Boolean> deleteCurriculum(@RequestParam(value = "id") Integer majorCurriculumId) throws Exception {
-//        return new ResponseEntity<>(majorService.deleteCurriculum(majorCurriculumId), HttpStatus.OK);
-//    }
-//
-//    // 연구실 등록
-//    @PostMapping(value = "/manager/major/lab", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-//    public ResponseEntity<Boolean> registerLab(MajorLabRequestDto request) throws Exception {
-//        return new ResponseEntity<>(majorService.registerLab(request), HttpStatus.OK);
-//    }
-//
-//    // 연구실 삭제
-//    @DeleteMapping(value = "/manager/major/lab")
-//    public ResponseEntity<Boolean> deleteLab(@RequestParam(value = "id") Integer majorCurriculumId) throws Exception {
-//        return new ResponseEntity<>(majorService.deleteLab(majorCurriculumId), HttpStatus.OK);
-//    }
+    // 커리큘럼 등록
+    @PostMapping(value = "/manager/major/curriculum", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Boolean> registerCurriculum(MajorCurriculumRequestDto request) throws Exception {
+        return new ResponseEntity<>(majorService.registerCurriculum(request), HttpStatus.OK);
+    }
+
+    // 커리큘럼 삭제
+    @DeleteMapping(value = "/manager/major/curriculum")
+    public ResponseEntity<Boolean> deleteCurriculum(@RequestParam(value = "id") Integer majorCurriculumId) throws Exception {
+        return new ResponseEntity<>(majorService.deleteCurriculum(majorCurriculumId), HttpStatus.OK);
+    }
+
+    // 연구실 등록
+    @PostMapping(value = "/manager/major/lab", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Boolean> registerLab(MajorLabRequestDto request) throws Exception {
+        return new ResponseEntity<>(majorService.registerLab(request), HttpStatus.OK);
+    }
+
+    // 연구실 삭제
+    @DeleteMapping(value = "/manager/major/lab")
+    public ResponseEntity<Boolean> deleteLab(@RequestParam(value = "id") Integer majorCurriculumId) throws Exception {
+        return new ResponseEntity<>(majorService.deleteLab(majorCurriculumId), HttpStatus.OK);
+    }
 }

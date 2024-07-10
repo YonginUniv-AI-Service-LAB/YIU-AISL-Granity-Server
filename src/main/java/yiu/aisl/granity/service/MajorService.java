@@ -87,7 +87,6 @@ public class MajorService {
                     .majorGroup(request.getMajorGroup())
                     .code(request.getCode())
                     .major(request.getMajor())
-                    .status(1)
                     .greetings(request.getGreetings())
                     .address(request.getAddress())
                     .tel(request.getTel())
@@ -104,6 +103,7 @@ public class MajorService {
                 MajorGroupCode majorGroupCode = MajorGroupCode.builder()
                         .id(request.getCode())
                         .name(request.getMajorGroup())
+                        .hidden(0)
                         .build();
 
                 majorGroupCodeRepository.save(majorGroupCode);
@@ -202,84 +202,92 @@ public class MajorService {
         return true;
     }
 
-//    // [API] 커리큘럼 등록
-//    public Boolean registerCurriculum(MajorCurriculumRequestDto request) throws Exception {
-//        // 데이터 없음 - 400
-//        if(request.getMajorGroup() == null || request.getSubject().isEmpty() || request.getClassification() == null || request.getGrade() == null || request.getSemester() == null ||
-//        request.getCode() == null || request.getCredit() == null || request.getTheory() == null || request.getPractice() == null || request.getHidden() == null || request.getRequired() == null) {
-//            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
-//        }
-//
-//        try {
-//            MajorCurriculum curriculum = MajorCurriculum.builder()
-//                    .majorGroup(request.getMajorGroup())
-//                    .subject(request.getSubject())
-//                    .classification(request.getClassification())
-//                    .grade(request.getGrade())
-//                    .semester(request.getSemester())
-//                    .code(request.getCode())
-//                    .credit(request.getCredit())
-//                    .theory(request.getTheory())
-//                    .practice(request.getPractice())
-//                    .hidden(request.getHidden())
-//                    .required(request.getRequired())
-//                    .createdAt(LocalDateTime.now())
-//                    .updatedAt(LocalDateTime.now())
-//                    .build();
-//            majorCurriculumRepository.save(curriculum);
-//        } catch (Exception e) {
-//            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
-//        }
-//        return true;
-//    }
-//
-//    // [API] 커리큘럼 삭제
-//    public Boolean deleteCurriculum(Integer majorCurriculumId) throws Exception {
-//        // id 없음 - 404
-//        MajorCurriculum curriculum = majorCurriculumRepository.findById(majorCurriculumId).orElseThrow(() ->
-//                new CustomException(ErrorCode.NOT_EXIST_ID));
-//
-//        majorCurriculumRepository.deleteById(curriculum.getId());
-//
-//        return true;
-//    }
-//
-//    // [API] 연구실 등록
-//    public Boolean registerLab(MajorLabRequestDto request) throws Exception {
-//        // 데이터 없음 - 400
-//        if(request.getMajorGroup() == null || request.getName().isEmpty() || request.getDescription().isEmpty() || request.getLink().isEmpty() ||
-//        request.getTel().isEmpty() || request.getEmail().isEmpty()) {
-//            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
-//        }
-//
-//        try {
-//            MajorLab lab = MajorLab.builder()
-//                    .majorGroup(request.getMajorGroup())
-//                    .name(request.getName())
-//                    .description(request.getDescription())
-//                    .file(request.getFile())
-//                    .link(request.getLink())
-//                    .tel(request.getTel())
-//                    .email(request.getEmail())
-//                    .createdAt(LocalDateTime.now())
-//                    .updatedAt(LocalDateTime.now())
-//                    .build();
-//            majorLabRepository.save(lab);
-//        } catch (Exception e) {
-//            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
-//        }
-//
-//        return true;
-//    }
-//
-//    // [API] 연구실 삭제
-//    public Boolean deleteLab(Integer majorLabId) throws Exception {
-//        // id 없음 - 404
-//        MajorLab lab = majorLabRepository.findById(majorLabId).orElseThrow(() ->
-//                new CustomException(ErrorCode.NOT_EXIST_ID));
-//
-//        majorLabRepository.deleteById(lab.getId());
-//
-//        return true;
-//    }
+    // [API] 커리큘럼 등록
+    public Boolean registerCurriculum(MajorCurriculumRequestDto request) throws Exception {
+        // 데이터 없음 - 400
+        if(request.getSubject().isEmpty() || request.getClassification() == null || request.getGrade() == null || request.getSemester() == null ||
+        request.getCode() == null || request.getCredit() == null || request.getTheory() == null || request.getPractice() == null || request.getHidden() == null || request.getRequired() == null) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        // id 없음 - 404
+        MajorGroupCode groupCode = majorGroupCodeRepository.findById(request.getMajorGroupCode().getId()).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_ID));
+
+        try {
+            MajorCurriculum curriculum = MajorCurriculum.builder()
+                    .majorGroupCode(groupCode)
+                    .subject(request.getSubject())
+                    .classification(request.getClassification())
+                    .grade(request.getGrade())
+                    .semester(request.getSemester())
+                    .code(request.getCode())
+                    .credit(request.getCredit())
+                    .theory(request.getTheory())
+                    .practice(request.getPractice())
+                    .hidden(request.getHidden())
+                    .required(request.getRequired())
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+            majorCurriculumRepository.save(curriculum);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+        return true;
+    }
+
+    // [API] 커리큘럼 삭제
+    public Boolean deleteCurriculum(Integer majorCurriculumId) throws Exception {
+        // id 없음 - 404
+        MajorCurriculum curriculum = majorCurriculumRepository.findById(majorCurriculumId).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_ID));
+
+        majorCurriculumRepository.deleteById(curriculum.getId());
+
+        return true;
+    }
+
+    // [API] 연구실 등록
+    public Boolean registerLab(MajorLabRequestDto request) throws Exception {
+        // 데이터 없음 - 400
+        if(request.getName().isEmpty() || request.getDescription().isEmpty() || request.getLink().isEmpty() ||
+        request.getTel().isEmpty() || request.getEmail().isEmpty()) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        // id 없음 - 404
+        MajorGroupCode groupCode = majorGroupCodeRepository.findById(request.getMajorGroupCode().getId()).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_ID));
+
+        try {
+            MajorLab lab = MajorLab.builder()
+                    .majorGroupCode(groupCode)
+                    .name(request.getName())
+                    .description(request.getDescription())
+                    .file(request.getFile())
+                    .link(request.getLink())
+                    .tel(request.getTel())
+                    .email(request.getEmail())
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+            majorLabRepository.save(lab);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+
+        return true;
+    }
+
+    // [API] 연구실 삭제
+    public Boolean deleteLab(Integer majorLabId) throws Exception {
+        // id 없음 - 404
+        MajorLab lab = majorLabRepository.findById(majorLabId).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_ID));
+
+        majorLabRepository.deleteById(lab.getId());
+
+        return true;
+    }
 }

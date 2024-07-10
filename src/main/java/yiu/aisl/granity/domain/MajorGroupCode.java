@@ -17,5 +17,5 @@ public class MajorGroupCode {
     private String name;
 
     @Column(nullable = false)
-    private Integer hidden;
+    private Integer hidden; // 0 활성화, 1비활성화(숨김처리)
 }
