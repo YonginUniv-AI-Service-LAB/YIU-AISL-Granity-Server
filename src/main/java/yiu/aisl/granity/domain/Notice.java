@@ -25,7 +25,7 @@ public class Notice {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String contents;
 
-    @Column(nullable = false)
+    @Column
     private String file;
 
     @ManyToOne
@@ -43,8 +43,8 @@ public class Notice {
     private Integer hit;
 
     @ManyToOne
-    @JoinColumn(name = "major_group_id", nullable = false)
-    private MajorGroup major_group_id;
+    @JoinColumn(name = "major_group_code_id",nullable = false)
+    private MajorGroupCode majorGroupCode;
 
     @Column(nullable = false)
     private Integer grade1;
