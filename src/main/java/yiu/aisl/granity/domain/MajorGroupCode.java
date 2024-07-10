@@ -15,4 +15,7 @@ public class MajorGroupCode {
 
     @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private Integer hidden;
 }

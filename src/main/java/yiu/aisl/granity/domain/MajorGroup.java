@@ -29,9 +29,6 @@ public class MajorGroup {
     private Major major;
 
     @Column(nullable = false)
-    private Integer status;
-
-    @Column(nullable = false)
     private String greetings;
 
     @Column(nullable = false)
