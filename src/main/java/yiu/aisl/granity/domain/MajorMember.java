@@ -19,8 +19,8 @@ public class MajorMember {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "major_group_id",nullable = false)
-    private MajorGroup majorGroup;
+    @JoinColumn(name = "major_group_code_id",nullable = false)
+    private MajorGroupCode majorGroupCode;
 
     @Column(nullable = false)
     private Integer role;
@@ -28,16 +28,16 @@ public class MajorMember {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column
     private String file;
 
     @Column(nullable = false)
     private String content1; // 커리어, 연구과제, 경력사항 etc
 
-    @Column(nullable = false)
+    @Column
     private String content2; // 커리어, 연구과제, 경력사항 etc
 
-    @Column(nullable = false)
+    @Column
     private String content3; // 커리어, 연구과제, 경력사항 etc
 
     @Column(nullable = false)
