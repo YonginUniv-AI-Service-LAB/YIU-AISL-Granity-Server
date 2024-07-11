@@ -25,8 +25,8 @@ public class Faq {
     private String contents;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "major_group_id")
-    private MajorGroup majorGroup;
+    @JoinColumn(name = "major_group_code_id",nullable = false)
+    private MajorGroupCode majorGroupCode;
 
     @Column(nullable = false)
     private Integer category;
