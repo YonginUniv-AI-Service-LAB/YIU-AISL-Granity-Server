@@ -36,7 +36,7 @@ public class Comment {
     private Integer checks;
 
     @ManyToOne
-    @JoinColumn(name = "check_user_id")
+    @JoinColumn(name = "checkUser_id")
     private User checkUser;
 
     @CreationTimestamp

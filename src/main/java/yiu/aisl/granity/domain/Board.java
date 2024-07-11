@@ -37,8 +37,8 @@ public class Board {
     private Integer checks;
 
     @ManyToOne
-    @JoinColumn(name = "major_group_id", nullable = false)
-    private MajorGroup majorGroup;
+    @JoinColumn(name = "major_group_code_id",nullable = false)
+    private MajorGroupCode majorGroupCode;
 
     @Column(nullable = false)
     @ColumnDefault("0")
