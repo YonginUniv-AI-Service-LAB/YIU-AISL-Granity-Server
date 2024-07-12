@@ -47,8 +47,8 @@ public class MainController {
     }
 
     // accessToken 재발급
-    @PostMapping(value = "/token/refresh")
-    public ResponseEntity<TokenDto> reIssuanceAccessToken(@RequestBody TokenDto request) throws Exception {
+    @PostMapping(value = "/token/refresh", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<TokenDto> reIssuanceAccessToken(TokenDto request) throws Exception {
         return new ResponseEntity<TokenDto>(mainService.reIssuanceAccessToken(request), HttpStatus.OK);
     }
 }
