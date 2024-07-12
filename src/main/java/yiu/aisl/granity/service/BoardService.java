@@ -24,6 +24,7 @@ public class BoardService {
     private final CommentRepository commentRepository;
     private final MajorGroupCodeRepository majorGroupCodeRepository;
     private final UserRepository userRepository;
+    private final PushService pushService;
 
     // [API] 게시글 등록
     public boolean registerBoard(CustomUserDetails userDetails, BoardRequestDto request) throws Exception {
@@ -136,6 +137,9 @@ public class BoardService {
                     .checkUser(checkUser)
                     .build();
 
+            String pushContents = "작성한 게시글에 댓글이 달렸습니다.";
+            pushService.registerPush(4, boardId, board.getUser(), pushContents);
+
             commentRepository.save(comment);
         } catch (Exception e) {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
@@ -197,6 +201,10 @@ public class BoardService {
 
         comment.setChecks(1);
         comment.setCheckUser(user);
+
+        String pushContents = "작성한 댓글이 승인되었습니다.";
+        pushService.registerPush(8, commentId, comment.getUser(), pushContents);
+
         return true;
     }
 
@@ -210,6 +218,9 @@ public class BoardService {
 
         comment.setChecks(0);
         comment.setCheckUser(user);
+
+        String pushContents = "작성한 댓글이 거절되었습니다.";
+        pushService.registerPush(8, commentId, comment.getUser(), pushContents);
         return true;
     }
 }
