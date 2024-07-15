@@ -203,7 +203,7 @@ public class BoardService {
         comment.setCheckUser(user);
 
         String pushContents = "작성한 댓글이 승인되었습니다.";
-        pushService.registerPush(8, commentId, comment.getUser(), pushContents);
+        pushService.registerPush(4, commentId, comment.getUser(), pushContents);
 
         return true;
     }
@@ -220,7 +220,7 @@ public class BoardService {
         comment.setCheckUser(user);
 
         String pushContents = "작성한 댓글이 거절되었습니다.";
-        pushService.registerPush(8, commentId, comment.getUser(), pushContents);
+        pushService.registerPush(4, commentId, comment.getUser(), pushContents);
         return true;
     }
 }
