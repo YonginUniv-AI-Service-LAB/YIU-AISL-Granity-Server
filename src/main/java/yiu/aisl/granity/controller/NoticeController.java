@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import yiu.aisl.granity.config.CustomUserDetails;
-import yiu.aisl.granity.dto.NoticeRequestDto;
+import yiu.aisl.granity.dto.Request.NoticeRequestDto;
 import yiu.aisl.granity.service.*;
 
 @RestController

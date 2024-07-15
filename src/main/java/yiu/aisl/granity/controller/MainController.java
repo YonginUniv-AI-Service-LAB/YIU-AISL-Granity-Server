@@ -7,6 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import yiu.aisl.granity.dto.*;
+import yiu.aisl.granity.dto.Request.UserRequestDto;
+import yiu.aisl.granity.dto.Request.UserResponseDto;
 import yiu.aisl.granity.service.MainService;
 
 import java.io.UnsupportedEncodingException;

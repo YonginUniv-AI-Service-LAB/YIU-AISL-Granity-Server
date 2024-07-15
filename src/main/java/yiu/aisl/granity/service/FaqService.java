@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yiu.aisl.granity.domain.Faq;
 import yiu.aisl.granity.domain.MajorGroupCode;
-import yiu.aisl.granity.dto.FaqRequestDto;
+import yiu.aisl.granity.dto.Request.FaqRequestDto;
 import yiu.aisl.granity.exception.CustomException;
 import yiu.aisl.granity.exception.ErrorCode;
 import yiu.aisl.granity.repository.FaqRepository;

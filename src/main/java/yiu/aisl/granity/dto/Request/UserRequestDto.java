@@ -1,4 +1,4 @@
-package yiu.aisl.granity.dto;
+package yiu.aisl.granity.dto.Request;
 
 import lombok.*;
 

@@ -7,7 +7,7 @@ import yiu.aisl.granity.config.CustomUserDetails;
 import yiu.aisl.granity.domain.MajorGroupCode;
 import yiu.aisl.granity.domain.Notice;
 import yiu.aisl.granity.domain.User;
-import yiu.aisl.granity.dto.*;
+import yiu.aisl.granity.dto.Request.NoticeRequestDto;
 import yiu.aisl.granity.exception.CustomException;
 import yiu.aisl.granity.exception.ErrorCode;
 import yiu.aisl.granity.repository.MajorGroupCodeRepository;

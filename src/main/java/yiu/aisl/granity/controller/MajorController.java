@@ -1,12 +1,11 @@
 package yiu.aisl.granity.controller;
 
-import com.google.api.Http;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import yiu.aisl.granity.dto.*;
+import yiu.aisl.granity.dto.Request.*;
 import yiu.aisl.granity.service.MajorService;
 
 @RestController

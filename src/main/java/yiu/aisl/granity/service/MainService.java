@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import yiu.aisl.granity.domain.Token;
 import yiu.aisl.granity.domain.User;
 import yiu.aisl.granity.dto.*;
+import yiu.aisl.granity.dto.Request.UserRequestDto;
+import yiu.aisl.granity.dto.Request.UserResponseDto;
 import yiu.aisl.granity.exception.CustomException;
 import yiu.aisl.granity.exception.ErrorCode;
 import yiu.aisl.granity.repository.*;

@@ -8,8 +8,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
 import yiu.aisl.granity.config.CustomUserDetails;
-import yiu.aisl.granity.dto.BoardRequestDto;
-import yiu.aisl.granity.dto.CommentRequestDto;
+import yiu.aisl.granity.dto.Request.BoardRequestDto;
+import yiu.aisl.granity.dto.Request.CommentRequestDto;
 import yiu.aisl.granity.service.BoardService;
 
 @RestController
