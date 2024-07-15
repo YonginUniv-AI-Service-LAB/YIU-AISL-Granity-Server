@@ -18,7 +18,7 @@ public class ExceptionController {
 
     @ExceptionHandler({Exception.class})
     protected ResponseEntity handleServerException(Exception ex) {
-        ErrorResponse response = new ErrorResponse(ErrorCode.INSUFFICIENT_DATA);
+        ErrorResponse response = new ErrorResponse(ErrorCode.INSUFFICIENT_PK);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

@@ -9,6 +9,8 @@ public enum ErrorCode {
     // 데이터 미입력
     INSUFFICIENT_DATA(400),
 
+    INSUFFICIENT_PK(400),
+
     //회원정보 불일치
     USER_DATA_INCONSISTENCY(401),
 
@@ -62,6 +64,9 @@ public enum ErrorCode {
         switch (this) {
             case INSUFFICIENT_DATA:
                 return "데이터 미입력";
+
+            case INSUFFICIENT_PK:
+                return "id 값 미입력";
 
             case NOT_EXIST_MEMBER:
                 return "회원 없음";
