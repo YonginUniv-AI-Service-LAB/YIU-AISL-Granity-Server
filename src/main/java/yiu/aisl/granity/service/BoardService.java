@@ -35,7 +35,7 @@ public class BoardService {
 
         // user 없음 - 404
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() ->
-                new CustomException(ErrorCode.NOT_EXIST_ID));
+                new CustomException(ErrorCode.NOT_EXIST_MEMBER));
 
         // id 없음 - 404
         MajorGroupCode majorGroupCode = majorGroupCodeRepository.findById(request.getMajorGroupCode().getId()).orElseThrow(() ->
@@ -65,10 +65,10 @@ public class BoardService {
     public Boolean deleteBoard(CustomUserDetails userDetails, Integer boardId) throws Exception {
         // 해당 유저 없음 - 404
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() ->
-                new CustomException(ErrorCode.NOT_EXIST_ID));
+                new CustomException(ErrorCode.NOT_EXIST_MEMBER));
 
         Board board = boardRepository.findByIdAndUser(boardId, user);
-        // 해당 게시글 없음 - 403
+        // 해당 게시글 없음 - 404
         if(board == null) {
             throw new CustomException(ErrorCode.NOT_EXIST_ID);
         }
@@ -85,7 +85,7 @@ public class BoardService {
 
         // 해당 유저 없음 - 404
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() ->
-                new CustomException(ErrorCode.NOT_EXIST_ID));
+                new CustomException(ErrorCode.NOT_EXIST_MEMBER));
 
         Board board = boardRepository.findByIdAndUser(boardId, user);
         // 해당 게시글 없음 - 404
@@ -108,7 +108,7 @@ public class BoardService {
     public Boolean registerComment(CustomUserDetails userDetails, Integer boardId, CommentRequestDto request) throws Exception {
         // 해당 유저 없음 - 404
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() ->
-                new CustomException(ErrorCode.NOT_EXIST_ID));
+                new CustomException(ErrorCode.NOT_EXIST_MEMBER));
 
         int checks = 0;
         User checkUser = null;
@@ -151,7 +151,7 @@ public class BoardService {
     public Boolean deleteComment(CustomUserDetails userDetails, Integer commentId) throws Exception {
         // 해당 유저 없음 - 404
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() ->
-                new CustomException(ErrorCode.NOT_EXIST_ID));
+                new CustomException(ErrorCode.NOT_EXIST_MEMBER));
 
         // 해당 댓글 없음 - 404
         Comment comment = commentRepository.findByIdAndUser(commentId, user);
@@ -168,7 +168,7 @@ public class BoardService {
     public Boolean updateComment(CustomUserDetails userDetails, Integer commentId, CommentRequestDto request) throws Exception {
         // 해당 유저 없음 - 404
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() ->
-                new CustomException(ErrorCode.NOT_EXIST_ID));
+                new CustomException(ErrorCode.NOT_EXIST_MEMBER));
 
         // 해당 댓글 없음 - 404
         Comment comment = commentRepository.findByIdAndUser(commentId, user);
@@ -194,7 +194,7 @@ public class BoardService {
     // [API] 댓글 승인
     public Boolean approvalComment(CustomUserDetails userDetails, Integer commentId) throws Exception {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() ->
-                new CustomException(ErrorCode.NOT_EXIST_ID));
+                new CustomException(ErrorCode.NOT_EXIST_MEMBER));
         // 해당 댓글 없음 - 404
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_ID));
@@ -211,7 +211,7 @@ public class BoardService {
     // [API] 댓글 승인 취소
     public Boolean rejectionComment(CustomUserDetails userDetails, Integer commentId) throws Exception {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() ->
-                new CustomException(ErrorCode.NOT_EXIST_ID));
+                new CustomException(ErrorCode.NOT_EXIST_MEMBER));
         // 해당 댓글 없음 - 404
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_ID));
