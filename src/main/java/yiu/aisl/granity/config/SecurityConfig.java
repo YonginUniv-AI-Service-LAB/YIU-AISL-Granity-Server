@@ -42,8 +42,11 @@ public class SecurityConfig {
                 .cors(c -> {
                     CorsConfigurationSource source = request -> {
                         CorsConfiguration config = new CorsConfiguration();
-                        config.setAllowedOrigins(List.of("*"));
-                        config.setAllowedMethods(List.of("*"));
+                        config.setAllowCredentials(true);
+                        config.setAllowedOrigins(List.of("http://localhost:3000"));
+                        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+                        config.setAllowedHeaders(List.of("*"));
+                        config.setExposedHeaders(List.of("*"));
                         return config;
                     };
                     c.configurationSource(source);
