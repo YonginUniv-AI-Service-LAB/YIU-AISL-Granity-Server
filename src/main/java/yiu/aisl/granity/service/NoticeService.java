@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final MajorGroupCodeRepository majorGroupCodeRepository;
+    private final PushService pushService;
 
     // [API] 공지 및 뉴스 등록
     public Boolean postNotice(CustomUserDetails userDetails, NoticeRequestDto request) throws Exception {
@@ -139,6 +140,8 @@ public class NoticeService {
         // id 없음 - 404
         Notice notice = noticeRepository.findById(noticeId).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_ID));
+        String pushContents = "작성한 뉴스가 승인되었습니다.";
+        pushService.registerPush(5, noticeId, notice.getUser(), pushContents);
         notice.setStatus(1);
         return true;
     }
@@ -147,6 +150,8 @@ public class NoticeService {
     public Boolean rejectionNotice(Integer noticeId) throws Exception {
         Notice notice = noticeRepository.findById(noticeId).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_ID));
+        String pushContents = "작성한 뉴스가 승인되었습니다.";
+        pushService.registerPush(5, noticeId, notice.getUser(), pushContents);
         notice.setStatus(2);
         return true;
     }
