@@ -4,17 +4,17 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yiu.aisl.granity.config.CustomUserDetails;
+import yiu.aisl.granity.controller.FileController;
 import yiu.aisl.granity.domain.*;
 import yiu.aisl.granity.dto.Request.BoardRequestDto;
 import yiu.aisl.granity.dto.Request.CommentRequestDto;
+import yiu.aisl.granity.dto.Request.FileRequestDto;
 import yiu.aisl.granity.exception.CustomException;
 import yiu.aisl.granity.exception.ErrorCode;
-import yiu.aisl.granity.repository.BoardRepository;
-import yiu.aisl.granity.repository.CommentRepository;
-import yiu.aisl.granity.repository.MajorGroupCodeRepository;
-import yiu.aisl.granity.repository.UserRepository;
+import yiu.aisl.granity.repository.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Transactional
@@ -25,6 +25,9 @@ public class BoardService {
     private final MajorGroupCodeRepository majorGroupCodeRepository;
     private final UserRepository userRepository;
     private final PushService pushService;
+    private final FileService fileService;
+    private final FileRepository fileRepository;
+    private final FileController fileController;
 
     // [API] 게시글 등록
     public boolean registerBoard(CustomUserDetails userDetails, BoardRequestDto request) throws Exception {
@@ -40,12 +43,13 @@ public class BoardService {
         // id 없음 - 404
         MajorGroupCode majorGroupCode = majorGroupCodeRepository.findById(request.getMajorGroupCode().getId()).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_ID));
-
+        List<FileRequestDto> files = fileController.uploadFiles(request.getFiles());
+        System.out.println(request.getFiles());
+        System.out.println("파일: " +files);
         try {
             Board board = Board.builder()
                     .title(request.getTitle())
                     .contents(request.getContents())
-                    .file(request.getFile())
                     .user(user)
                     .checks(0)
                     .majorGroupCode(majorGroupCode)
@@ -54,8 +58,10 @@ public class BoardService {
                     .updatedAt(LocalDateTime.now())
                     .build();
 
-            boardRepository.save(board);
+            Board mkBoard = boardRepository.save(board);
+            fileService.saveFiles(1, mkBoard.getId(), files);
         } catch (Exception e) {
+            System.out.println("게시글 작성 오류: " +e);
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
         return true;
@@ -77,32 +83,32 @@ public class BoardService {
     }
 
     // [API] 게시글 수정
-    public Boolean updateBoard(CustomUserDetails userDetails, Integer boardId, BoardRequestDto request) throws Exception {
-        // 데이터 없음 - 400
-        if(request.getTitle().isEmpty() || request.getContents().isEmpty()) {
-            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
-        }
-
-        // 해당 유저 없음 - 404
-        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() ->
-                new CustomException(ErrorCode.NOT_EXIST_MEMBER));
-
-        Board board = boardRepository.findByIdAndUser(boardId, user);
-        // 해당 게시글 없음 - 404
-        if(board == null) {
-            throw new CustomException(ErrorCode.NOT_EXIST_ID);
-        }
-
-        try {
-            board.setTitle(request.getTitle());
-            board.setContents(request.getContents());
-            board.setFile(request.getFile());
-            board.setUpdatedAt(LocalDateTime.now());
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
-        return true;
-    }
+//    public Boolean updateBoard(CustomUserDetails userDetails, Integer boardId, BoardRequestDto request) throws Exception {
+//        // 데이터 없음 - 400
+//        if(request.getTitle().isEmpty() || request.getContents().isEmpty()) {
+//            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+//        }
+//
+//        // 해당 유저 없음 - 404
+//        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() ->
+//                new CustomException(ErrorCode.NOT_EXIST_MEMBER));
+//
+//        Board board = boardRepository.findByIdAndUser(boardId, user);
+//        // 해당 게시글 없음 - 404
+//        if(board == null) {
+//            throw new CustomException(ErrorCode.NOT_EXIST_ID);
+//        }
+//
+//        try {
+//            board.setTitle(request.getTitle());
+//            board.setContents(request.getContents());
+//            board.setFile(request.getFile());
+//            board.setUpdatedAt(LocalDateTime.now());
+//        } catch (Exception e) {
+//            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+//        }
+//        return true;
+//    }
 
     // [API] 댓글 등록
     public Boolean registerComment(CustomUserDetails userDetails, Integer boardId, CommentRequestDto request) throws Exception {

@@ -18,7 +18,7 @@ public class BoardController {
     private final BoardService boardService;
 
     // 게시글 등록
-    @PostMapping(value = "/board", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/board", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Boolean> registerBoard(@AuthenticationPrincipal CustomUserDetails userDetails, BoardRequestDto request) throws Exception {
         return new ResponseEntity<>(boardService.registerBoard(userDetails, request), HttpStatus.OK);
     }
@@ -30,10 +30,10 @@ public class BoardController {
     }
 
     // 게시글 수정
-    @PutMapping(value = "/board", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<Boolean> updateBoard(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam(value = "id") Integer boardId, BoardRequestDto request) throws Exception {
-        return new ResponseEntity<>(boardService.updateBoard(userDetails, boardId, request), HttpStatus.OK);
-    }
+//    @PutMapping(value = "/board", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+//    public ResponseEntity<Boolean> updateBoard(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam(value = "id") Integer boardId, BoardRequestDto request) throws Exception {
+//        return new ResponseEntity<>(boardService.updateBoard(userDetails, boardId, request), HttpStatus.OK);
+//    }
 
     // 댓글 등록
     @PostMapping(value = "/board/comment", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
