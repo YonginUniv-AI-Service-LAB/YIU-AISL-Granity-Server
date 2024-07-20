@@ -12,6 +12,7 @@ public class BoardRequestDto {
     private String title;
     private String contents;
     private List<MultipartFile> files = new ArrayList<>();
+    private List<Integer> removeFileId = new ArrayList<>();
 //    private String file;
     private User user;
     private Integer checks;

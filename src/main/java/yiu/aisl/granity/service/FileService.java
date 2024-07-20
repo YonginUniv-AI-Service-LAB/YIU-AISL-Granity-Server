@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import yiu.aisl.granity.domain.File;
 import yiu.aisl.granity.dto.Request.FileRequestDto;
+import yiu.aisl.granity.dto.Response.FileResponseDto;
 import yiu.aisl.granity.repository.FileRepository;
 
 import java.util.List;
@@ -45,5 +46,17 @@ public class FileService {
         }
 
         return true;
+    }
+
+    public List<FileResponseDto> findAllFileByTypeAndTypeId(Integer type, Integer typeId) {
+        List<File> files = fileRepository.findAllByTypeAndTypeId(type, typeId);
+        return files.stream()
+                .map(file -> new FileResponseDto(file.getId(), file.getType(), file.getTypeId(), file.getOriginName(), file.getSaveName(), file.getSize(), file.getDeleteOrNot(), file.getCreatedAt()))
+                .collect(Collectors.toList());
+    }
+
+    // 파일 삭제(DB)
+    public void deleteAllFileByTypeAndTypeId(Integer type, Integer typeId) {
+        fileRepository.deleteByTypeAndTypeId(type, typeId);
     }
 }

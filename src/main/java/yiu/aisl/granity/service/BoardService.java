@@ -9,6 +9,7 @@ import yiu.aisl.granity.domain.*;
 import yiu.aisl.granity.dto.Request.BoardRequestDto;
 import yiu.aisl.granity.dto.Request.CommentRequestDto;
 import yiu.aisl.granity.dto.Request.FileRequestDto;
+import yiu.aisl.granity.dto.Response.FileResponseDto;
 import yiu.aisl.granity.exception.CustomException;
 import yiu.aisl.granity.exception.ErrorCode;
 import yiu.aisl.granity.repository.*;
@@ -78,7 +79,11 @@ public class BoardService {
         if(board == null) {
             throw new CustomException(ErrorCode.NOT_EXIST_ID);
         }
+        List<FileResponseDto> deleteFiles = fileService.findAllFileByTypeAndTypeId(1, boardId);
+
         boardRepository.delete(board);
+        fileController.deleteFiles(deleteFiles);
+        fileService.deleteAllFileByTypeAndTypeId(1, boardId); // DB 삭제
         return true;
     }
 

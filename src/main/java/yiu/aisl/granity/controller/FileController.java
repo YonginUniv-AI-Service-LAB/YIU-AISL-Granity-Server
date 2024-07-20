@@ -1,10 +1,12 @@
 package yiu.aisl.granity.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import yiu.aisl.granity.dto.Request.FileRequestDto;
+import yiu.aisl.granity.dto.Response.FileResponseDto;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,5 +82,27 @@ public class FileController {
             dir.mkdirs();
         }
         return dir.getPath();
+    }
+
+    // 다중 파일 삭제(Disk)
+    public void deleteFiles(List<FileResponseDto> files) {
+        if(CollectionUtils.isEmpty(files)) return;
+        for(FileResponseDto file : files) {
+            String uploadedDate = file.getCreatedAt().toLocalDate().format(DateTimeFormatter.ofPattern("yyMMdd"));
+            deleteFile(uploadedDate, file.getSaveName());
+        }
+    }
+
+    // 단일 파일 삭제(Disk)
+    private void deleteFile(String addPath, String filename) {
+        String filePath = Paths.get(uploadPath, addPath, filename).toString();
+        deleteFile(filePath);
+    }
+
+    private void deleteFile(String filePath) {
+        File file = new File(filePath);
+        if(file.exists()) {
+            file.delete();
+        }
     }
 }
