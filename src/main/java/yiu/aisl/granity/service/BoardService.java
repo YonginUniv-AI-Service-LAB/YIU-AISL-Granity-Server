@@ -60,7 +60,7 @@ public class BoardService {
                     .build();
 
             Board mkBoard = boardRepository.save(board);
-            fileService.saveFiles(1, mkBoard.getId(), files);
+            fileService.saveFiles(3, mkBoard.getId(), files);
         } catch (Exception e) {
             System.out.println("게시글 작성 오류: " +e);
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
@@ -79,11 +79,11 @@ public class BoardService {
         if(board == null) {
             throw new CustomException(ErrorCode.NOT_EXIST_ID);
         }
-        List<FileResponseDto> deleteFiles = fileService.findAllFileByTypeAndTypeId(1, boardId);
+        List<FileResponseDto> deleteFiles = fileService.findAllFileByTypeAndTypeId(3, boardId);
 
         boardRepository.delete(board);
         fileController.deleteFiles(deleteFiles);
-        fileService.deleteAllFileByTypeAndTypeId(1, boardId); // DB 삭제
+        fileService.deleteAllFileByTypeAndTypeId(3, boardId); // DB 삭제
         return true;
     }
 
