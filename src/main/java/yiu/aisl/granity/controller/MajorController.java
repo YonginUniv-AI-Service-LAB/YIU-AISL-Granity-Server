@@ -32,7 +32,7 @@ public class MajorController {
     }
 
     // 교수님 등록
-    @PostMapping(value = "/manager/major/professor", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/manager/major/professor", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Boolean> registerProfessor(MajorMemberRequestDto request) throws Exception {
         return new ResponseEntity<>(majorService.registerProfessor(request), HttpStatus.OK);
     }
@@ -44,7 +44,7 @@ public class MajorController {
     }
 
     // 학생회 등록
-    @PostMapping(value = "/manager/major/council", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/manager/major/council", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Boolean> registerCouncil(MajorMemberRequestDto request) throws Exception {
         return new ResponseEntity<>(majorService.registerCouncil(request), HttpStatus.OK);
     }
@@ -68,7 +68,7 @@ public class MajorController {
     }
 
     // 연구실 등록
-    @PostMapping(value = "/manager/major/lab", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/manager/major/lab", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Boolean> registerLab(MajorLabRequestDto request) throws Exception {
         return new ResponseEntity<>(majorService.registerLab(request), HttpStatus.OK);
     }

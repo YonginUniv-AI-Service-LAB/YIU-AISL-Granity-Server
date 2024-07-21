@@ -3,13 +3,16 @@ package yiu.aisl.granity.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import yiu.aisl.granity.controller.FileController;
 import yiu.aisl.granity.domain.*;
 import yiu.aisl.granity.dto.Request.*;
+import yiu.aisl.granity.dto.Response.FileResponseDto;
 import yiu.aisl.granity.exception.CustomException;
 import yiu.aisl.granity.exception.ErrorCode;
 import yiu.aisl.granity.repository.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Transactional
@@ -21,6 +24,8 @@ public class MajorService {
     private final MajorCurriculumRepository majorCurriculumRepository;
     private final MajorLabRepository majorLabRepository;
     private final MajorGroupCodeRepository majorGroupCodeRepository;
+    private final FileController fileController;
+    private final FileService fileService;
 
     // [API] 학과 정보 등록
     public boolean registerMajor(MajorRequestDto request) throws Exception {
@@ -124,12 +129,13 @@ public class MajorService {
         MajorGroupCode groupCode = majorGroupCodeRepository.findById(request.getMajorGroupCode().getId()).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_ID));
 
+        List<FileRequestDto> files = fileController.uploadFiles(request.getFiles());
         try {
             MajorMember professor = MajorMember.builder()
                     .majorGroupCode(groupCode)
                     .role(request.getRole())
                     .name(request.getName())
-                    .file(request.getFile())
+//                    .file(request.getFile())
                     .content1(request.getContent1())
                     .content2(request.getContent2())
                     .content3(request.getContent3())
@@ -140,7 +146,8 @@ public class MajorService {
                     .updatedAt(LocalDateTime.now())
                     .build();
 
-            majorMemberRepository.save(professor);
+            MajorMember mkProfessor = majorMemberRepository.save(professor);
+            fileService.saveFiles(8, mkProfessor.getId(), files);
         } catch (Exception e) {
             System.out.println("Error occurred while saving MajorMember: " +e);
             throw new Exception("Error occurred while saving MajorMember: " + e.getMessage(), e);
@@ -153,8 +160,11 @@ public class MajorService {
         // id 없음 - 404
         MajorMember professor = majorMemberRepository.findById(majorMemberId).orElseThrow(() ->
                  new CustomException(ErrorCode.NOT_EXIST_ID));
+        List<FileResponseDto> deleteFiles = fileService.findAllFileByTypeAndTypeId(8, majorMemberId);
 
         majorMemberRepository.deleteById(professor.getId());
+        fileController.deleteFiles(deleteFiles);
+        fileService.deleteAllFileByTypeAndTypeId(8, majorMemberId); // DB 삭제
         return true;
     }
 
@@ -170,12 +180,13 @@ public class MajorService {
         MajorGroupCode groupCode = majorGroupCodeRepository.findById(request.getMajorGroupCode().getId()).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_ID));
 
+        List<FileRequestDto> files = fileController.uploadFiles(request.getFiles());
         try {
             MajorMember council = MajorMember.builder()
                     .majorGroupCode(groupCode)
                     .role(request.getRole())
                     .name(request.getName())
-                    .file(request.getFile())
+//                    .file(request.getFile())
                     .content1(request.getContent1())
                     .content2(request.getContent2())
                     .content3(request.getContent3())
@@ -185,7 +196,8 @@ public class MajorService {
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build();
-            majorMemberRepository.save(council);
+            MajorMember mkCouncil = majorMemberRepository.save(council);
+            fileService.saveFiles(8, mkCouncil.getId(), files);
         } catch (Exception e) {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
@@ -195,10 +207,14 @@ public class MajorService {
     // [API] 학생회 삭제
     public Boolean deleteCouncil(Integer majorMemberId) throws Exception {
         // id 없음 - 404
-        MajorMember professor = majorMemberRepository.findById(majorMemberId).orElseThrow(() ->
+        MajorMember council = majorMemberRepository.findById(majorMemberId).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_ID));
 
-        majorMemberRepository.deleteById(professor.getId());
+        List<FileResponseDto> deleteFiles = fileService.findAllFileByTypeAndTypeId(8, majorMemberId);
+
+        majorMemberRepository.deleteById(council.getId());
+        fileController.deleteFiles(deleteFiles);
+        fileService.deleteAllFileByTypeAndTypeId(8, majorMemberId); // DB 삭제
         return true;
     }
 
@@ -260,19 +276,22 @@ public class MajorService {
         MajorGroupCode groupCode = majorGroupCodeRepository.findById(request.getMajorGroupCode().getId()).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_ID));
 
+        List<FileRequestDto> files = fileController.uploadFiles(request.getFiles());
+
         try {
             MajorLab lab = MajorLab.builder()
                     .majorGroupCode(groupCode)
                     .name(request.getName())
                     .description(request.getDescription())
-                    .file(request.getFile())
+//                    .file(request.getFile())
                     .link(request.getLink())
                     .tel(request.getTel())
                     .email(request.getEmail())
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build();
-            majorLabRepository.save(lab);
+            MajorLab mkLab = majorLabRepository.save(lab);
+            fileService.saveFiles(8, mkLab.getId(), files);
         } catch (Exception e) {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
@@ -286,7 +305,10 @@ public class MajorService {
         MajorLab lab = majorLabRepository.findById(majorLabId).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_ID));
 
-        majorLabRepository.deleteById(lab.getId());
+        List<FileResponseDto> deleteFiles = fileService.findAllFileByTypeAndTypeId(8, majorLabId);
+
+        fileController.deleteFiles(deleteFiles);
+        fileService.deleteAllFileByTypeAndTypeId(8, majorLabId); // DB 삭제
 
         return true;
     }
