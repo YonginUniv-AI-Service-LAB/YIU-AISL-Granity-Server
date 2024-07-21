@@ -11,7 +11,7 @@ import lombok.*;
 public class MajorGroupCode {
     @Id
     @Column(unique = true)
-    private Integer id;
+    private String id;
 
     @Column(nullable = false)
     private String name;

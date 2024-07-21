@@ -7,7 +7,7 @@ import yiu.aisl.granity.domain.*;
 @Setter
 public class MajorGroupRequestDto {
     private String majorGroup;
-    private Integer code;
+    private String code;
     private Major major;
     private String greetings;
     private String address;

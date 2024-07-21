@@ -21,7 +21,7 @@ public class MajorController {
 
     // 학과 정보 수정
     @PutMapping(value = "/manager/major", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<Boolean> updateMajor(@RequestParam(value = "id") Integer majorId, MajorRequestDto request) throws Exception {
+    public ResponseEntity<Boolean> updateMajor(@RequestParam(value = "id") String majorId, MajorRequestDto request) throws Exception {
         return new ResponseEntity<>(majorService.updateMajor(majorId, request), HttpStatus.OK);
     }
 

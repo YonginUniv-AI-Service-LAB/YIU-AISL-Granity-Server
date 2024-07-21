@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MajorRequestDto {
-    private Integer id;
+    private String id;
     private String major;
 }

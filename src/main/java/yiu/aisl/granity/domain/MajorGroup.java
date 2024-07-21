@@ -22,7 +22,7 @@ public class MajorGroup {
     private String majorGroup;
 
     @Column(nullable = false)
-    private Integer code;
+    private String code;
 
     @ManyToOne
     @JoinColumn(name = "major_id", nullable = false)

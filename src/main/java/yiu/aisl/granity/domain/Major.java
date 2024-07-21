@@ -18,7 +18,7 @@ public class Major {
     // 모든 학과
     @Id
     @Column(unique = true)
-    private Integer id;
+    private String id;
 
     @Column(nullable = false)
     private String major;

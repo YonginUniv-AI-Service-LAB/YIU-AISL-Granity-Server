@@ -14,7 +14,7 @@ public class BoardResponseDto {
     private String contents;
     private String file;
     private Integer checks;
-    private Integer majorGroupCodeId;
+    private String majorGroupCodeId;
     private Integer hit;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

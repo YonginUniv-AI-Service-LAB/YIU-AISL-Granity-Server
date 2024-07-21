@@ -49,7 +49,7 @@ public class MajorService {
     }
 
     // [API] 학과 정보 수정
-    public boolean updateMajor(Integer majorId, MajorRequestDto request) throws Exception {
+    public boolean updateMajor(String majorId, MajorRequestDto request) throws Exception {
         // 해당 데이터 없음 - 404
         Major major = majorRepository.findById(majorId).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_ID));
