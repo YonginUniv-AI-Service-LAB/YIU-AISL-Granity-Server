@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import yiu.aisl.granity.domain.Token;
 import yiu.aisl.granity.domain.User;
+import yiu.aisl.granity.domain.UserMajor;
 import yiu.aisl.granity.dto.*;
 import yiu.aisl.granity.dto.Request.UserRequestDto;
 import yiu.aisl.granity.dto.Request.UserResponseDto;
@@ -33,6 +34,7 @@ public class MainService {
     private final JwtProvider jwtProvider;
 
     private final UserRepository userRepository;
+    private final UserMajorRepository userMajorRepository;
 
     private final JavaMailSender javaMailSender;
     private static int number;
@@ -44,7 +46,7 @@ public class MainService {
     public Boolean register(UserRequestDto request) throws Exception {
         // 데이터 미입력 - 400
         if(request.getId().isEmpty() || request.getPwd().isEmpty() || request.getName().isEmpty() ||
-        request.getGrade() == null || request.getRole() == null || request.getStatus() == null) {
+        request.getGrade() == null || request.getRole() == null || request.getStatus() == null || request.getMajor() == null) {
             throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
         }
 
@@ -65,7 +67,14 @@ public class MainService {
                     .updatedAt(LocalDateTime.now())
                     .push(0)
                     .build();
+
             userRepository.save(user);
+            UserMajor userMajor = UserMajor.builder()
+                    .user(user)
+                    .major(request.getMajor())
+                    .build();
+
+            userMajorRepository.save(userMajor);
         } catch (Exception e) {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
