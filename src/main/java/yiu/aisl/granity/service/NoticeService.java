@@ -5,16 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yiu.aisl.granity.config.CustomUserDetails;
 import yiu.aisl.granity.controller.FileController;
-import yiu.aisl.granity.domain.MajorGroupCode;
-import yiu.aisl.granity.domain.Notice;
-import yiu.aisl.granity.domain.User;
+import yiu.aisl.granity.domain.*;
 import yiu.aisl.granity.dto.Request.FileRequestDto;
 import yiu.aisl.granity.dto.Request.NoticeRequestDto;
 import yiu.aisl.granity.dto.Response.FileResponseDto;
 import yiu.aisl.granity.exception.CustomException;
 import yiu.aisl.granity.exception.ErrorCode;
-import yiu.aisl.granity.repository.MajorGroupCodeRepository;
-import yiu.aisl.granity.repository.NoticeRepository;
+import yiu.aisl.granity.repository.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +22,9 @@ import java.util.List;
 public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final MajorGroupCodeRepository majorGroupCodeRepository;
+    private final MajorGroupRepository majorGroupRepository;
+    private final UserRepository userRepository;
+    private final UserMajorRepository userMajorRepository;
     private final PushService pushService;
     private final FileController fileController;
     private final FileService fileService;
@@ -76,7 +76,24 @@ public class NoticeService {
                     .build();
             Notice mkNotice = noticeRepository.save(notice);
             fileService.saveFiles(5, mkNotice.getId(), files);
+            if (user.getRole() == 1) {
+                UserMajor userMajor = userMajorRepository.findByUser(user); // pk 값
+                System.out.println("해당 글을 작성하는 사람의 전공: " +userMajor.getMajor().getId());
+                MajorGroup majorGroup = majorGroupRepository.findByMajor(userMajor.getMajor());
+                System.out.println("해당 글을 작성한 사람의 전공의 그룹: " +majorGroup);
+                MajorGroupCode code = majorGroupCodeRepository.findById(majorGroup.getCode()).orElseThrow(); // 78
+                if (code.getHidden() != 1) {
+                    // 현재 사용중인 majorGroup 일 경우
+                    List<UserMajor> receiverMajors = userMajorRepository.findByMajor(majorGroup.getMajor());
+                    for (UserMajor receiverMajor : receiverMajors) {
+                        List<User> receivers = userRepository.findByRole(2);
+                        String pushContents = "승인 대기 중인 뉴스가 있습니다. 확인해주세요.";
+                        pushService.registerPushs(5, mkNotice.getId(), receivers, pushContents);
+                    }
+                }
+            }
         } catch (Exception e) {
+            System.out.println(e);
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
         return true;
