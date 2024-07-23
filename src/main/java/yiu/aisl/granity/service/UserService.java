@@ -23,6 +23,7 @@ public class UserService {
     private final PushRepository pushRepository;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
+    private final FileRepository fileRepository;
 
     // [API] 알림내역 조회(종 모양의 붉은 점 여부 - 쪽지 알림은 제외)
     public List<PushResponseDto> getMyPushList(CustomUserDetails userDetails) throws Exception {
@@ -57,7 +58,11 @@ public class UserService {
 
         List<Board> boards = boardRepository.findByUser(user);
         List<BoardResponseDto> getListDto = new ArrayList<>();
-        boards.forEach(s -> getListDto.add(BoardResponseDto.GetBoardDto(s)));
+        for(Board board : boards) {
+            List<File> files = fileRepository.findAllByTypeAndTypeId(3, board.getId());
+            getListDto.add(BoardResponseDto.GetBoardDto(board, files));
+        }
+//        boards.forEach(s -> getListDto.add(BoardResponseDto.GetBoardDto(s)));
         return getListDto;
     }
 

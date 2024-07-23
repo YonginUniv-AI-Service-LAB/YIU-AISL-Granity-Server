@@ -9,12 +9,14 @@ import yiu.aisl.granity.domain.*;
 import yiu.aisl.granity.dto.Request.BoardRequestDto;
 import yiu.aisl.granity.dto.Request.CommentRequestDto;
 import yiu.aisl.granity.dto.Request.FileRequestDto;
+import yiu.aisl.granity.dto.Response.BoardResponseDto;
 import yiu.aisl.granity.dto.Response.FileResponseDto;
 import yiu.aisl.granity.exception.CustomException;
 import yiu.aisl.granity.exception.ErrorCode;
 import yiu.aisl.granity.repository.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,6 +31,17 @@ public class BoardService {
     private final FileService fileService;
     private final FileRepository fileRepository;
     private final FileController fileController;
+
+    // [API] 게시글 전체 조회
+    public List<BoardResponseDto> getBoards() throws Exception {
+        List<Board> boards = boardRepository.findAll();
+        List<BoardResponseDto> getListDto = new ArrayList<>();
+        for(Board board : boards) {
+            List<File> files = fileRepository.findAllByTypeAndTypeId(3, board.getId());
+            getListDto.add(BoardResponseDto.GetBoardDto(board, files));
+        }
+        return getListDto;
+    }
 
     // [API] 게시글 등록
     public boolean registerBoard(CustomUserDetails userDetails, BoardRequestDto request) throws Exception {

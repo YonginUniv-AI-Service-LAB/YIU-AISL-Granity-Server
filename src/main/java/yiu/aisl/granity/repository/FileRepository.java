@@ -11,4 +11,6 @@ public interface FileRepository extends JpaRepository<File, Integer> {
     void deleteByTypeAndTypeId(Integer type, Integer typeId);
 
     List<File> findAllByTypeAndTypeId(Integer type, Integer typeId);
+
+    List<File> findAllByType(Integer type);
 }
