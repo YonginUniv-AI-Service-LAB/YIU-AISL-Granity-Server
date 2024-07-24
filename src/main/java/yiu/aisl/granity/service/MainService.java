@@ -72,6 +72,7 @@ public class MainService {
             UserMajor userMajor = UserMajor.builder()
                     .user(user)
                     .major(request.getMajor())
+                    .status(1)
                     .build();
 
             userMajorRepository.save(userMajor);

@@ -174,7 +174,7 @@ public class BoardService {
                     List<UserMajor> receiverMajors = userMajorRepository.findByMajor(majorGroup.getMajor());
                     for (UserMajor receiverMajor : receiverMajors) {
                         List<User> receivers = userRepository.findByRole(2);
-                        String pushContents = "승인 대기 중인 뉴스가 있습니다. 확인해주세요.";
+                        String pushContents = "승인 대기 중인 댓글이 있습니다. 확인해주세요.";
                         pushService.registerPushs(4, mkComment.getId(), receivers, pushContents);
                     }
                 }

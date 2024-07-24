@@ -5,11 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import yiu.aisl.granity.config.CustomUserDetails;
+import yiu.aisl.granity.dto.Request.UserMajorRequestDto;
 import yiu.aisl.granity.dto.Request.UserRequestDto;
 import yiu.aisl.granity.dto.Response.BoardResponseDto;
 import yiu.aisl.granity.dto.Response.CommentResponseDto;
@@ -58,5 +56,11 @@ public class UserController {
     @PutMapping(value = "/user", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<Boolean> updateProfile(@AuthenticationPrincipal CustomUserDetails userDetails, UserRequestDto request) throws Exception {
         return new ResponseEntity<>(userService.updateProfile(userDetails, request), HttpStatus.OK);
+    }
+
+    // 내 전공 추가
+    @PostMapping(value = "/user/major", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Boolean> addMyMajor(@AuthenticationPrincipal CustomUserDetails userDetails, UserMajorRequestDto request) throws Exception {
+        return new ResponseEntity<>(userService.addMyMajor(userDetails, request), HttpStatus.OK);
     }
 }

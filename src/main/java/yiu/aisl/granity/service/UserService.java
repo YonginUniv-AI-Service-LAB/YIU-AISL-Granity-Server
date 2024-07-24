@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yiu.aisl.granity.config.CustomUserDetails;
 import yiu.aisl.granity.domain.*;
+import yiu.aisl.granity.dto.Request.UserMajorRequestDto;
 import yiu.aisl.granity.dto.Request.UserRequestDto;
 import yiu.aisl.granity.dto.Response.BoardResponseDto;
 import yiu.aisl.granity.dto.Response.CommentResponseDto;
@@ -14,6 +15,7 @@ import yiu.aisl.granity.exception.CustomException;
 import yiu.aisl.granity.exception.ErrorCode;
 import yiu.aisl.granity.repository.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,10 +24,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final UserMajorRepository userMajorRepository;
     private final PushRepository pushRepository;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
     private final FileRepository fileRepository;
+    private final PushService pushService;
 
     // [API] 알림내역 조회(종 모양의 붉은 점 여부 - 쪽지 알림은 제외)
     public List<PushResponseDto> getMyPushList(CustomUserDetails userDetails) throws Exception {
@@ -103,6 +107,35 @@ public class UserService {
             user.setGrade(request.getGrade());
             user.setStatus(request.getStatus());
             userRepository.save(user);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+        return true;
+    }
+
+    // [API] 내 전공 추가
+    public Boolean addMyMajor(CustomUserDetails userDetails, UserMajorRequestDto request) throws Exception {
+        // 해당 유저 없음 - 404
+        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_MEMBER));
+
+        if(request.getMajor() == null) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        try {
+            UserMajor userMajor = UserMajor.builder()
+                    .user(user)
+                    .major(request.getMajor())
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .status(0)
+                    .build();
+            UserMajor mkUserMajor = userMajorRepository.save(userMajor);
+            List<User> users = userRepository.findByRole(0);
+
+            String pushContents = "전공승인요청이 있습니다. 확인해주세요.";
+            pushService.registerPushs(7, mkUserMajor.getId(), users, pushContents);
         } catch (Exception e) {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
