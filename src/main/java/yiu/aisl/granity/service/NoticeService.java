@@ -77,7 +77,7 @@ public class NoticeService {
             Notice mkNotice = noticeRepository.save(notice);
             fileService.saveFiles(5, mkNotice.getId(), files);
             if (user.getRole() == 1) {
-                UserMajor userMajor = userMajorRepository.findByUser(user); // pk 값
+                UserMajor userMajor = userMajorRepository.findSingleByUser(user); // pk 값
                 System.out.println("해당 글을 작성하는 사람의 전공: " +userMajor.getMajor().getId());
                 MajorGroup majorGroup = majorGroupRepository.findByMajor(userMajor.getMajor());
                 System.out.println("해당 글을 작성한 사람의 전공의 그룹: " +majorGroup);

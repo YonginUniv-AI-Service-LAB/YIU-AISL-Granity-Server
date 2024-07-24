@@ -9,6 +9,7 @@ import java.util.List;
 public interface MajorGroupRepository extends JpaRepository<MajorGroup, String> {
     MajorGroup findByMajor(Major major);
     List<MajorGroup> findByCode(String code);
+    MajorGroup findSingleByCode(String code);
 
     boolean existsByMajor(Major major);
 }

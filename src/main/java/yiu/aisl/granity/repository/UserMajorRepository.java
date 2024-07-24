@@ -8,6 +8,7 @@ import yiu.aisl.granity.domain.UserMajor;
 import java.util.List;
 
 public interface UserMajorRepository extends JpaRepository<UserMajor, Integer> {
-    UserMajor findByUser(User user);
+    UserMajor findSingleByUser(User user);
     List<UserMajor> findByMajor(Major major);
+    List<UserMajor> findByUser(User user);
 }

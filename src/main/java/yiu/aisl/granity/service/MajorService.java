@@ -26,6 +26,7 @@ public class MajorService {
     private final MajorGroupCodeRepository majorGroupCodeRepository;
     private final UserRepository userRepository;
     private final UserMajorRepository userMajorRepository;
+    private final NoticeRepository noticeRepository;
     private final FileController fileController;
     private final FileService fileService;
 
@@ -76,7 +77,7 @@ public class MajorService {
     }
 
     // [API] 학과 그룹 생성
-    public MajorGroup registerMajorGroup(MajorGroupRequestDto request) throws Exception {
+    public MajorGroupCode registerMajorGroup(MajorGroupRequestDto request) throws Exception {
         // 데이터 미입력 - 400
         if(request.getMajorGroup().isEmpty() || request.getCode() == null || request.getMajor() == null ||
         request.getGreetings().isEmpty() || request.getAddress().isEmpty() || request.getTel().isEmpty() ||
@@ -93,7 +94,7 @@ public class MajorService {
             throw new CustomException(ErrorCode.NOT_EXIST_ID);
         }
 
-        MajorGroup mkMajorGroup = null;
+        MajorGroupCode mkMajorGroup = null;
 
         try {
             MajorGroup majorGroup = MajorGroup.builder()
@@ -110,7 +111,7 @@ public class MajorService {
                     .updatedAt(LocalDateTime.now())
                     .build();
 
-            mkMajorGroup = majorGroupRepository.save(majorGroup);
+            majorGroupRepository.save(majorGroup);
 
             if(!majorGroupRepository.existsById(request.getCode())) {
                 MajorGroupCode majorGroupCode = MajorGroupCode.builder()
@@ -119,7 +120,7 @@ public class MajorService {
                         .hidden(0)
                         .build();
 
-                majorGroupCodeRepository.save(majorGroupCode);
+                mkMajorGroup = majorGroupCodeRepository.save(majorGroupCode);
             }
         } catch (Exception e) {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
@@ -129,12 +130,45 @@ public class MajorService {
 
     // [API] 학과 그룹 hidden 처리 (hidden 컬럼 0 -> 1)
     public Boolean majorGroupHidden(String id, MajorGroupRequestDto request) throws Exception {
-        MajorGroupCode majorGroupCode = majorGroupCodeRepository.findById(id).orElseThrow();
+        // 히든 처리 하기 위한 majorGroupCode
+        MajorGroupCode majorGroupCode = majorGroupCodeRepository.findById(id).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_ID));
         majorGroupCode.setHidden(1);
         String code = majorGroupCode.getId();
 
+        // 기존 코드를 이용한 major
+        Major major = majorRepository.findById(code).orElseThrow();
+
+        // 새롭게 추가된 majorGroupCode
+        MajorGroupCode mkMajorGroupCode = registerMajorGroup(request);
+
+        // 새롭게 추가된 majorGroup
+        MajorGroup mkMajorGroup = majorGroupRepository.findSingleByCode(mkMajorGroupCode.getId());
+
+        // 바꿔줘야할 majorGroup List
         List<MajorGroup> majorGroups = majorGroupRepository.findByCode(code);
-        MajorGroup mkMajorGroup = registerMajorGroup(request);
+
+        // 바꿔줘야할 user List
+        List<User> assistants = userRepository.findByRoleAndMajor(2, major); // 조교
+        List<User> professors = userRepository.findByRoleAndMajor(3, major); // 교수
+
+        // 바꿔줘야할 notice List
+        List<Notice> notices = noticeRepository.findByMajorGroupCode(majorGroupCode);
+
+        // 바꿔줘야할 majorMember List
+        List<MajorMember> majorMembers = majorMemberRepository.findByMajorGroupCode(majorGroupCode);
+
+        // 바꿔줘야할 majorLab List
+        List<MajorLab> majorLabs = majorLabRepository.findByMajorGroupCode(majorGroupCode);
+
+        // 바꿔줘야할 majorCurriculum List
+        List<MajorCurriculum> majorCurriculums = majorCurriculumRepository.findByMajorGroupCode(majorGroupCode);
+
+        System.out.println("majorMembers size 출력 하기 : " +majorMembers.size());
+        System.out.println("majorLabs size 출력 하기 : " +majorLabs.size());
+        System.out.println("majorCurriculums size 출력 하기 : " +majorCurriculums.size());
+        System.out.println("notices size 출력 하기 : " +notices.size());
+
         try {
             for(MajorGroup mg : majorGroups) {
                 mg.setMajorGroup(mkMajorGroup.getMajorGroup());
@@ -146,6 +180,44 @@ public class MajorService {
                 mg.setFax(mkMajorGroup.getFax());
                 mg.setColor(mkMajorGroup.getColor());
                 majorGroupRepository.save(mg);
+            }
+            // UserMajor 업데이트 (조교)
+            for (User user : assistants) {
+                List<UserMajor> userMajors = userMajorRepository.findByUser(user);
+                for (UserMajor userMajor : userMajors) {
+                    userMajor.setMajor(mkMajorGroup.getMajor());
+                    userMajorRepository.save(userMajor);
+                }
+            }
+            // UserMajor 업데이트 (교수)
+            for (User user : professors) {
+                List<UserMajor> userMajors = userMajorRepository.findByUser(user);
+                for (UserMajor userMajor : userMajors) {
+                    userMajor.setMajor(mkMajorGroup.getMajor());
+                    userMajorRepository.save(userMajor);
+                }
+            }
+            // Notice 업데이트
+            for(Notice notice : notices) {
+                System.out.println("notice 업데이트 진입");
+                notice.setMajorGroupCode(mkMajorGroupCode);
+                noticeRepository.save(notice);
+            }
+            // majorMember 업데이트
+            for(MajorMember majorMember : majorMembers) {
+                System.out.println("majorMember 업데이트 진입");
+                majorMember.setMajorGroupCode(mkMajorGroupCode);
+                majorMemberRepository.save(majorMember);
+            }
+            // majorLab 업데이트
+            for(MajorLab majorLab : majorLabs) {
+                majorLab.setMajorGroupCode(mkMajorGroupCode);
+                majorLabRepository.save(majorLab);
+            }
+            // majorCurriculum 업데이트
+            for(MajorCurriculum majorCurriculum : majorCurriculums) {
+                majorCurriculum.setMajorGroupCode(mkMajorGroupCode);
+                majorCurriculumRepository.save(majorCurriculum);
             }
         } catch (Exception e) {
             System.out.println(e);

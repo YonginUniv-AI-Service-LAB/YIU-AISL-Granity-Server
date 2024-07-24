@@ -29,7 +29,7 @@ public class MajorController {
 
     // 학과 그룹 생성
     @PostMapping(value = "/manager/majorGroup", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<MajorGroup> registerMajorGroup(MajorGroupRequestDto request) throws Exception {
+    public ResponseEntity<MajorGroupCode> registerMajorGroup(MajorGroupRequestDto request) throws Exception {
         return new ResponseEntity<>(majorService.registerMajorGroup(request), HttpStatus.OK);
     }
 
