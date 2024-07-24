@@ -24,6 +24,8 @@ public class MajorService {
     private final MajorCurriculumRepository majorCurriculumRepository;
     private final MajorLabRepository majorLabRepository;
     private final MajorGroupCodeRepository majorGroupCodeRepository;
+    private final UserRepository userRepository;
+    private final UserMajorRepository userMajorRepository;
     private final FileController fileController;
     private final FileService fileService;
 
@@ -74,7 +76,7 @@ public class MajorService {
     }
 
     // [API] 학과 그룹 생성
-    public boolean registerMajorGroup(MajorGroupRequestDto request) throws Exception {
+    public MajorGroup registerMajorGroup(MajorGroupRequestDto request) throws Exception {
         // 데이터 미입력 - 400
         if(request.getMajorGroup().isEmpty() || request.getCode() == null || request.getMajor() == null ||
         request.getGreetings().isEmpty() || request.getAddress().isEmpty() || request.getTel().isEmpty() ||
@@ -82,10 +84,16 @@ public class MajorService {
             throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
         }
 
+        if(majorGroupRepository.existsByMajor(request.getMajor())) {
+            throw new CustomException(ErrorCode.DUPLICATE);
+        }
+
         // 해당 학과 존재 하지 않음 - 404
         if(!majorRepository.existsById(request.getMajor().getId())) {
             throw new CustomException(ErrorCode.NOT_EXIST_ID);
         }
+
+        MajorGroup mkMajorGroup = null;
 
         try {
             MajorGroup majorGroup = MajorGroup.builder()
@@ -102,7 +110,7 @@ public class MajorService {
                     .updatedAt(LocalDateTime.now())
                     .build();
 
-            majorGroupRepository.save(majorGroup);
+            mkMajorGroup = majorGroupRepository.save(majorGroup);
 
             if(!majorGroupRepository.existsById(request.getCode())) {
                 MajorGroupCode majorGroupCode = MajorGroupCode.builder()
@@ -114,6 +122,33 @@ public class MajorService {
                 majorGroupCodeRepository.save(majorGroupCode);
             }
         } catch (Exception e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+        return mkMajorGroup;
+    }
+
+    // [API] 학과 그룹 hidden 처리 (hidden 컬럼 0 -> 1)
+    public Boolean majorGroupHidden(String id, MajorGroupRequestDto request) throws Exception {
+        MajorGroupCode majorGroupCode = majorGroupCodeRepository.findById(id).orElseThrow();
+        majorGroupCode.setHidden(1);
+        String code = majorGroupCode.getId();
+
+        List<MajorGroup> majorGroups = majorGroupRepository.findByCode(code);
+        MajorGroup mkMajorGroup = registerMajorGroup(request);
+        try {
+            for(MajorGroup mg : majorGroups) {
+                mg.setMajorGroup(mkMajorGroup.getMajorGroup());
+                mg.setCode(mkMajorGroup.getCode());
+                mg.setGreetings(mkMajorGroup.getGreetings());
+                mg.setAddress(mkMajorGroup.getAddress());
+                mg.setTel(mkMajorGroup.getTel());
+                mg.setEmail(mkMajorGroup.getEmail());
+                mg.setFax(mkMajorGroup.getFax());
+                mg.setColor(mkMajorGroup.getColor());
+                majorGroupRepository.save(mg);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
         return true;

@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import yiu.aisl.granity.domain.MajorGroup;
+import yiu.aisl.granity.domain.MajorGroupCode;
 import yiu.aisl.granity.dto.Request.*;
 import yiu.aisl.granity.service.MajorService;
 
@@ -27,8 +29,14 @@ public class MajorController {
 
     // 학과 그룹 생성
     @PostMapping(value = "/manager/majorGroup", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<Boolean> registerMajorGroup(MajorGroupRequestDto request) throws Exception {
+    public ResponseEntity<MajorGroup> registerMajorGroup(MajorGroupRequestDto request) throws Exception {
         return new ResponseEntity<>(majorService.registerMajorGroup(request), HttpStatus.OK);
+    }
+
+    // 학과 그룹 hidden 처리 (hidden 컬럼 0 -> 1)
+    @PutMapping(value = "/manager/majorGroup", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Boolean> majorGroupHidden(@RequestParam(value = "id") String id, @ModelAttribute MajorGroupRequestDto request) throws Exception {
+        return new ResponseEntity<>(majorService.majorGroupHidden(id, request), HttpStatus.OK);
     }
 
     // 교수님 등록
