@@ -1,4 +1,4 @@
-package yiu.aisl.granity.dto.Request;
+package yiu.aisl.granity.dto;
 
 import lombok.*;
 import yiu.aisl.granity.dto.TokenDto;
@@ -7,7 +7,7 @@ import yiu.aisl.granity.dto.TokenDto;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponseDto {
+public class LoginDto {
     private String id;
     private String name;
     private Integer grade;

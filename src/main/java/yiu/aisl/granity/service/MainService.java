@@ -11,7 +11,7 @@ import yiu.aisl.granity.domain.User;
 import yiu.aisl.granity.domain.UserMajor;
 import yiu.aisl.granity.dto.*;
 import yiu.aisl.granity.dto.Request.UserRequestDto;
-import yiu.aisl.granity.dto.Request.UserResponseDto;
+import yiu.aisl.granity.dto.Response.UserResponseDto;
 import yiu.aisl.granity.exception.CustomException;
 import yiu.aisl.granity.exception.ErrorCode;
 import yiu.aisl.granity.repository.*;
@@ -82,7 +82,7 @@ public class MainService {
     }
 
     // [API] 로그인
-    public UserResponseDto login(UserRequestDto request) throws Exception {
+    public LoginDto login(UserRequestDto request) throws Exception {
         // 데이터 미입력 - 400
         if(request.getId().isEmpty() || request.getPwd().isEmpty()) {
             throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
@@ -100,7 +100,7 @@ public class MainService {
         try {
             String accessToken = jwtProvider.createToken(user);
             user.setRefreshToken(createRefreshToken(user));
-            UserResponseDto response = UserResponseDto.builder()
+            LoginDto response = LoginDto.builder()
                     .id(user.getId())
                     .name(user.getName())
                     .grade(user.getGrade())

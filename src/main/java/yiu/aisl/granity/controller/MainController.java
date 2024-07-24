@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import yiu.aisl.granity.dto.*;
 import yiu.aisl.granity.dto.Request.UserRequestDto;
-import yiu.aisl.granity.dto.Request.UserResponseDto;
+import yiu.aisl.granity.dto.Response.UserResponseDto;
 import yiu.aisl.granity.service.MainService;
 
 import java.io.UnsupportedEncodingException;
@@ -26,8 +26,8 @@ public class MainController {
 
     // 로그인
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<UserResponseDto> login(UserRequestDto request) throws Exception {
-        return new ResponseEntity<UserResponseDto>(mainService.login(request), HttpStatus.OK);
+    public ResponseEntity<LoginDto> login(UserRequestDto request) throws Exception {
+        return new ResponseEntity<LoginDto>(mainService.login(request), HttpStatus.OK);
     }
 
     // 회원가입 시 이메일 전송

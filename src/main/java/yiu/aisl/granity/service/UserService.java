@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yiu.aisl.granity.config.CustomUserDetails;
 import yiu.aisl.granity.domain.*;
+import yiu.aisl.granity.dto.Request.UserRequestDto;
 import yiu.aisl.granity.dto.Response.BoardResponseDto;
 import yiu.aisl.granity.dto.Response.CommentResponseDto;
 import yiu.aisl.granity.dto.Response.PushResponseDto;
+import yiu.aisl.granity.dto.Response.UserResponseDto;
 import yiu.aisl.granity.exception.CustomException;
 import yiu.aisl.granity.exception.ErrorCode;
 import yiu.aisl.granity.repository.*;
@@ -76,5 +78,34 @@ public class UserService {
         List<CommentResponseDto> getListDto = new ArrayList<>();
         comments.forEach(s -> getListDto.add(CommentResponseDto.GetCommentDto(s)));
         return getListDto;
+    }
+
+    // [API] 내 정보 조회
+    public UserResponseDto getMyProfile(CustomUserDetails userDetails) throws Exception {
+        // 해당 유저 없음 - 404
+        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_MEMBER));
+        return UserResponseDto.getMyProfile(user);
+    }
+
+    // [API] 내 정보 수정
+    public Boolean updateProfile(CustomUserDetails userDetails, UserRequestDto request) throws Exception {
+        // 해당 유저 없음 - 404
+        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_MEMBER));
+
+        if(request.getName().isEmpty() || request.getGrade() == null || request.getStatus() == null) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        try {
+            user.setName(request.getName());
+            user.setGrade(request.getGrade());
+            user.setStatus(request.getStatus());
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+        return true;
     }
 }
