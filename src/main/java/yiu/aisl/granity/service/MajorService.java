@@ -279,6 +279,48 @@ public class MajorService {
         return true;
     }
 
+    // [API] 교수님 수정
+    public Boolean updateProfessor(Integer majorMemberId, MajorMemberRequestDto request) {
+        // id 없음 - 404
+        MajorMember professor = majorMemberRepository.findById(majorMemberId).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_ID));
+
+        // 데이터 미입력 - 400
+        if(request.getRole() == null || request.getName().isEmpty() || request.getContent1().isEmpty() || request.getTel().isEmpty() || request.getAddress().isEmpty() || request.getEmail().isEmpty()) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        try {
+            professor.setRole(request.getRole());
+            professor.setName(request.getName());
+            professor.setContent1(request.getContent1());
+            professor.setContent2(request.getContent2());
+            professor.setContent3(request.getContent3());
+            professor.setTel(request.getTel());
+            professor.setAddress(request.getAddress());
+            professor.setEmail(request.getEmail());
+
+            // 삭제할 파일 정보 조회
+            List<FileResponseDto> deleteFiles = fileService.findAllFileByTypeAndTypeId(8, majorMemberId);
+
+            // 파일 삭제
+            fileController.deleteFiles(deleteFiles);
+
+            // 파일 삭제
+            fileController.deleteFiles(deleteFiles);
+            fileService.deleteAllFileByTypeAndTypeId(8, majorMemberId); // DB 삭제
+
+            // 파일 업로드
+            List<FileRequestDto> uploadFiles = fileController.uploadFiles(request.getFiles());
+
+            // 파일 정보 저장
+            fileService.saveFiles(8, majorMemberId, uploadFiles);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+        return true;
+    }
+
     // [API] 학생회 등록
     public Boolean registerCouncil(MajorMemberRequestDto request) throws Exception {
         // 데이터 없음 - 400
@@ -329,6 +371,48 @@ public class MajorService {
         return true;
     }
 
+    // [API] 학생회 수정
+    public Boolean updateCouncil(Integer majorMemberId, MajorMemberRequestDto request) {
+        // id 없음 - 404
+        MajorMember council = majorMemberRepository.findById(majorMemberId).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_ID));
+
+        // 데이터 미입력 - 400
+        if(request.getRole() == null || request.getName().isEmpty() || request.getContent1().isEmpty() || request.getTel().isEmpty() || request.getAddress().isEmpty() || request.getEmail().isEmpty()) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        try {
+            council.setRole(request.getRole());
+            council.setName(request.getName());
+            council.setContent1(request.getContent1());
+            council.setContent2(request.getContent2());
+            council.setContent3(request.getContent3());
+            council.setTel(request.getTel());
+            council.setAddress(request.getAddress());
+            council.setEmail(request.getEmail());
+
+            // 삭제할 파일 정보 조회
+            List<FileResponseDto> deleteFiles = fileService.findAllFileByTypeAndTypeId(8, majorMemberId);
+
+            // 파일 삭제
+            fileController.deleteFiles(deleteFiles);
+
+            // 파일 삭제
+            fileController.deleteFiles(deleteFiles);
+            fileService.deleteAllFileByTypeAndTypeId(8, majorMemberId); // DB 삭제
+
+            // 파일 업로드
+            List<FileRequestDto> uploadFiles = fileController.uploadFiles(request.getFiles());
+
+            // 파일 정보 저장
+            fileService.saveFiles(8, majorMemberId, uploadFiles);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+        return true;
+    }
+
     // [API] 커리큘럼 등록
     public Boolean registerCurriculum(MajorCurriculumRequestDto request) throws Exception {
         // 데이터 없음 - 400
@@ -372,6 +456,35 @@ public class MajorService {
 
         majorCurriculumRepository.deleteById(curriculum.getId());
 
+        return true;
+    }
+
+    // [API] 커리큘럼 수정
+    public Boolean updateCurriculum(Integer majorCurriculumId, MajorCurriculumRequestDto request) throws Exception {
+        // id 없음 - 404
+        MajorCurriculum curriculum = majorCurriculumRepository.findById(majorCurriculumId).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_ID));
+
+        // 데이터 없음 - 400
+        if(request.getSubject().isEmpty() || request.getClassification() == null || request.getGrade() == null || request.getSemester() == null ||
+                request.getCode() == null || request.getCredit() == null || request.getTheory() == null || request.getPractice() == null || request.getHidden() == null || request.getRequired() == null) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        try {
+            curriculum.setSubject(request.getSubject());
+            curriculum.setClassification(request.getClassification());
+            curriculum.setGrade(request.getGrade());
+            curriculum.setSemester(request.getSemester());
+            curriculum.setCode(request.getCode());
+            curriculum.setCredit(request.getCredit());
+            curriculum.setTheory(request.getTheory());
+            curriculum.setPractice(request.getPractice());
+            curriculum.setHidden(request.getHidden());
+            curriculum.setRequired(request.getRequired());
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
         return true;
     }
 
@@ -424,5 +537,43 @@ public class MajorService {
         return true;
     }
 
+    // [API] 연구실 수정
+    public Boolean updateLab(Integer majorLabId, MajorLabRequestDto request) throws Exception {
+        // id 없음 - 404
+        MajorLab lab = majorLabRepository.findById(majorLabId).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_ID));
 
+        // 데이터 없음 - 400
+        if(request.getName().isEmpty() || request.getDescription().isEmpty() || request.getLink().isEmpty() ||
+                request.getTel().isEmpty() || request.getEmail().isEmpty()) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        try {
+            lab.setName(request.getName());
+            lab.setDescription(request.getDescription());
+            lab.setLink(request.getLink());
+            lab.setTel(request.getTel());
+            lab.setEmail(request.getEmail());
+
+            // 삭제할 파일 정보 조회
+            List<FileResponseDto> deleteFiles = fileService.findAllFileByTypeAndTypeId(8, majorLabId);
+
+            // 파일 삭제
+            fileController.deleteFiles(deleteFiles);
+
+            // 파일 삭제
+            fileController.deleteFiles(deleteFiles);
+            fileService.deleteAllFileByTypeAndTypeId(8, majorLabId); // DB 삭제
+
+            // 파일 업로드
+            List<FileRequestDto> uploadFiles = fileController.uploadFiles(request.getFiles());
+
+            // 파일 정보 저장
+            fileService.saveFiles(8, majorLabId, uploadFiles);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+        return true;
+    }
 }

@@ -1,5 +1,6 @@
 package yiu.aisl.granity.controller;
 
+import com.google.api.Http;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -51,6 +52,12 @@ public class MajorController {
         return new ResponseEntity<>(majorService.deleteProfessor(majorMemberId), HttpStatus.OK);
     }
 
+    // 교수님 수정
+    @PutMapping(value = "/manager/major/professor", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Boolean> updateProfessor(@RequestParam(value = "id") Integer majorMemberId, MajorMemberRequestDto request) throws Exception {
+        return new ResponseEntity<>(majorService.updateProfessor(majorMemberId, request), HttpStatus.OK);
+    }
+
     // 학생회 등록
     @PostMapping(value = "/manager/major/council", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Boolean> registerCouncil(MajorMemberRequestDto request) throws Exception {
@@ -61,6 +68,12 @@ public class MajorController {
     @DeleteMapping(value = "/manager/major/council")
     public ResponseEntity<Boolean> deleteCouncil(@RequestParam(value = "id") Integer majorMemberId) throws Exception {
         return new ResponseEntity<>(majorService.deleteCouncil(majorMemberId), HttpStatus.OK);
+    }
+
+    // 학생회 삭제
+    @PutMapping(value = "/manager/major/council", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Boolean> updateCouncil(@RequestParam(value = "id") Integer majorMemberId, MajorMemberRequestDto request) throws Exception {
+        return new ResponseEntity<>(majorService.updateCouncil(majorMemberId, request), HttpStatus.OK);
     }
 
     // 커리큘럼 등록
@@ -75,6 +88,12 @@ public class MajorController {
         return new ResponseEntity<>(majorService.deleteCurriculum(majorCurriculumId), HttpStatus.OK);
     }
 
+    // 커리큘럼 수정
+    @PutMapping(value = "/manager/major/curriculum", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Boolean> updateCurriculum(@RequestParam(value = "id") Integer majorCurriculumId, MajorCurriculumRequestDto request) throws Exception {
+        return new ResponseEntity<>(majorService.updateCurriculum(majorCurriculumId, request), HttpStatus.OK);
+    }
+
     // 연구실 등록
     @PostMapping(value = "/manager/major/lab", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Boolean> registerLab(MajorLabRequestDto request) throws Exception {
@@ -85,5 +104,11 @@ public class MajorController {
     @DeleteMapping(value = "/manager/major/lab")
     public ResponseEntity<Boolean> deleteLab(@RequestParam(value = "id") Integer majorCurriculumId) throws Exception {
         return new ResponseEntity<>(majorService.deleteLab(majorCurriculumId), HttpStatus.OK);
+    }
+
+    // 연구실 수정
+    @PutMapping(value = "/manager/major/lab", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Boolean> updateLab(@RequestParam(value = "id") Integer majorCurriculumId, MajorLabRequestDto request) throws Exception {
+        return new ResponseEntity<>(majorService.updateLab(majorCurriculumId, request), HttpStatus.OK);
     }
 }
