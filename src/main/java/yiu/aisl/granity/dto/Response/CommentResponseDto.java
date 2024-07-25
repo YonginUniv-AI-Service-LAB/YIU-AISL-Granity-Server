@@ -4,6 +4,7 @@ import lombok.*;
 import yiu.aisl.granity.domain.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -18,12 +19,16 @@ public class CommentResponseDto {
     private LocalDateTime updatedAt;
 
     public static CommentResponseDto GetCommentDto(Comment comment) {
+        String checkUserId = Optional.ofNullable(comment.getCheckUser())
+                .map(User::getId)
+                .map(String::valueOf)
+                .orElse(null);
         return new CommentResponseDto(
                 comment.getId(),
                 comment.getBoard().getId(),
                 comment.getContents(),
                 comment.getChecks(),
-                comment.getCheckUser().getId(),
+                checkUserId,
                 comment.getCreatedAt(),
                 comment.getUpdatedAt()
         );
