@@ -8,4 +8,6 @@ import java.util.List;
 public interface BoardRepository extends JpaRepository<Board, Integer> {
     Board findByIdAndUser(Integer boardId, User user);
     List<Board> findByUser(User user);
+
+    List<Board> findByMajorGroupCode(MajorGroupCode code);
 }

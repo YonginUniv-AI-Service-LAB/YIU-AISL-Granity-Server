@@ -27,6 +27,7 @@ public class MajorService {
     private final UserRepository userRepository;
     private final UserMajorRepository userMajorRepository;
     private final NoticeRepository noticeRepository;
+    private final BoardRepository boardRepository;
     private final FileController fileController;
     private final FileService fileService;
 
@@ -164,10 +165,8 @@ public class MajorService {
         // 바꿔줘야할 majorCurriculum List
         List<MajorCurriculum> majorCurriculums = majorCurriculumRepository.findByMajorGroupCode(majorGroupCode);
 
-        System.out.println("majorMembers size 출력 하기 : " +majorMembers.size());
-        System.out.println("majorLabs size 출력 하기 : " +majorLabs.size());
-        System.out.println("majorCurriculums size 출력 하기 : " +majorCurriculums.size());
-        System.out.println("notices size 출력 하기 : " +notices.size());
+        // 바꿔줘야할 board List
+        List<Board> boards = boardRepository.findByMajorGroupCode(majorGroupCode);
 
         try {
             for(MajorGroup mg : majorGroups) {
@@ -218,6 +217,11 @@ public class MajorService {
             for(MajorCurriculum majorCurriculum : majorCurriculums) {
                 majorCurriculum.setMajorGroupCode(mkMajorGroupCode);
                 majorCurriculumRepository.save(majorCurriculum);
+            }
+            // board 업데이트
+            for(Board board : boards) {
+                board.setMajorGroupCode(mkMajorGroupCode);
+                boardRepository.save(board);
             }
         } catch (Exception e) {
             System.out.println(e);
