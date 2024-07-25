@@ -129,7 +129,6 @@ public class UserService {
                     .major(request.getMajor())
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
-                    .status(0)
                     .build();
             UserMajor mkUserMajor = userMajorRepository.save(userMajor);
             List<User> users = userRepository.findByRole(0);

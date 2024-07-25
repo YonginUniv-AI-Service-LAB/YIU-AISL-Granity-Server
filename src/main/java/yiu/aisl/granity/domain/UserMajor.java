@@ -26,9 +26,6 @@ public class UserMajor {
     @JoinColumn(name = "major_id", nullable = false)
     private Major major;
 
-    @Column(nullable = false)
-    private Integer status;
-
     @CreationTimestamp
     @Column
     private LocalDateTime createdAt;
