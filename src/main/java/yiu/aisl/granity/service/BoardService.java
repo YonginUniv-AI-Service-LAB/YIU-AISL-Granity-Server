@@ -103,32 +103,51 @@ public class BoardService {
     }
 
     // [API] 게시글 수정
-//    public Boolean updateBoard(CustomUserDetails userDetails, Integer boardId, BoardRequestDto request) throws Exception {
-//        // 데이터 없음 - 400
-//        if(request.getTitle().isEmpty() || request.getContents().isEmpty()) {
-//            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
-//        }
-//
-//        // 해당 유저 없음 - 404
-//        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() ->
-//                new CustomException(ErrorCode.NOT_EXIST_MEMBER));
-//
-//        Board board = boardRepository.findByIdAndUser(boardId, user);
-//        // 해당 게시글 없음 - 404
-//        if(board == null) {
-//            throw new CustomException(ErrorCode.NOT_EXIST_ID);
-//        }
-//
-//        try {
-//            board.setTitle(request.getTitle());
-//            board.setContents(request.getContents());
-//            board.setFile(request.getFile());
-//            board.setUpdatedAt(LocalDateTime.now());
-//        } catch (Exception e) {
-//            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
-//        }
-//        return true;
-//    }
+    public Boolean updateBoard(CustomUserDetails userDetails, Integer boardId, BoardRequestDto request) throws Exception {
+        // 데이터 없음 - 400
+        if(request.getTitle().isEmpty() || request.getContents().isEmpty()) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        // 해당 유저 없음 - 404
+        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_MEMBER));
+
+        Board board = boardRepository.findByIdAndUser(boardId, user);
+        // 해당 게시글 없음 - 404
+        if(board == null) {
+            throw new CustomException(ErrorCode.NOT_EXIST_ID);
+        }
+
+        try {
+            board.setTitle(request.getTitle());
+            board.setContents(request.getContents());
+            board.setUpdatedAt(LocalDateTime.now());
+
+            // 기존 파일 목록 조회
+            List<FileResponseDto> existingFiles = fileService.findAllFileByTypeAndTypeId(3, boardId);
+
+            // 삭제할 파일 정보 조회
+            List<FileResponseDto> deleteFiles = fileService.findAllFileByTypeAndTypeId(3, boardId);
+
+            // 파일 삭제
+            fileController.deleteFiles(deleteFiles);
+
+            // 파일 삭제
+            fileController.deleteFiles(deleteFiles);
+            fileService.deleteAllFileByTypeAndTypeId(3, boardId); // DB 삭제
+
+            // 파일 업로드
+            List<FileRequestDto> uploadFiles = fileController.uploadFiles(request.getFiles());
+
+            // 파일 정보 저장
+            fileService.saveFiles(3, boardId, uploadFiles);
+        } catch (Exception e) {
+            System.out.println(e);
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+        return true;
+    }
 
     // [API] 댓글 등록
     public Boolean registerComment(CustomUserDetails userDetails, Integer boardId, CommentRequestDto request) throws Exception {

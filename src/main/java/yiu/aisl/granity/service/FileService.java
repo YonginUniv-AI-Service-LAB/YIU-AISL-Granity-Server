@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import yiu.aisl.granity.controller.FileController;
 import yiu.aisl.granity.domain.File;
 import yiu.aisl.granity.dto.Request.FileRequestDto;
 import yiu.aisl.granity.dto.Response.FileResponseDto;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FileService {
     private final FileRepository fileRepository;
+    private final FileController fileController;
 
     public boolean saveFiles(Integer type, Integer typeId, List<FileRequestDto> files) {
         System.out.println("saveFile 메소드 실행 진입");
@@ -58,5 +60,12 @@ public class FileService {
     // 파일 삭제(DB)
     public void deleteAllFileByTypeAndTypeId(Integer type, Integer typeId) {
         fileRepository.deleteByTypeAndTypeId(type, typeId);
+    }
+
+    public void deleteAllFileById(List<Integer> id) {
+        if(CollectionUtils.isEmpty(id)) {
+            return;
+        }
+        fileRepository.deleteAllById(id);
     }
 }
