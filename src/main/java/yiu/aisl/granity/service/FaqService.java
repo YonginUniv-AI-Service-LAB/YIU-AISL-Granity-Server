@@ -5,11 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yiu.aisl.granity.domain.*;
 import yiu.aisl.granity.dto.Request.FaqRequestDto;
+import yiu.aisl.granity.dto.Response.FaqResponseDto;
 import yiu.aisl.granity.exception.CustomException;
 import yiu.aisl.granity.exception.ErrorCode;
 import yiu.aisl.granity.repository.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,6 +26,18 @@ public class FaqService {
     private final UserRepository userRepository;
     private final MajorGroupRepository majorGroupRepository;
     private final PushService pushService;
+
+    // [API] FAQ 조회
+    public List<FaqResponseDto> getFaqs(MajorGroupCode majorGroupCodeId) throws Exception {
+        List<Faq> faqs = faqRepository.findAllByMajorGroupCode(majorGroupCodeId);
+
+        List<FaqResponseDto> getListDto = new ArrayList<>();
+        for(Faq faq : faqs) {
+            getListDto.add(FaqResponseDto.GetFaqDto(faq));
+        }
+
+        return getListDto;
+    }
 
     // [API] FAQ 등록
     public Boolean registerFaq(FaqRequestDto request) throws Exception {
