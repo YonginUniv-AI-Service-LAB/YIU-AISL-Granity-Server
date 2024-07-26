@@ -26,8 +26,6 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
     private final MajorGroupCodeRepository majorGroupCodeRepository;
-    private final UserMajorRepository userMajorRepository;
-    private final MajorGroupRepository majorGroupRepository;
     private final UserRepository userRepository;
     private final PushService pushService;
     private final FileService fileService;
@@ -182,21 +180,15 @@ public class BoardService {
                     .checkUser(checkUser)
                     .build();
             Comment mkComment = commentRepository.save(comment);
-            if (user.getRole() == 1) {
-                UserMajor userMajor = userMajorRepository.findSingleByUser(user); // pk 값
-                System.out.println("해당 글을 작성하는 사람의 전공: " +userMajor.getMajor().getId());
-                MajorGroup majorGroup = majorGroupRepository.findByMajor(userMajor.getMajor());
-                System.out.println("해당 글을 작성한 사람의 전공의 그룹: " +majorGroup);
-                MajorGroupCode code = majorGroupCodeRepository.findById(majorGroup.getCode()).orElseThrow(); // 78
-                if (code.getHidden() != 1) {
-                    // 현재 사용중인 majorGroup 일 경우
-                    List<UserMajor> receiverMajors = userMajorRepository.findByMajor(majorGroup.getMajor());
-                    for (UserMajor receiverMajor : receiverMajors) {
-                        List<User> receivers = userRepository.findByRole(2);
-                        String pushContents = "승인 대기 중인 댓글이 있습니다. 확인해주세요.";
-                        pushService.registerPushs(4, mkComment.getId(), receivers, pushContents);
-                    }
-                }
+            List<User> assistant = userRepository.findByRoleAndMajor(2, request.getMajorGroupCode());
+            List<User> professor = userRepository.findByRoleAndMajor(3, request.getMajorGroupCode());
+            for(User users : assistant) {
+                String pushContents = "승인 대기 중인 댓글이 있습니다. 확인해주세요.";
+                pushService.registerPushs(4, mkComment.getId(), assistant, pushContents);
+            }
+            for(User users : professor) {
+                String pushContents = "승인 대기 중인 댓글이 있습니다. 확인해주세요.";
+                pushService.registerPushs(4, mkComment.getId(), professor, pushContents);
             }
         } catch (Exception e) {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);

@@ -11,4 +11,5 @@ public class CommentRequestDto {
     private User user;
     private Integer checks;
     private User checkUser;
+    private Major majorGroupCode;
 }
