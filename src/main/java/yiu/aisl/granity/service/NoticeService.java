@@ -9,11 +9,13 @@ import yiu.aisl.granity.domain.*;
 import yiu.aisl.granity.dto.Request.FileRequestDto;
 import yiu.aisl.granity.dto.Request.NoticeRequestDto;
 import yiu.aisl.granity.dto.Response.FileResponseDto;
+import yiu.aisl.granity.dto.Response.NoticeResponseDto;
 import yiu.aisl.granity.exception.CustomException;
 import yiu.aisl.granity.exception.ErrorCode;
 import yiu.aisl.granity.repository.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,6 +30,21 @@ public class NoticeService {
     private final PushService pushService;
     private final FileController fileController;
     private final FileService fileService;
+    private final FileRepository fileRepository;
+
+    // [API] 공지 및 뉴스 조회
+    public List<NoticeResponseDto> getNotices(MajorGroupCode majorGroupCode) throws Exception {
+        List<Notice> notices = noticeRepository.findAllByMajorGroupCode(majorGroupCode);
+        List<NoticeResponseDto> getListDto = new ArrayList<>();
+        List<File> files;
+        for(Notice notice : notices) {
+            if(notice.getCategory() == 1) {
+                files = fileRepository.findAllByTypeAndTypeId(5, notice.getId());
+            } else files = fileRepository.findAllByTypeAndTypeId(1, notice.getId());
+            getListDto.add(NoticeResponseDto.GetNoticeDto(notice, files));
+        }
+        return getListDto;
+    }
 
     // [API] 공지 및 뉴스 등록
     public Boolean postNotice(CustomUserDetails userDetails, NoticeRequestDto request) throws Exception {

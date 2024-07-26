@@ -7,13 +7,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import yiu.aisl.granity.config.CustomUserDetails;
+import yiu.aisl.granity.domain.MajorGroupCode;
 import yiu.aisl.granity.dto.Request.NoticeRequestDto;
+import yiu.aisl.granity.dto.Response.NoticeResponseDto;
 import yiu.aisl.granity.service.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class NoticeController {
     private final NoticeService noticeService;
+
+    // 공지 및 뉴스 조회
+    @GetMapping(value = "/notice")
+    public ResponseEntity<List<NoticeResponseDto>> getNotices(@RequestParam(value = "id") MajorGroupCode majorGroupCode) throws Exception {
+        return new ResponseEntity<>(noticeService.getNotices(majorGroupCode), HttpStatus.OK);
+    }
 
     // 공지 및 뉴스 등록
     @PostMapping(value = "/notice", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

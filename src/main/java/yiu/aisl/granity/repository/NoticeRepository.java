@@ -10,4 +10,6 @@ import java.util.List;
 public interface NoticeRepository extends JpaRepository<Notice, Integer> {
     Notice findByIdAndUser(Integer id, User user);
     List<Notice> findByMajorGroupCode(MajorGroupCode id);
+
+    List<Notice> findAllByMajorGroupCode(MajorGroupCode majorGroupCode);
 }
