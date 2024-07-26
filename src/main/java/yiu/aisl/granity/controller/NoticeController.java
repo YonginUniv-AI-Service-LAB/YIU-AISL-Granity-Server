@@ -28,10 +28,10 @@ public class NoticeController {
     }
 
     // 공지 및 뉴스 수정
-//    @PutMapping(value = "/notice", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-//    public ResponseEntity<Boolean> updateNotice(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam(value = "id") Integer noticeId, NoticeRequestDto request) throws Exception {
-//        return new ResponseEntity<>(noticeService.updateNotice(userDetails, noticeId, request), HttpStatus.OK);
-//    }
+    @PutMapping(value = "/notice", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Boolean> updateNotice(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam(value = "id") Integer noticeId, NoticeRequestDto request) throws Exception {
+        return new ResponseEntity<>(noticeService.updateNotice(userDetails, noticeId, request), HttpStatus.OK);
+    }
 
     // 뉴스 승인하기
     @PutMapping(value = "/manager/notice/news/approval")
