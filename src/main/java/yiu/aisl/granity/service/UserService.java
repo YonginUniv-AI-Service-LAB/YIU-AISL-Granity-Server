@@ -112,32 +112,4 @@ public class UserService {
         }
         return true;
     }
-
-    // [API] 내 전공 추가
-    public Boolean addMyMajor(CustomUserDetails userDetails, UserMajorRequestDto request) throws Exception {
-        // 해당 유저 없음 - 404
-        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() ->
-                new CustomException(ErrorCode.NOT_EXIST_MEMBER));
-
-        if(request.getMajor() == null) {
-            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
-        }
-
-        try {
-            UserMajor userMajor = UserMajor.builder()
-                    .user(user)
-                    .major(request.getMajor())
-                    .createdAt(LocalDateTime.now())
-                    .updatedAt(LocalDateTime.now())
-                    .build();
-            UserMajor mkUserMajor = userMajorRepository.save(userMajor);
-            List<User> users = userRepository.findByRole(0);
-
-            String pushContents = "전공승인요청이 있습니다. 확인해주세요.";
-            pushService.registerPushs(7, mkUserMajor.getId(), users, pushContents);
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
-        return true;
-    }
 }

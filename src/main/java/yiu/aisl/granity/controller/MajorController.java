@@ -111,4 +111,10 @@ public class MajorController {
     public ResponseEntity<Boolean> updateLab(@RequestParam(value = "id") Integer majorCurriculumId, MajorLabRequestDto request) throws Exception {
         return new ResponseEntity<>(majorService.updateLab(majorCurriculumId, request), HttpStatus.OK);
     }
+
+    // 유저 전공 추가
+    @PostMapping(value = "/manager/user/major", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Boolean> addUserMajor(UserMajorRequestDto request) throws Exception {
+        return new ResponseEntity<>(majorService.addUserMajor(request), HttpStatus.OK);
+    }
 }

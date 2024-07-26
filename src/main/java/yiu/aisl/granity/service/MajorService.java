@@ -3,6 +3,7 @@ package yiu.aisl.granity.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import yiu.aisl.granity.config.CustomUserDetails;
 import yiu.aisl.granity.controller.FileController;
 import yiu.aisl.granity.domain.*;
 import yiu.aisl.granity.dto.Request.*;
@@ -571,6 +572,26 @@ public class MajorService {
 
             // 파일 정보 저장
             fileService.saveFiles(8, majorLabId, uploadFiles);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+        return true;
+    }
+
+    // [API] 전공 추가
+    public Boolean addUserMajor(UserMajorRequestDto request) throws Exception {
+        if(request.getUser().getId().isEmpty() || request.getMajor() == null) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        try {
+            UserMajor userMajor = UserMajor.builder()
+                    .user(request.getUser())
+                    .major(request.getMajor())
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+            userMajorRepository.save(userMajor);
         } catch (Exception e) {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }

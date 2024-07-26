@@ -57,10 +57,4 @@ public class UserController {
     public ResponseEntity<Boolean> updateProfile(@AuthenticationPrincipal CustomUserDetails userDetails, UserRequestDto request) throws Exception {
         return new ResponseEntity<>(userService.updateProfile(userDetails, request), HttpStatus.OK);
     }
-
-    // 내 전공 추가
-    @PostMapping(value = "/user/major", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<Boolean> addMyMajor(@AuthenticationPrincipal CustomUserDetails userDetails, UserMajorRequestDto request) throws Exception {
-        return new ResponseEntity<>(userService.addMyMajor(userDetails, request), HttpStatus.OK);
-    }
 }
