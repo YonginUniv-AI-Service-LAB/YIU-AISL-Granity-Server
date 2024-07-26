@@ -17,6 +17,8 @@ import yiu.aisl.granity.repository.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -26,7 +28,7 @@ public class NoticeService {
     private final MajorGroupCodeRepository majorGroupCodeRepository;
     private final MajorRepository majorRepository;
     private final UserRepository userRepository;
-    private final UserMajorRepository userMajorRepository;
+    private final MajorGroupRepository majorGroupRepository;
     private final PushService pushService;
     private final FileController fileController;
     private final FileService fileService;
@@ -77,6 +79,11 @@ public class NoticeService {
         MajorGroupCode majorGroupCode = request.getMajorGroupCode();
         Major major = majorRepository.findById(majorGroupCode.getId()).orElseThrow();
 
+        List<MajorGroup> majorGroups = majorGroupRepository.findByCode(groupCode.getId());
+        List<Major> majors = majorGroups.stream()
+                .map(majorGroup -> majorRepository.findById(majorGroup.getMajor().getId()).orElseThrow())
+                .collect(Collectors.toList());
+
         try {
             Notice notice = Notice.builder()
                     .title(request.getTitle())
@@ -107,6 +114,17 @@ public class NoticeService {
                 for(User users : professor) {
                     String pushContents = "승인 대기 중인 뉴스가 있습니다. 확인해주세요.";
                     pushService.registerPushs(5, mkNotice.getId(), professor, pushContents);
+                }
+            } else {
+                // 각 major에 속하는 학생들을 찾아서 중복 제거된 리스트로 결합
+                Set<User> studentSet = majors.stream()
+                        .flatMap(major1 -> userRepository.findByRoleAndMajor(1, major).stream())
+                        .collect(Collectors.toSet());
+
+                // 중복 제거된 학생들에게 푸시 알림 전송
+                String pushContents = "공지 확인바랍니다.";
+                for (User user1 : studentSet) {
+                    pushService.registerPushs(1, mkNotice.getId(), List.of(user1), pushContents);
                 }
             }
         } catch (Exception e) {
@@ -168,6 +186,11 @@ public class NoticeService {
         MajorGroupCode majorGroupCode = request.getMajorGroupCode();
         Major major = majorRepository.findById(majorGroupCode.getId()).orElseThrow();
 
+        List<MajorGroup> majorGroups = majorGroupRepository.findByCode(request.getMajorGroupCode().getId());
+        List<Major> majors = majorGroups.stream()
+                .map(majorGroup -> majorRepository.findById(majorGroup.getMajor().getId()).orElseThrow())
+                .collect(Collectors.toList());
+
         try {
             notice.setTitle(request.getTitle());
             notice.setContents(request.getContents());
@@ -207,6 +230,17 @@ public class NoticeService {
                 for(User users : professor) {
                     String pushContents = "승인 대기 중인 뉴스가 있습니다. 확인해주세요.";
                     pushService.registerPushs(5, noticeId, professor, pushContents);
+                }
+            } else {
+                // 각 major에 속하는 학생들을 찾아서 중복 제거된 리스트로 결합
+                Set<User> studentSet = majors.stream()
+                        .flatMap(major1 -> userRepository.findByRoleAndMajor(1, major).stream())
+                        .collect(Collectors.toSet());
+
+                // 중복 제거된 학생들에게 푸시 알림 전송
+                String pushContents = "공지 확인바랍니다.";
+                for (User user1 : studentSet) {
+                    pushService.registerPushs(1, noticeId, List.of(user1), pushContents);
                 }
             }
         } catch (Exception e) {
