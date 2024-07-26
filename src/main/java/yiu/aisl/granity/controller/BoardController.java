@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
 import yiu.aisl.granity.config.CustomUserDetails;
+import yiu.aisl.granity.domain.MajorGroupCode;
 import yiu.aisl.granity.dto.Request.BoardRequestDto;
 import yiu.aisl.granity.dto.Request.CommentRequestDto;
 import yiu.aisl.granity.dto.Response.BoardResponseDto;
@@ -22,8 +23,8 @@ public class BoardController {
 
     // 게시글 조회
     @GetMapping(value = "/board")
-    public ResponseEntity<List<BoardResponseDto>> getBoards() throws Exception {
-        return new ResponseEntity<>(boardService.getBoards(), HttpStatus.OK);
+    public ResponseEntity<List<BoardResponseDto>> getBoards(@RequestParam(value = "id") MajorGroupCode majorGroupCode) throws Exception {
+        return new ResponseEntity<>(boardService.getBoards(majorGroupCode), HttpStatus.OK);
     }
 
     // 게시글 등록

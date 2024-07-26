@@ -10,4 +10,5 @@ public interface BoardRepository extends JpaRepository<Board, Integer> {
     List<Board> findByUser(User user);
 
     List<Board> findByMajorGroupCode(MajorGroupCode code);
+    List<Board> findAllByMajorGroupCode(MajorGroupCode code);
 }

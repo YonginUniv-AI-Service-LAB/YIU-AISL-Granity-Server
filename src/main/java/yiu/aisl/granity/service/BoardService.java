@@ -33,8 +33,8 @@ public class BoardService {
     private final FileController fileController;
 
     // [API] 게시글 전체 조회
-    public List<BoardResponseDto> getBoards() throws Exception {
-        List<Board> boards = boardRepository.findAll();
+    public List<BoardResponseDto> getBoards(MajorGroupCode majorGroupCode) throws Exception {
+        List<Board> boards = boardRepository.findAllByMajorGroupCode(majorGroupCode);
         List<BoardResponseDto> getListDto = new ArrayList<>();
         for(Board board : boards) {
             List<File> files = fileRepository.findAllByTypeAndTypeId(3, board.getId());
