@@ -49,6 +49,9 @@ public class FaqService {
         // id 없음 - 404
         MajorGroupCode groupCode = majorGroupCodeRepository.findById(request.getMajorGroupCode().getId()).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_ID));
+        if(groupCode.getHidden() == 1) {
+            throw new CustomException(ErrorCode.NOT_EXIST_ID);
+        }
 
         List<MajorGroup> majorGroups = majorGroupRepository.findByCode(groupCode.getId());
         List<Major> majors = majorGroups.stream()

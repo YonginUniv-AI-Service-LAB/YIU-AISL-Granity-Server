@@ -57,6 +57,9 @@ public class BoardService {
         // id 없음 - 404
         MajorGroupCode majorGroupCode = majorGroupCodeRepository.findById(request.getMajorGroupCode().getId()).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_ID));
+        if(majorGroupCode.getHidden() == 1) {
+            throw new CustomException(ErrorCode.NOT_EXIST_ID);
+        }
         List<FileRequestDto> files = fileController.uploadFiles(request.getFiles());
         System.out.println(request.getFiles());
         System.out.println("파일: " +files);
@@ -180,15 +183,17 @@ public class BoardService {
                     .checkUser(checkUser)
                     .build();
             Comment mkComment = commentRepository.save(comment);
-            List<User> assistant = userRepository.findByRoleAndMajor(2, request.getMajorGroupCode());
-            List<User> professor = userRepository.findByRoleAndMajor(3, request.getMajorGroupCode());
-            for(User users : assistant) {
-                String pushContents = "승인 대기 중인 댓글이 있습니다. 확인해주세요.";
-                pushService.registerPushs(4, mkComment.getId(), assistant, pushContents);
-            }
-            for(User users : professor) {
-                String pushContents = "승인 대기 중인 댓글이 있습니다. 확인해주세요.";
-                pushService.registerPushs(4, mkComment.getId(), professor, pushContents);
+            if(user.getRole() == 1) {
+                List<User> assistant = userRepository.findByRoleAndMajor(2, request.getMajorGroupCode());
+                List<User> professor = userRepository.findByRoleAndMajor(3, request.getMajorGroupCode());
+                for(User users : assistant) {
+                    String pushContents = "승인 대기 중인 댓글이 있습니다. 확인해주세요.";
+                    pushService.registerPushs(4, mkComment.getId(), assistant, pushContents);
+                }
+                for(User users : professor) {
+                    String pushContents = "승인 대기 중인 댓글이 있습니다. 확인해주세요.";
+                    pushService.registerPushs(4, mkComment.getId(), professor, pushContents);
+                }
             }
         } catch (Exception e) {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
@@ -225,6 +230,13 @@ public class BoardService {
             throw new CustomException(ErrorCode.NOT_EXIST_ID);
         }
 
+        int checks = 0;
+        User checkUser = null;
+        if(user.getRole() != 1) {
+            checks = 1;
+            checkUser = user;
+        }
+
         // 데이터 미입력  - 400
         if(request.getContents().isEmpty()) {
             throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
@@ -233,6 +245,21 @@ public class BoardService {
         try {
             comment.setContents(request.getContents());
             comment.setUpdatedAt(LocalDateTime.now());
+            comment.setChecks(checks);
+            comment.setCheckUser(checkUser);
+
+            if(user.getRole() == 1) {
+                List<User> assistant = userRepository.findByRoleAndMajor(2, request.getMajorGroupCode());
+                List<User> professor = userRepository.findByRoleAndMajor(3, request.getMajorGroupCode());
+                for(User users : assistant) {
+                    String pushContents = "승인 대기 중인 댓글이 있습니다. 확인해주세요.";
+                    pushService.registerPushs(4, commentId, assistant, pushContents);
+                }
+                for(User users : professor) {
+                    String pushContents = "승인 대기 중인 댓글이 있습니다. 확인해주세요.";
+                    pushService.registerPushs(4, commentId, professor, pushContents);
+                }
+            }
         } catch (Exception e) {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }

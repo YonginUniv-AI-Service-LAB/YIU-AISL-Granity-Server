@@ -73,7 +73,9 @@ public class NoticeService {
         // id 없음 - 404
         MajorGroupCode groupCode = majorGroupCodeRepository.findById(request.getMajorGroupCode().getId()).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_ID));
-
+        if(groupCode.getHidden() == 1) {
+            throw new CustomException(ErrorCode.NOT_EXIST_ID);
+        }
         List<FileRequestDto> files = fileController.uploadFiles(request.getFiles());
 
         MajorGroupCode majorGroupCode = request.getMajorGroupCode();
@@ -102,7 +104,11 @@ public class NoticeService {
                     .updatedAt(LocalDateTime.now())
                     .build();
             Notice mkNotice = noticeRepository.save(notice);
-            fileService.saveFiles(5, mkNotice.getId(), files);
+
+            // 공지일 경우 파일 저장 타입 1, 뉴스일 경우 파일 저장 타입 5
+            if(category != 1) {
+                fileService.saveFiles(1, mkNotice.getId(), files);
+            } else fileService.saveFiles(5, mkNotice.getId(), files);
             if (user.getRole() == 1) {
                 System.out.println("알림 전송 if 문 입장");
                 List<User> assistant = userRepository.findByRoleAndMajor(2, major);
@@ -116,15 +122,18 @@ public class NoticeService {
                     pushService.registerPushs(5, mkNotice.getId(), professor, pushContents);
                 }
             } else {
-                // 각 major에 속하는 학생들을 찾아서 중복 제거된 리스트로 결합
-                Set<User> studentSet = majors.stream()
-                        .flatMap(major1 -> userRepository.findByRoleAndMajor(1, major).stream())
-                        .collect(Collectors.toSet());
+                // 공지 작성의 경우
+                if(category!=1) {
+                    // 각 major에 속하는 학생들을 찾아서 중복 제거된 리스트로 결합
+                    Set<User> studentSet = majors.stream()
+                            .flatMap(major1 -> userRepository.findByRoleAndMajor(1, major).stream())
+                            .collect(Collectors.toSet());
 
-                // 중복 제거된 학생들에게 푸시 알림 전송
-                String pushContents = "공지 확인바랍니다.";
-                for (User user1 : studentSet) {
-                    pushService.registerPushs(1, mkNotice.getId(), List.of(user1), pushContents);
+                    // 중복 제거된 학생들에게 푸시 알림 전송
+                    String pushContents = "공지 확인바랍니다.";
+                    for (User user1 : studentSet) {
+                        pushService.registerPushs(1, mkNotice.getId(), List.of(user1), pushContents);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -146,11 +155,19 @@ public class NoticeService {
         } else notice = noticeRepository.findById(noticeId).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_ID));
 
-        List<FileResponseDto> deleteFiles = fileService.findAllFileByTypeAndTypeId(5, noticeId);
+        int category = notice.getCategory();
+        List<FileResponseDto> deleteFiles;
+        if(category != 1) {
+            deleteFiles = fileService.findAllFileByTypeAndTypeId(1, noticeId);
+        } else deleteFiles = fileService.findAllFileByTypeAndTypeId(5, noticeId);
 
         noticeRepository.delete(notice);
         fileController.deleteFiles(deleteFiles);
-        fileService.deleteAllFileByTypeAndTypeId(5, noticeId); // DB 삭제
+
+        if(category != 1) {
+            fileService.deleteAllFileByTypeAndTypeId(1, noticeId); // DB 삭제
+        } else fileService.deleteAllFileByTypeAndTypeId(5, noticeId); // DB 삭제
+
         return true;
     }
 
@@ -201,24 +218,34 @@ public class NoticeService {
             notice.setStatus(status);
             notice.setUpdatedAt(LocalDateTime.now());
 
-            // 기존 파일 목록 조회
-            List<FileResponseDto> existingFiles = fileService.findAllFileByTypeAndTypeId(5, noticeId);
+            List<FileResponseDto> deleteFiles;
 
-            // 삭제할 파일 정보 조회
-            List<FileResponseDto> deleteFiles = fileService.findAllFileByTypeAndTypeId(5, noticeId);
+            if(category == 1) {
+                // 삭제할 파일 정보 조회
+                deleteFiles = fileService.findAllFileByTypeAndTypeId(5, noticeId);
 
-            // 파일 삭제
-            fileController.deleteFiles(deleteFiles);
+                // 파일 삭제
+                fileController.deleteFiles(deleteFiles);
 
-            // 파일 삭제
-            fileController.deleteFiles(deleteFiles);
-            fileService.deleteAllFileByTypeAndTypeId(5, noticeId); // DB 삭제
+                // 파일 삭제
+                fileController.deleteFiles(deleteFiles);
+                fileService.deleteAllFileByTypeAndTypeId(5, noticeId); // DB 삭제
 
-            // 파일 업로드
-            List<FileRequestDto> uploadFiles = fileController.uploadFiles(request.getFiles());
+                // 파일 업로드
+                List<FileRequestDto> uploadFiles = fileController.uploadFiles(request.getFiles());
 
-            // 파일 정보 저장
-            fileService.saveFiles(5, noticeId, uploadFiles);
+                // 파일 정보 저장
+                fileService.saveFiles(5, noticeId, uploadFiles);
+            } else {
+                deleteFiles = fileService.findAllFileByTypeAndTypeId(1, noticeId);
+                fileController.deleteFiles(deleteFiles);
+                fileController.deleteFiles(deleteFiles);
+                fileService.deleteAllFileByTypeAndTypeId(1, noticeId); // DB 삭제
+                List<FileRequestDto> uploadFiles = fileController.uploadFiles(request.getFiles());
+                fileService.saveFiles(1, noticeId, uploadFiles);
+            }
+
+
 
             if (user.getRole() == 1) {
                 List<User> assistant = userRepository.findByRoleAndMajor(2, major);
@@ -232,15 +259,17 @@ public class NoticeService {
                     pushService.registerPushs(5, noticeId, professor, pushContents);
                 }
             } else {
-                // 각 major에 속하는 학생들을 찾아서 중복 제거된 리스트로 결합
-                Set<User> studentSet = majors.stream()
-                        .flatMap(major1 -> userRepository.findByRoleAndMajor(1, major).stream())
-                        .collect(Collectors.toSet());
+                if(category!=1) {
+                    // 각 major에 속하는 학생들을 찾아서 중복 제거된 리스트로 결합
+                    Set<User> studentSet = majors.stream()
+                            .flatMap(major1 -> userRepository.findByRoleAndMajor(1, major).stream())
+                            .collect(Collectors.toSet());
 
-                // 중복 제거된 학생들에게 푸시 알림 전송
-                String pushContents = "공지 확인바랍니다.";
-                for (User user1 : studentSet) {
-                    pushService.registerPushs(1, noticeId, List.of(user1), pushContents);
+                    // 중복 제거된 학생들에게 푸시 알림 전송
+                    String pushContents = "공지 확인바랍니다.";
+                    for (User user1 : studentSet) {
+                        pushService.registerPushs(1, noticeId, List.of(user1), pushContents);
+                    }
                 }
             }
         } catch (Exception e) {

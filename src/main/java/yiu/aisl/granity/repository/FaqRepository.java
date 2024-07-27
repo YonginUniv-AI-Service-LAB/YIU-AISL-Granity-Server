@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface FaqRepository extends JpaRepository<Faq, Integer> {
     List<Faq> findAllByMajorGroupCode(MajorGroupCode majorGroupCode);
+
+    List<Faq> findByMajorGroupCode(MajorGroupCode majorGroupCodd);
 }

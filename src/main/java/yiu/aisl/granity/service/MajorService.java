@@ -28,6 +28,7 @@ public class MajorService {
     private final UserRepository userRepository;
     private final UserMajorRepository userMajorRepository;
     private final NoticeRepository noticeRepository;
+    private final FaqRepository faqRepository;
     private final BoardRepository boardRepository;
     private final FileController fileController;
     private final FileService fileService;
@@ -169,6 +170,9 @@ public class MajorService {
         // 바꿔줘야할 board List
         List<Board> boards = boardRepository.findByMajorGroupCode(majorGroupCode);
 
+        // 바꿔줘야할 FAQ List
+        List<Faq> faqs = faqRepository.findByMajorGroupCode(majorGroupCode);
+
         try {
             for(MajorGroup mg : majorGroups) {
                 mg.setMajorGroup(mkMajorGroup.getMajorGroup());
@@ -224,6 +228,11 @@ public class MajorService {
                 board.setMajorGroupCode(mkMajorGroupCode);
                 boardRepository.save(board);
             }
+            // faq 업데이트
+            for(Faq faq : faqs) {
+                faq.setMajorGroupCode(mkMajorGroupCode);
+                faqRepository.save(faq);
+            }
         } catch (Exception e) {
             System.out.println(e);
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
@@ -240,6 +249,9 @@ public class MajorService {
 
         MajorGroupCode groupCode = majorGroupCodeRepository.findById(request.getMajorGroupCode().getId()).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_ID));
+        if(groupCode.getHidden() == 1) {
+            throw new CustomException(ErrorCode.NOT_EXIST_ID);
+        }
 
         List<FileRequestDto> files = fileController.uploadFiles(request.getFiles());
         try {
@@ -334,6 +346,10 @@ public class MajorService {
         MajorGroupCode groupCode = majorGroupCodeRepository.findById(request.getMajorGroupCode().getId()).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_ID));
 
+        if(groupCode.getHidden() == 1) {
+            throw new CustomException(ErrorCode.NOT_EXIST_ID);
+        }
+
         List<FileRequestDto> files = fileController.uploadFiles(request.getFiles());
         try {
             MajorMember council = MajorMember.builder()
@@ -426,6 +442,10 @@ public class MajorService {
         MajorGroupCode groupCode = majorGroupCodeRepository.findById(request.getMajorGroupCode().getId()).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_ID));
 
+        if(groupCode.getHidden() == 1) {
+            throw new CustomException(ErrorCode.NOT_EXIST_ID);
+        }
+
         try {
             MajorCurriculum curriculum = MajorCurriculum.builder()
                     .majorGroupCode(groupCode)
@@ -500,6 +520,10 @@ public class MajorService {
         // id 없음 - 404
         MajorGroupCode groupCode = majorGroupCodeRepository.findById(request.getMajorGroupCode().getId()).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_ID));
+
+        if(groupCode.getHidden() == 1) {
+            throw new CustomException(ErrorCode.NOT_EXIST_ID);
+        }
 
         List<FileRequestDto> files = fileController.uploadFiles(request.getFiles());
 
