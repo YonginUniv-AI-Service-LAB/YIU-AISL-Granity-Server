@@ -181,7 +181,7 @@ public class NoticeService {
         // if status == 0 등록, else if status == 1 승인, else if status == 2 반려
         int status = 1;
 
-        if(user.getStatus() == 1) {
+        if(user.getRole() == 1) {
             category = 1;
             status = 0; // 일반 유저이기 때문에 글이 등록은 되었으나 조교, 교수 또는 관리자에게 승인을 받아야함 승인의 경우 status 가 1로 바뀜
             notice = noticeRepository.findByIdAndUser(noticeId, user);

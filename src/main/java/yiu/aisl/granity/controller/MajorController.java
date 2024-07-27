@@ -9,7 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import yiu.aisl.granity.domain.MajorGroup;
 import yiu.aisl.granity.domain.MajorGroupCode;
 import yiu.aisl.granity.dto.Request.*;
+import yiu.aisl.granity.dto.Response.MajorCurriculumResponseDto;
+import yiu.aisl.granity.dto.Response.MajorLabResponseDto;
+import yiu.aisl.granity.dto.Response.MajorMemberResponseDto;
 import yiu.aisl.granity.service.MajorService;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,6 +45,12 @@ public class MajorController {
         return new ResponseEntity<>(majorService.majorGroupHidden(id, request), HttpStatus.OK);
     }
 
+    // 교수님 조회
+    @GetMapping(value = "/major/professor")
+    public ResponseEntity<List<MajorMemberResponseDto>> getProfessors(@RequestParam(value = "id") MajorGroupCode majorGroupCode) throws Exception {
+        return new ResponseEntity<>(majorService.getProfessors(majorGroupCode), HttpStatus.OK);
+    }
+
     // 교수님 등록
     @PostMapping(value = "/manager/major/professor", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Boolean> registerProfessor(MajorMemberRequestDto request) throws Exception {
@@ -56,6 +67,12 @@ public class MajorController {
     @PutMapping(value = "/manager/major/professor", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Boolean> updateProfessor(@RequestParam(value = "id") Integer majorMemberId, MajorMemberRequestDto request) throws Exception {
         return new ResponseEntity<>(majorService.updateProfessor(majorMemberId, request), HttpStatus.OK);
+    }
+
+    // 학생회 조회
+    @GetMapping(value = "/major/council")
+    public ResponseEntity<List<MajorMemberResponseDto>> getCouncils(@RequestParam(value = "id") MajorGroupCode majorGroupCode) throws Exception {
+        return new ResponseEntity<>(majorService.getCouncils(majorGroupCode), HttpStatus.OK);
     }
 
     // 학생회 등록
@@ -76,6 +93,12 @@ public class MajorController {
         return new ResponseEntity<>(majorService.updateCouncil(majorMemberId, request), HttpStatus.OK);
     }
 
+    // 커리큘럼 조회
+    @GetMapping(value = "/major/curriculum")
+    public ResponseEntity<List<MajorCurriculumResponseDto>> getCurriculums(@RequestParam(value = "id") MajorGroupCode majorGroupCode) throws Exception {
+        return new ResponseEntity<>(majorService.getCurriculums(majorGroupCode), HttpStatus.OK);
+    }
+
     // 커리큘럼 등록
     @PostMapping(value = "/manager/major/curriculum", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<Boolean> registerCurriculum(MajorCurriculumRequestDto request) throws Exception {
@@ -92,6 +115,12 @@ public class MajorController {
     @PutMapping(value = "/manager/major/curriculum", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<Boolean> updateCurriculum(@RequestParam(value = "id") Integer majorCurriculumId, MajorCurriculumRequestDto request) throws Exception {
         return new ResponseEntity<>(majorService.updateCurriculum(majorCurriculumId, request), HttpStatus.OK);
+    }
+
+    // 연구실 조회
+    @GetMapping(value = "/major/lab")
+    public ResponseEntity<List<MajorLabResponseDto>> getLabs(@RequestParam(value = "id") MajorGroupCode majorGroupCode) throws Exception {
+        return new ResponseEntity<>(majorService.getLabs(majorGroupCode), HttpStatus.OK);
     }
 
     // 연구실 등록

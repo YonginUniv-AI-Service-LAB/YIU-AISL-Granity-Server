@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface MajorMemberRepository extends JpaRepository<MajorMember, Integer> {
     List<MajorMember> findByMajorGroupCode(MajorGroupCode majorGroupCode);
+
+    List<MajorMember> findAllByMajorGroupCodeAndRole(MajorGroupCode majorGroupCode, Integer role);
 }

@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface MajorLabRepository extends JpaRepository<MajorLab, Integer> {
     List<MajorLab> findByMajorGroupCode(MajorGroupCode majorGroupCode);
+    List<MajorLab> findAllByMajorGroupCode(MajorGroupCode majorGroupCode);
 }

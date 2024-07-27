@@ -3,16 +3,16 @@ package yiu.aisl.granity.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import yiu.aisl.granity.config.CustomUserDetails;
 import yiu.aisl.granity.controller.FileController;
 import yiu.aisl.granity.domain.*;
 import yiu.aisl.granity.dto.Request.*;
-import yiu.aisl.granity.dto.Response.FileResponseDto;
+import yiu.aisl.granity.dto.Response.*;
 import yiu.aisl.granity.exception.CustomException;
 import yiu.aisl.granity.exception.ErrorCode;
 import yiu.aisl.granity.repository.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,6 +32,7 @@ public class MajorService {
     private final BoardRepository boardRepository;
     private final FileController fileController;
     private final FileService fileService;
+    private final FileRepository fileRepository;
 
     // [API] 학과 정보 등록
     public boolean registerMajor(MajorRequestDto request) throws Exception {
@@ -175,14 +176,7 @@ public class MajorService {
 
         try {
             for(MajorGroup mg : majorGroups) {
-                mg.setMajorGroup(mkMajorGroup.getMajorGroup());
                 mg.setCode(mkMajorGroup.getCode());
-                mg.setGreetings(mkMajorGroup.getGreetings());
-                mg.setAddress(mkMajorGroup.getAddress());
-                mg.setTel(mkMajorGroup.getTel());
-                mg.setEmail(mkMajorGroup.getEmail());
-                mg.setFax(mkMajorGroup.getFax());
-                mg.setColor(mkMajorGroup.getColor());
                 majorGroupRepository.save(mg);
             }
             // UserMajor 업데이트 (조교)
@@ -238,6 +232,17 @@ public class MajorService {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
         return true;
+    }
+
+    // [API] 교수님 조회
+    public List<MajorMemberResponseDto> getProfessors(MajorGroupCode majorGroupCode) throws Exception {
+        List<MajorMember> professors = majorMemberRepository.findAllByMajorGroupCodeAndRole(majorGroupCode, 2);
+        List<MajorMemberResponseDto> getListDto = new ArrayList<>();
+        for(MajorMember professor : professors) {
+            List<File> files = fileRepository.findAllByTypeAndTypeId(8, professor.getId());
+            getListDto.add(MajorMemberResponseDto.GetMajorMemberDto(professor, files));
+        }
+        return getListDto;
     }
 
     // [API] 교수님 등록
@@ -332,6 +337,17 @@ public class MajorService {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
         return true;
+    }
+
+    // [API] 학생회 조회
+    public List<MajorMemberResponseDto> getCouncils(MajorGroupCode majorGroupCode) throws Exception {
+        List<MajorMember> councils = majorMemberRepository.findAllByMajorGroupCodeAndRole(majorGroupCode, 1);
+        List<MajorMemberResponseDto> getListDto = new ArrayList<>();
+        for(MajorMember council : councils) {
+            List<File> files = fileRepository.findAllByTypeAndTypeId(8, council.getId());
+            getListDto.add(MajorMemberResponseDto.GetMajorMemberDto(council, files));
+        }
+        return getListDto;
     }
 
     // [API] 학생회 등록
@@ -430,6 +446,16 @@ public class MajorService {
         return true;
     }
 
+    // [API] 커리큘럼 조회
+    public List<MajorCurriculumResponseDto> getCurriculums(MajorGroupCode majorGroupCode) throws Exception {
+        List<MajorCurriculum> curriculums = majorCurriculumRepository.findAllByMajorGroupCode(majorGroupCode);
+        List<MajorCurriculumResponseDto> getListDto = new ArrayList<>();
+        for(MajorCurriculum curriculum : curriculums) {
+            getListDto.add(MajorCurriculumResponseDto.GetMajorCurriculumDto(curriculum));
+        }
+        return getListDto;
+    }
+
     // [API] 커리큘럼 등록
     public Boolean registerCurriculum(MajorCurriculumRequestDto request) throws Exception {
         // 데이터 없음 - 400
@@ -507,6 +533,17 @@ public class MajorService {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
         return true;
+    }
+
+    // [API] 연구실 조회
+    public List<MajorLabResponseDto> getLabs(MajorGroupCode majorGroupCode) throws Exception {
+        List<MajorLab> labs = majorLabRepository.findAllByMajorGroupCode(majorGroupCode);
+        List<MajorLabResponseDto> getListDto = new ArrayList<>();
+        for(MajorLab lab : labs) {
+            List<File> files = fileRepository.findAllByTypeAndTypeId(8, lab.getId());
+            getListDto.add(MajorLabResponseDto.GetMajorLabDto(lab, files));
+        }
+        return getListDto;
     }
 
     // [API] 연구실 등록

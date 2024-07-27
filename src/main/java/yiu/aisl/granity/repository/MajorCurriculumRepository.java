@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface MajorCurriculumRepository extends JpaRepository<MajorCurriculum, Integer> {
     List<MajorCurriculum> findByMajorGroupCode(MajorGroupCode id);
+    List<MajorCurriculum> findAllByMajorGroupCode(MajorGroupCode majorGroupCode);
 }
