@@ -8,4 +8,5 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment, Integer>{
     Comment findByIdAndUser(Integer boardId, User user);
     List<Comment> findByUser(User user);
+    List<Comment> findByBoard(Board boardId);
 }

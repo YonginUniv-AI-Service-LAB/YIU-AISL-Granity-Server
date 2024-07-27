@@ -38,7 +38,8 @@ public class BoardService {
         List<BoardResponseDto> getListDto = new ArrayList<>();
         for(Board board : boards) {
             List<File> files = fileRepository.findAllByTypeAndTypeId(3, board.getId());
-            getListDto.add(BoardResponseDto.GetBoardDto(board, files));
+            List<Comment> comments = commentRepository.findByBoard(board);
+            getListDto.add(BoardResponseDto.GetBoardDto(board, files, comments));
         }
         return getListDto;
     }

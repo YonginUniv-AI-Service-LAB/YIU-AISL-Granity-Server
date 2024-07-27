@@ -18,10 +18,11 @@ public class BoardResponseDto {
     private Integer checks;
     private String majorGroupCodeId;
     private Integer hit;
+    private List<CommentResponseDto> comments;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static BoardResponseDto GetBoardDto(Board board, List<File> files) {
+    public static BoardResponseDto GetBoardDto(Board board, List<File> files, List<Comment> comments) {
         List<FileResponseDto> fileDtos = files.stream()
                 .map(file -> new FileResponseDto(
                         file.getId(),
@@ -35,6 +36,18 @@ public class BoardResponseDto {
                 ))
                 .collect(Collectors.toList());
 
+        List<CommentResponseDto> commentDtos = comments.stream()
+                .map(comment -> new CommentResponseDto(
+                        comment.getId(),
+                        comment.getBoard().getId(),
+                        comment.getContents(),
+                        comment.getChecks(),
+                        comment.getCheckUser().getId(),
+                        comment.getCreatedAt(),
+                        comment.getUpdatedAt()
+                ))
+                .collect(Collectors.toList());
+
         return new BoardResponseDto(
                 board.getId(),
                 board.getTitle(),
@@ -43,6 +56,7 @@ public class BoardResponseDto {
                 board.getChecks(),
                 board.getMajorGroupCode().getId(),
                 board.getHit(),
+                commentDtos,
                 board.getCreatedAt(),
                 board.getUpdatedAt()
         );
