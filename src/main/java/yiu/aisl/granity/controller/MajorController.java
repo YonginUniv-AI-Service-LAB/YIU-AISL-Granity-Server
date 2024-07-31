@@ -6,12 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import yiu.aisl.granity.domain.Major;
 import yiu.aisl.granity.domain.MajorGroup;
 import yiu.aisl.granity.domain.MajorGroupCode;
 import yiu.aisl.granity.dto.Request.*;
-import yiu.aisl.granity.dto.Response.MajorCurriculumResponseDto;
-import yiu.aisl.granity.dto.Response.MajorLabResponseDto;
-import yiu.aisl.granity.dto.Response.MajorMemberResponseDto;
+import yiu.aisl.granity.dto.Response.*;
 import yiu.aisl.granity.service.MajorService;
 
 import java.util.List;
@@ -43,6 +42,30 @@ public class MajorController {
     @PutMapping(value = "/manager/majorGroup", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<Boolean> majorGroupHidden(@RequestParam(value = "id") String id, @ModelAttribute MajorGroupRequestDto request) throws Exception {
         return new ResponseEntity<>(majorService.majorGroupHidden(id, request), HttpStatus.OK);
+    }
+
+    // 연혁 조회
+    @GetMapping(value = "/major/history")
+    public ResponseEntity<List<YearlyEvents>> getHistories(@RequestParam(value = "id") Major major) throws Exception {
+        return new ResponseEntity<>(majorService.getHistories(major), HttpStatus.OK);
+    }
+
+    // 연혁 등록
+    @PostMapping(value = "/manager/major/history", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Boolean> registerHistory(MajorHistoryRequestDto request) throws Exception {
+        return new ResponseEntity<>(majorService.registerHistory(request), HttpStatus.OK);
+    }
+
+    // 연혁 삭제
+    @DeleteMapping(value = "/manager/major/history")
+    public ResponseEntity<Boolean> deleteHistory(@RequestParam(value = "id") Integer id) throws Exception {
+        return new ResponseEntity<>(majorService.deleteHistory(id), HttpStatus.OK);
+    }
+
+    // 연혁 수정
+    @PutMapping(value = "/manager/major/history", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Boolean> updateHistory(@RequestParam(value = "id") Integer id, MajorHistoryRequestDto request) throws Exception {
+        return new ResponseEntity<>(majorService.updateHistory(id, request), HttpStatus.OK);
     }
 
     // 교수님 조회

@@ -25,6 +25,7 @@ public class MajorService {
     private final MajorCurriculumRepository majorCurriculumRepository;
     private final MajorLabRepository majorLabRepository;
     private final MajorGroupCodeRepository majorGroupCodeRepository;
+    private final MajorHistoryRepository majorHistoryRepository;
     private final UserRepository userRepository;
     private final UserMajorRepository userMajorRepository;
     private final NoticeRepository noticeRepository;
@@ -229,6 +230,70 @@ public class MajorService {
             }
         } catch (Exception e) {
             System.out.println(e);
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+        return true;
+    }
+
+    // [API] 연혁 조회
+    public List<YearlyEvents> getHistories(Major major) throws Exception {
+        List<MajorHistory> histories = majorHistoryRepository.findAllByMajor(major);
+        return MajorHistoryResponseDto.groupByYear(histories);
+    }
+
+
+    // [API] 연혁 등록
+    public Boolean registerHistory(MajorHistoryRequestDto request) throws Exception {
+        if(request.getMajor() == null || request.getYear() == null || request.getMonth() == null || request.getEvent().isEmpty()) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        Major major = majorRepository.findById(request.getMajor().getId()).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_ID));
+
+        try {
+            MajorHistory majorHistory = MajorHistory.builder()
+                    .major(major)
+                    .year(request.getYear())
+                    .month(request.getMonth())
+                    .event(request.getEvent())
+                    .build();
+
+            majorHistoryRepository.save(majorHistory);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+
+        return true;
+    }
+
+    // [API] 연혁 삭제
+    public Boolean deleteHistory(Integer id) throws Exception {
+        MajorHistory majorHistory = majorHistoryRepository.findById(id).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_ID));
+
+        majorHistoryRepository.deleteById(id);
+        return true;
+    }
+
+    // [API] 연혁 수정
+    public Boolean updateHistory(Integer id, MajorHistoryRequestDto request) throws Exception {
+        MajorHistory majorHistory = majorHistoryRepository.findById(id).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_ID));
+
+        if(request.getMajor() == null || request.getYear() == null || request.getMonth() == null || request.getEvent().isEmpty()) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        Major major = majorRepository.findById(request.getMajor().getId()).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_ID));
+
+        try {
+            majorHistory.setYear(request.getYear());
+            majorHistory.setMonth(request.getMonth());
+            majorHistory.setEvent(request.getEvent());
+            majorHistory.setMajor(major);
+        } catch (Exception e) {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
         return true;
