@@ -300,4 +300,15 @@ public class BoardService {
         pushService.registerPush(4, commentId, comment.getUser(), pushContents);
         return true;
     }
+
+    // [API] 조회수 증가
+    public Boolean makeHits(Integer boardId) throws Exception {
+        // 해당 게시글 없음 - 404
+        Board board = boardRepository.findById(boardId).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_ID));
+
+        board.setHit(board.getHit() + 1);
+
+        return true;
+    }
 }

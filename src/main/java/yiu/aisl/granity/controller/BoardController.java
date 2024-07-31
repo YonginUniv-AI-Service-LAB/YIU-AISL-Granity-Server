@@ -74,4 +74,10 @@ public class BoardController {
     public ResponseEntity<Boolean> rejectionComment(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam(value = "id") Integer commentId) throws Exception {
         return new ResponseEntity<>(boardService.rejectionComment(userDetails, commentId), HttpStatus.OK);
     }
+
+    // 조회수 증가
+    @PutMapping(value = "/board/hit")
+    public ResponseEntity<Boolean> makeHits(@RequestParam(value = "id") Integer boardId) throws Exception {
+        return new ResponseEntity<>(boardService.makeHits(boardId), HttpStatus.OK);
+    }
 }

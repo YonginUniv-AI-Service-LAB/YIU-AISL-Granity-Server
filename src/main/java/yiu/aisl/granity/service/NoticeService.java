@@ -299,4 +299,12 @@ public class NoticeService {
         notice.setStatus(2);
         return true;
     }
+
+    // [API] 조회수 증가
+    public Boolean makeHits(Integer noticeId) throws Exception {
+        Notice notice = noticeRepository.findById(noticeId).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_ID));
+        notice.setHit(notice.getHit() + 1);
+        return true;
+    }
 }

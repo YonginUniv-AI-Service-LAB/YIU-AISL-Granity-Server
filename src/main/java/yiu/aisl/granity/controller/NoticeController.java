@@ -54,4 +54,10 @@ public class NoticeController {
     public ResponseEntity<Boolean> rejectionNotice(@RequestParam(value = "id") Integer noticeId) throws Exception {
         return new ResponseEntity<>(noticeService.rejectionNotice(noticeId), HttpStatus.OK);
     }
+
+    // 조회수 증가
+    @PutMapping(value = "/notice/hit")
+    public ResponseEntity<Boolean> makeHits(@RequestParam(value = "id") Integer noticeId) throws Exception {
+        return new ResponseEntity<>(noticeService.makeHits(noticeId), HttpStatus.OK);
+    }
 }
