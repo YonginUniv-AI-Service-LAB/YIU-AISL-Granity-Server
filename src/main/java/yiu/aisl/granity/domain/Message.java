@@ -25,11 +25,11 @@ public class Message {
 
     @ManyToOne
     @JoinColumn(name = "from_user_id", nullable = false)
-    private User from_user_id;
+    private User fromUserId;
 
     @ManyToOne
     @JoinColumn(name = "to_user_id", nullable = false)
-    private User to_user_id;
+    private User toUserId;
 
     @CreationTimestamp
     @Column
