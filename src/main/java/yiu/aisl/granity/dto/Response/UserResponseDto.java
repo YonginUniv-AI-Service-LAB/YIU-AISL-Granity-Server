@@ -36,4 +36,20 @@ public class UserResponseDto {
                 .majors(majorDtos)
                 .build();
     }
+
+    public static UserResponseDto GetUserDto(User user) {
+        List<UserMajorResponseDto> majorDtos = user.getUserMajors().stream()
+                .map(UserMajorResponseDto::from)
+                .collect(Collectors.toList());
+
+        return new UserResponseDto(
+                user.getId(),
+                user.getName(),
+                user.getGrade(),
+                user.getRole(),
+                user.getStatus(),
+                user.getPush(),
+                majorDtos
+        );
+    }
 }

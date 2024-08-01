@@ -35,6 +35,26 @@ public class MajorService {
     private final FileService fileService;
     private final FileRepository fileRepository;
 
+    // [API] 전체 학과 조회
+    public List<MajorResponseDto> getMajors() throws Exception {
+        List<Major> majors = majorRepository.findAll();
+        List<MajorResponseDto> getListDto = new ArrayList<>();
+        for(Major code : majors) {
+            getListDto.add(MajorResponseDto.GetMajorDto(code));
+        }
+        return getListDto;
+    }
+
+    // [API] 학과 학생 조회
+    public List<UserResponseDto> getStudents(String majorGroupCode) throws Exception {
+        List<User> students = userRepository.findByRoleAndMajorGroupCode(1, majorGroupCode);
+        List<UserResponseDto> getListDto = new ArrayList<>();
+        for(User user : students) {
+            getListDto.add(UserResponseDto.GetUserDto(user));
+        }
+        return getListDto;
+    }
+
     // [API] 학과 정보 등록
     public boolean registerMajor(MajorRequestDto request) throws Exception {
         // 데이터 미입력 - 400
@@ -55,26 +75,6 @@ public class MajorService {
                     .updatedAt(LocalDateTime.now())
                     .build();
             majorRepository.save(major);
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
-        return true;
-    }
-
-    // [API] 학과 정보 수정
-    public boolean updateMajor(String majorId, MajorRequestDto request) throws Exception {
-        // 해당 데이터 없음 - 404
-        Major major = majorRepository.findById(majorId).orElseThrow(() ->
-                new CustomException(ErrorCode.NOT_EXIST_ID));
-
-        // 데이터 미입력 - 400
-        if(request.getMajor().isEmpty()) {
-            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
-        }
-
-        try {
-            major.setMajor(request.getMajor());
-            major.setUpdatedAt(LocalDateTime.now());
         } catch (Exception e) {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
@@ -131,6 +131,16 @@ public class MajorService {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
         return mkMajorGroup;
+    }
+
+    // [API] 학과 그룹 코드 조회
+    public List<MajorGroupCodeResponseDto> getMajorGroupCode() throws Exception {
+        List<MajorGroupCode> codes = majorGroupCodeRepository.findAll();
+        List<MajorGroupCodeResponseDto> getListDto = new ArrayList<>();
+        for(MajorGroupCode code : codes) {
+            getListDto.add(MajorGroupCodeResponseDto.GetMajorGroupCodeDto(code));
+        }
+        return getListDto;
     }
 
     // [API] 학과 그룹 hidden 처리 (hidden 컬럼 0 -> 1)

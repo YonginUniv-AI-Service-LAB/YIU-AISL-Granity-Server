@@ -20,22 +20,34 @@ import java.util.List;
 public class MajorController {
     private final MajorService majorService;
 
+    // 전체 학과 조회
+    @GetMapping(value = "/major")
+    public List<MajorResponseDto> getMajors() throws Exception {
+        return new ResponseEntity<>(majorService.getMajors(), HttpStatus.OK).getBody();
+    }
+
+    // 학과 학생 조회
+    @GetMapping(value = "/manager/major/student")
+    public List<UserResponseDto> getStudents(@RequestParam(value = "id") String id) throws Exception {
+        return new ResponseEntity<>(majorService.getStudents(id), HttpStatus.OK).getBody();
+    }
+
     // 학과 정보 등록
     @PostMapping(value = "/manager/major", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<Boolean> registerMajor(MajorRequestDto request) throws Exception {
         return new ResponseEntity<>(majorService.registerMajor(request), HttpStatus.OK);
     }
 
-    // 학과 정보 수정
-    @PutMapping(value = "/manager/major", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<Boolean> updateMajor(@RequestParam(value = "id") String majorId, MajorRequestDto request) throws Exception {
-        return new ResponseEntity<>(majorService.updateMajor(majorId, request), HttpStatus.OK);
-    }
-
     // 학과 그룹 생성
     @PostMapping(value = "/manager/majorGroup", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<MajorGroupCode> registerMajorGroup(MajorGroupRequestDto request) throws Exception {
         return new ResponseEntity<>(majorService.registerMajorGroup(request), HttpStatus.OK);
+    }
+
+    // 학과 그룹 코드 조회
+    @GetMapping(value = "/majorGroupCode")
+    public List<MajorGroupCodeResponseDto> getMajorGroupCode() throws Exception {
+        return new ResponseEntity<>(majorService.getMajorGroupCode(), HttpStatus.OK).getBody();
     }
 
     // 학과 그룹 hidden 처리 (hidden 컬럼 0 -> 1)
