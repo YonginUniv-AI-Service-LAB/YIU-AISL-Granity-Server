@@ -26,6 +26,7 @@ public class UserService {
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
     private final FileRepository fileRepository;
+    private final UserGraduationRepository userGraduationRepository;
 
     // [API] 알림내역 조회(종 모양의 붉은 점 여부 - 쪽지 알림은 제외)
     public List<PushResponseDto> getMyPushList(CustomUserDetails userDetails) throws Exception {
@@ -123,6 +124,18 @@ public class UserService {
             getListDto.add(MessageResponseDto.GetMessageDto(message));
         }
 
+        return getListDto;
+    }
+
+    // [API] 내 졸업 요건 조회
+    public List<UserGraduationResponseDto> getMyGraduations(CustomUserDetails userDetails) throws Exception {
+        User user = userDetails.getUser();
+        List<UserGraduation> userGraduations = userGraduationRepository.findByUser(user);
+        List<UserGraduationResponseDto> getListDto = new ArrayList<>();
+        for(UserGraduation userGraduation : userGraduations) {
+            List<File> files = fileRepository.findAllByTypeAndTypeId(6, userGraduation.getId());
+            getListDto.add(UserGraduationResponseDto.GetUserGraduationDto(userGraduation, files));
+        }
         return getListDto;
     }
 }

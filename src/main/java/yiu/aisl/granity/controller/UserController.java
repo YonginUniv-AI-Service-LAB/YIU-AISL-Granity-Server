@@ -1,6 +1,7 @@
 package yiu.aisl.granity.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -59,5 +60,11 @@ public class UserController {
     @GetMapping(value = "/user/message")
     public ResponseEntity<List<MessageResponseDto>> getMyMessages(@AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
         return new ResponseEntity<>(userService.getMyMessages(userDetails), HttpStatus.OK);
+    }
+
+    // 내 졸업 요건 조회
+    @GetMapping(value = "/user/graduation")
+    public ResponseEntity<List<UserGraduationResponseDto>> getMyGraduations(@AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+        return new ResponseEntity<>(userService.getMyGraduations(userDetails), HttpStatus.OK);
     }
 }
