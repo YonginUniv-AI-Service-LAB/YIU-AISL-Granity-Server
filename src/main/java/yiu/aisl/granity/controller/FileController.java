@@ -45,9 +45,11 @@ public class FileController {
 
         String saveName = generateSaveFilename(multipartFile.getOriginalFilename());
         String today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMdd"));
+        Path directoryPath = uploadPath.resolve(today);
         Path filePath = uploadPath.resolve(today).resolve(saveName);  // Correctly build the path
-        File uploadFile = filePath.toFile();
 
+        makeDirectories(directoryPath);
+        File uploadFile = filePath.toFile();
         try {
             multipartFile.transferTo(uploadFile);
         } catch (IOException e) {
