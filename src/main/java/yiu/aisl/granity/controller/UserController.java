@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import yiu.aisl.granity.config.CustomUserDetails;
 import yiu.aisl.granity.dto.Request.UserMajorRequestDto;
 import yiu.aisl.granity.dto.Request.UserRequestDto;
-import yiu.aisl.granity.dto.Response.BoardResponseDto;
-import yiu.aisl.granity.dto.Response.CommentResponseDto;
-import yiu.aisl.granity.dto.Response.PushResponseDto;
-import yiu.aisl.granity.dto.Response.UserResponseDto;
+import yiu.aisl.granity.dto.Response.*;
 import yiu.aisl.granity.service.UserService;
 
 import java.util.List;
@@ -56,5 +53,11 @@ public class UserController {
     @PutMapping(value = "/user", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<Boolean> updateProfile(@AuthenticationPrincipal CustomUserDetails userDetails, UserRequestDto request) throws Exception {
         return new ResponseEntity<>(userService.updateProfile(userDetails, request), HttpStatus.OK);
+    }
+
+    // 내가 받은 쪽지 내역 조회
+    @GetMapping(value = "/user/message")
+    public ResponseEntity<List<MessageResponseDto>> getMyMessages(@AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+        return new ResponseEntity<>(userService.getMyMessages(userDetails), HttpStatus.OK);
     }
 }

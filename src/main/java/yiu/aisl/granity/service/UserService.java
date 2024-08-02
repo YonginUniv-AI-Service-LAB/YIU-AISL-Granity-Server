@@ -7,10 +7,7 @@ import yiu.aisl.granity.config.CustomUserDetails;
 import yiu.aisl.granity.domain.*;
 import yiu.aisl.granity.dto.Request.UserMajorRequestDto;
 import yiu.aisl.granity.dto.Request.UserRequestDto;
-import yiu.aisl.granity.dto.Response.BoardResponseDto;
-import yiu.aisl.granity.dto.Response.CommentResponseDto;
-import yiu.aisl.granity.dto.Response.PushResponseDto;
-import yiu.aisl.granity.dto.Response.UserResponseDto;
+import yiu.aisl.granity.dto.Response.*;
 import yiu.aisl.granity.exception.CustomException;
 import yiu.aisl.granity.exception.ErrorCode;
 import yiu.aisl.granity.repository.*;
@@ -24,12 +21,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final UserMajorRepository userMajorRepository;
+    private final MessageRepository messageRepository;
     private final PushRepository pushRepository;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
     private final FileRepository fileRepository;
-    private final PushService pushService;
 
     // [API] 알림내역 조회(종 모양의 붉은 점 여부 - 쪽지 알림은 제외)
     public List<PushResponseDto> getMyPushList(CustomUserDetails userDetails) throws Exception {
@@ -112,5 +108,21 @@ public class UserService {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
         return true;
+    }
+
+    // [API] 내가 받은 쪽지 내역 조회
+    public List<MessageResponseDto> getMyMessages(CustomUserDetails userDetails) throws Exception {
+        // 해당 유저 없음 - 404
+        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_MEMBER));
+
+        List<Message> messages = messageRepository.findByToUserId(user);
+
+        List<MessageResponseDto> getListDto = new ArrayList<>();
+        for(Message message : messages) {
+            getListDto.add(MessageResponseDto.GetMessageDto(message));
+        }
+
+        return getListDto;
     }
 }
