@@ -144,113 +144,124 @@ public class MajorService {
     }
 
     // [API] 학과 그룹 hidden 처리 (hidden 컬럼 0 -> 1)
-    public Boolean majorGroupHidden(String id, MajorGroupRequestDto request) throws Exception {
-        // 히든 처리 하기 위한 majorGroupCode
-        MajorGroupCode majorGroupCode = majorGroupCodeRepository.findById(id).orElseThrow(() ->
-                new CustomException(ErrorCode.NOT_EXIST_ID));
-        majorGroupCode.setHidden(1);
-        String code = majorGroupCode.getId();
-
-        // 기존 코드를 이용한 major
-        Major major = majorRepository.findById(code).orElseThrow();
-
-        // 새롭게 추가된 majorGroupCode
-        MajorGroupCode mkMajorGroupCode = registerMajorGroup(request);
-
-        // 새롭게 추가된 majorGroup
-        MajorGroup mkMajorGroup = majorGroupRepository.findSingleByCode(mkMajorGroupCode.getId());
-
-        // 바꿔줘야할 majorGroup List
-        List<MajorGroup> majorGroups = majorGroupRepository.findByCode(code);
-
-        // 바꿔줘야할 user List
-        List<User> assistants = userRepository.findByRoleAndMajor(2, major); // 조교
-        List<User> professors = userRepository.findByRoleAndMajor(3, major); // 교수
-
-        // 바꿔줘야할 notice List
-        List<Notice> notices = noticeRepository.findByMajorGroupCode(majorGroupCode);
-
-        // 바꿔줘야할 majorMember List
-        List<MajorMember> majorMembers = majorMemberRepository.findByMajorGroupCode(majorGroupCode);
-
-        // 바꿔줘야할 majorLab List
-        List<MajorLab> majorLabs = majorLabRepository.findByMajorGroupCode(majorGroupCode);
-
-        // 바꿔줘야할 majorCurriculum List
-        List<MajorCurriculum> majorCurriculums = majorCurriculumRepository.findByMajorGroupCode(majorGroupCode);
-
-        // 바꿔줘야할 board List
-        List<Board> boards = boardRepository.findByMajorGroupCode(majorGroupCode);
-
-        // 바꿔줘야할 FAQ List
-        List<Faq> faqs = faqRepository.findByMajorGroupCode(majorGroupCode);
+    public Boolean majorGroupHidden(MajorGroupRequestDto request) throws Exception {
+        // 히든 처리 하기 위한 majorGroupCode 리스트
+        List<MajorGroupCode> majorGroupCodes = majorGroupCodeRepository.findAllById(request.getCodes());
 
         try {
-            for(MajorGroup mg : majorGroups) {
-                mg.setCode(mkMajorGroup.getCode());
-                majorGroupRepository.save(mg);
-            }
-            // UserMajor 업데이트 (조교)
-            for (User user : assistants) {
-                List<UserMajor> userMajors = userMajorRepository.findByUser(user);
-                for (UserMajor userMajor : userMajors) {
-                    userMajor.setMajor(mkMajorGroup.getMajor());
-                    userMajorRepository.save(userMajor);
+            // 새롭게 추가된 majorGroupCode
+            MajorGroupCode mkMajorGroupCode = registerMajorGroup(request);
+
+            for (MajorGroupCode majorGroupCode : majorGroupCodes) {
+                majorGroupCode.setHidden(1);
+
+                String code = majorGroupCode.getId();
+                System.out.println("code 값 출력 확인 : " +code);
+
+                // 기존 코드를 이용한 major
+                Major major = majorRepository.findById(code).orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_ID));
+
+                // 새롭게 추가된 majorGroup
+                List<MajorGroup> mkMajorGroup = majorGroupRepository.findByCode(mkMajorGroupCode.getId());
+
+                // 바꿔줘야할 majorGroup List
+                List<MajorGroup> majorGroups = majorGroupRepository.findByCode(code);
+
+                // 바꿔줘야할 user List
+                List<User> assistants = userRepository.findByRoleAndMajor(2, major); // 조교
+                List<User> professors = userRepository.findByRoleAndMajor(3, major); // 교수
+
+                // 바꿔줘야할 notice List
+                List<Notice> notices = noticeRepository.findByMajorGroupCode(majorGroupCode);
+
+                // 바꿔줘야할 majorMember List
+                List<MajorMember> majorMembers = majorMemberRepository.findByMajorGroupCode(majorGroupCode);
+
+                // 바꿔줘야할 majorLab List
+                List<MajorLab> majorLabs = majorLabRepository.findByMajorGroupCode(majorGroupCode);
+
+                // 바꿔줘야할 majorCurriculum List
+                List<MajorCurriculum> majorCurriculums = majorCurriculumRepository.findByMajorGroupCode(majorGroupCode);
+
+                // 바꿔줘야할 board List
+                List<Board> boards = boardRepository.findByMajorGroupCode(majorGroupCode);
+
+                // 바꿔줘야할 FAQ List
+                List<Faq> faqs = faqRepository.findByMajorGroupCode(majorGroupCode);
+
+                // Update 관련 엔티티들
+                for (MajorGroup mg : majorGroups) {
+                    mg.setCode(mkMajorGroup.get(0).getCode());
+                    majorGroupRepository.save(mg);
                 }
-            }
-            // UserMajor 업데이트 (교수)
-            for (User user : professors) {
-                List<UserMajor> userMajors = userMajorRepository.findByUser(user);
-                for (UserMajor userMajor : userMajors) {
-                    userMajor.setMajor(mkMajorGroup.getMajor());
-                    userMajorRepository.save(userMajor);
+
+                // UserMajor 업데이트 (조교)
+                for (User user : assistants) {
+                    List<UserMajor> userMajors = userMajorRepository.findByUser(user);
+                    for (UserMajor userMajor : userMajors) {
+                        userMajor.setMajor(mkMajorGroup.get(0).getMajor());
+                        userMajorRepository.save(userMajor);
+                    }
                 }
-            }
-            // Notice 업데이트
-            for(Notice notice : notices) {
-                System.out.println("notice 업데이트 진입");
-                notice.setMajorGroupCode(mkMajorGroupCode);
-                noticeRepository.save(notice);
-            }
-            // majorMember 업데이트
-            for(MajorMember majorMember : majorMembers) {
-                System.out.println("majorMember 업데이트 진입");
-                majorMember.setMajorGroupCode(mkMajorGroupCode);
-                majorMemberRepository.save(majorMember);
-            }
-            // majorLab 업데이트
-            for(MajorLab majorLab : majorLabs) {
-                majorLab.setMajorGroupCode(mkMajorGroupCode);
-                majorLabRepository.save(majorLab);
-            }
-            // majorCurriculum 업데이트
-            for(MajorCurriculum majorCurriculum : majorCurriculums) {
-                majorCurriculum.setMajorGroupCode(mkMajorGroupCode);
-                majorCurriculumRepository.save(majorCurriculum);
-            }
-            // board 업데이트
-            for(Board board : boards) {
-                board.setMajorGroupCode(mkMajorGroupCode);
-                boardRepository.save(board);
-            }
-            // faq 업데이트
-            for(Faq faq : faqs) {
-                faq.setMajorGroupCode(mkMajorGroupCode);
-                faqRepository.save(faq);
+
+                // UserMajor 업데이트 (교수)
+                for (User user : professors) {
+                    List<UserMajor> userMajors = userMajorRepository.findByUser(user);
+                    for (UserMajor userMajor : userMajors) {
+                        userMajor.setMajor(mkMajorGroup.get(0).getMajor());
+                        userMajorRepository.save(userMajor);
+                    }
+                }
+
+                // Notice 업데이트
+                for (Notice notice : notices) {
+                    notice.setMajorGroupCode(mkMajorGroupCode);
+                    noticeRepository.save(notice);
+                }
+
+                // majorMember 업데이트
+                for (MajorMember majorMember : majorMembers) {
+                    majorMember.setMajorGroupCode(mkMajorGroupCode);
+                    majorMemberRepository.save(majorMember);
+                }
+
+                // majorLab 업데이트
+                for (MajorLab majorLab : majorLabs) {
+                    majorLab.setMajorGroupCode(mkMajorGroupCode);
+                    majorLabRepository.save(majorLab);
+                }
+
+                // majorCurriculum 업데이트
+                for (MajorCurriculum majorCurriculum : majorCurriculums) {
+                    majorCurriculum.setMajorGroupCode(mkMajorGroupCode);
+                    majorCurriculumRepository.save(majorCurriculum);
+                }
+
+                // board 업데이트
+                for (Board board : boards) {
+                    board.setMajorGroupCode(mkMajorGroupCode);
+                    boardRepository.save(board);
+                }
+
+                // FAQ 업데이트
+                for (Faq faq : faqs) {
+                    faq.setMajorGroupCode(mkMajorGroupCode);
+                    faqRepository.save(faq);
+                }
             }
         } catch (Exception e) {
-            System.out.println(e);
-            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+            throw new Exception(e);
         }
+        System.out.println("성공");
         return true;
     }
+
 
     // [API] 연혁 조회
     public List<YearlyEvents> getHistories(Major major) throws Exception {
         List<MajorHistory> histories = majorHistoryRepository.findAllByMajor(major);
         return MajorHistoryResponseDto.groupByYear(histories);
     }
-
 
     // [API] 연혁 등록
     public Boolean registerHistory(MajorHistoryRequestDto request) throws Exception {

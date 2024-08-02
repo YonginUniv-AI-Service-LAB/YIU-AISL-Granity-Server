@@ -52,8 +52,8 @@ public class MajorController {
 
     // 학과 그룹 hidden 처리 (hidden 컬럼 0 -> 1)
     @PutMapping(value = "/manager/majorGroup", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<Boolean> majorGroupHidden(@RequestParam(value = "id") String id, @ModelAttribute MajorGroupRequestDto request) throws Exception {
-        return new ResponseEntity<>(majorService.majorGroupHidden(id, request), HttpStatus.OK);
+    public ResponseEntity<Boolean> majorGroupHidden(MajorGroupRequestDto request) throws Exception {
+        return new ResponseEntity<>(majorService.majorGroupHidden(request), HttpStatus.OK);
     }
 
     // 연혁 조회
