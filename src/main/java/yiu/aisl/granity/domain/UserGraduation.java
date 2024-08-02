@@ -27,14 +27,13 @@ public class UserGraduation {
     @JoinColumn(name = "major_graduation_id", nullable = false)
     private MajorGraduation majorGraduation;
 
-    @Column(nullable = false)
-    @ColumnDefault("0")
+    @Column
     private Integer status;
 
-    @Column(nullable = false)
+    @Column
     private String contents;
 
-    @Column(nullable = false)
+    @Column
     private String file;
 
     @Column
