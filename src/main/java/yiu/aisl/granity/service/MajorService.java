@@ -534,7 +534,7 @@ public class MajorService {
     // [API] 커리큘럼 등록
     public Boolean registerCurriculum(MajorCurriculumRequestDto request) throws Exception {
         // 데이터 없음 - 400
-        if(request.getSubject().isEmpty() || request.getClassification() == null || request.getGrade() == null || request.getSemester() == null ||
+        if(request.getContents().isEmpty() || request.getSubject().isEmpty() || request.getClassification() == null || request.getGrade() == null || request.getSemester() == null ||
         request.getCode() == null || request.getCredit() == null || request.getTheory() == null || request.getPractice() == null || request.getHidden() == null || request.getRequired() == null) {
             throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
         }
@@ -560,6 +560,7 @@ public class MajorService {
                     .practice(request.getPractice())
                     .hidden(request.getHidden())
                     .required(request.getRequired())
+                    .contents(request.getContents())
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build();
@@ -604,6 +605,7 @@ public class MajorService {
             curriculum.setPractice(request.getPractice());
             curriculum.setHidden(request.getHidden());
             curriculum.setRequired(request.getRequired());
+            curriculum.setContents(request.getContents());
         } catch (Exception e) {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }

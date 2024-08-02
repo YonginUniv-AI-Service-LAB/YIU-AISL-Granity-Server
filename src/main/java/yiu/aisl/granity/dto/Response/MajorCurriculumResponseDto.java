@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class MajorCurriculumResponseDto {
     private Integer id;
     private String subject;
+    private String contents;
     private Integer classification;
     private Integer grade;
     private Integer semester;
@@ -29,6 +30,7 @@ public class MajorCurriculumResponseDto {
         return new MajorCurriculumResponseDto(
                 majorCurriculum.getId(),
                 majorCurriculum.getSubject(),
+                majorCurriculum.getContents(),
                 majorCurriculum.getClassification(),
                 majorCurriculum.getGrade(),
                 majorCurriculum.getSemester(),

@@ -15,6 +15,7 @@ public class MajorCurriculumRequestDto {
     private Integer credit;
     private Integer theory;
     private Integer practice;
+    private String contents;
     private Integer hidden;
     private Integer required;
 }
