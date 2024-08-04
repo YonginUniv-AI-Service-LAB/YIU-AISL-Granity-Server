@@ -20,4 +20,11 @@ public interface UserRepository extends JpaRepository<User, String> {
             "JOIN MajorGroup mg ON m.id = mg.major.id " +
             "WHERE u.role = :role AND mg.code = :code")
     List<User> findByRoleAndMajorGroupCode(@Param("role") int role, @Param("code")String code);
+
+    @Query("SELECT u FROM User u " +
+            "JOIN u.userMajors um " +
+            "JOIN um.major m " +
+            "JOIN MajorGroup mg ON m.id = mg.major.id " +
+            "WHERE u.status = :status AND mg.code = :code")
+    List<User> findByStatusAndMajorGroupCode(@Param("status") int status, @Param("code")String code);
 }

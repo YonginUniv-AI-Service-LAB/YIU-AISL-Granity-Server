@@ -11,6 +11,9 @@ import yiu.aisl.granity.domain.Major;
 import yiu.aisl.granity.dto.Request.MajorGraduationRequestDto;
 import yiu.aisl.granity.dto.Request.UserGraduationRequestDto;
 import yiu.aisl.granity.dto.Response.MajorGraduationResponseDto;
+import yiu.aisl.granity.dto.Response.UserGraduationGroupResponseDto;
+import yiu.aisl.granity.dto.Response.UserGraduationResponseDto;
+import yiu.aisl.granity.dto.Response.UserResponseDto;
 import yiu.aisl.granity.service.GraduationService;
 
 import java.util.List;
@@ -19,6 +22,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GraduationController {
     private final GraduationService graduationService;
+
+    // 졸업요건 처리현황 조회
+    @GetMapping(value = "/manager/graduation")
+    public ResponseEntity<List<UserGraduationGroupResponseDto>> getUserGraduationStatus(@RequestParam(value = "id") String id) throws Exception {
+        return new ResponseEntity<>(graduationService.getUserGraduationStatus(id), HttpStatus.OK);
+    }
 
     // 졸업요건 조회
     @GetMapping(value = "/manager/graduation/requirement")
@@ -72,5 +81,11 @@ public class GraduationController {
     @PutMapping(value = "/manager/graduation/rejection", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<Boolean> rejectionGraduation(@RequestParam(value = "id") Integer id, UserGraduationRequestDto request) throws Exception {
         return new ResponseEntity<>(graduationService.rejectionGraduation(id, request), HttpStatus.OK);
+    }
+
+    // 졸업 예정자 조회
+    @GetMapping(value = "/manager/graduation/student")
+    public ResponseEntity<List<UserResponseDto>> getGraduationStudents(@RequestParam("id") String id) throws Exception {
+        return new ResponseEntity<>(graduationService.getGraduationStudents(id), HttpStatus.OK);
     }
 }

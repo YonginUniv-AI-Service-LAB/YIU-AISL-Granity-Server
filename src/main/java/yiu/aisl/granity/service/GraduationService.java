@@ -9,19 +9,16 @@ import yiu.aisl.granity.domain.*;
 import yiu.aisl.granity.dto.Request.FileRequestDto;
 import yiu.aisl.granity.dto.Request.MajorGraduationRequestDto;
 import yiu.aisl.granity.dto.Request.UserGraduationRequestDto;
-import yiu.aisl.granity.dto.Response.FaqResponseDto;
-import yiu.aisl.granity.dto.Response.FileResponseDto;
-import yiu.aisl.granity.dto.Response.MajorGraduationResponseDto;
+import yiu.aisl.granity.dto.Response.*;
 import yiu.aisl.granity.exception.CustomException;
 import yiu.aisl.granity.exception.ErrorCode;
-import yiu.aisl.granity.repository.MajorGraduationRepository;
-import yiu.aisl.granity.repository.MajorRepository;
-import yiu.aisl.granity.repository.UserGraduationRepository;
-import yiu.aisl.granity.repository.UserRepository;
+import yiu.aisl.granity.repository.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -34,6 +31,42 @@ public class GraduationService {
     private final PushService pushService;
     private final FileController fileController;
     private final FileService fileService;
+    private final FileRepository fileRepository;
+
+    // [API] 졸업요건 처리 현황 조회
+    public List<UserGraduationGroupResponseDto> getUserGraduationStatus(String id) throws Exception {
+        // 특정 상태와 전공 그룹 코드를 가진 사용자 목록 조회
+        List<User> users = userRepository.findByStatusAndMajorGroupCode(3, id);
+        // 사용자별 졸업 요건 DTO를 저장할 맵 생성
+        Map<String, List<UserGraduationResponseDto>> userGraduationMap = new HashMap<>();
+
+        // 각 사용자에 대해 반복
+        for (User user : users) {
+            // 해당 사용자의 졸업 요건 목록 조회
+            List<UserGraduation> userGraduations = userGraduationRepository.findByUser(user);
+
+            // 각 졸업 요건에 대해 반복
+            for (UserGraduation userGraduation : userGraduations) {
+                // 졸업 요건과 관련된 파일 목록 조회
+                List<File> files = fileRepository.findAllByTypeAndTypeId(6, userGraduation.getId());
+                // 졸업 요건 DTO 생성
+                UserGraduationResponseDto dto = UserGraduationResponseDto.GetUserGraduationDto(userGraduation, files);
+
+                // 맵에 사용자별로 졸업 요건 DTO 추가
+                userGraduationMap
+                        .computeIfAbsent(user.getId(), k -> new ArrayList<>())
+                        .add(dto);
+            }
+        }
+
+        // 사용자별 그룹화된 응답 생성
+        List<UserGraduationGroupResponseDto> groupedResponse = new ArrayList<>();
+        for (Map.Entry<String, List<UserGraduationResponseDto>> entry : userGraduationMap.entrySet()) {
+            groupedResponse.add(new UserGraduationGroupResponseDto(entry.getKey(), entry.getValue()));
+        }
+
+        return groupedResponse;
+    }
 
     // [API] 졸업요건 조회
     public List<MajorGraduationResponseDto> getMajorGraduations(Major id) throws Exception {
@@ -206,5 +239,17 @@ public class GraduationService {
 
         pushService.registerPush(6, userGraduation.getId(), userGraduation.getUser(), "제출한 졸업 요건이 반려되었습니다. 피드백 확인 후 다시 제출해주세요.");
         return true;
+    }
+
+    // [API] 졸업 예정자 조회
+    public List<UserResponseDto> getGraduationStudents(String id) throws Exception {
+        List<User> users = userRepository.findByStatusAndMajorGroupCode(3, id);
+
+        List<UserResponseDto> getListDto = new ArrayList<>();
+        for(User user : users) {
+            getListDto.add(UserResponseDto.GetUserDto(user));
+        }
+
+        return getListDto;
     }
 }
