@@ -31,4 +31,10 @@ public class MessageController {
     public ResponseEntity<Boolean> sendMessage(@AuthenticationPrincipal CustomUserDetails userDetails, MessageRequestDto request) throws Exception {
         return new ResponseEntity<>(messageService.sendMessage(userDetails, request), HttpStatus.OK);
     }
+
+    // 쪽지 보내기(다중)
+    @PostMapping(value = "/manager/messages", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Boolean> sendMessages(@AuthenticationPrincipal CustomUserDetails userDetails, MessageRequestDto request) throws Exception {
+        return new ResponseEntity<>(messageService.sendMessages(userDetails, request), HttpStatus.OK);
+    }
 }

@@ -68,4 +68,38 @@ public class MessageService {
         }
         return true;
     }
+
+    // [API] 쪽지 보내기(다중)
+    public Boolean sendMessages(CustomUserDetails userDetails, MessageRequestDto request) throws Exception {
+        if(request.getTitle().isEmpty() || request.getContents().isEmpty() || request.getToUserIds() == null) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        try {
+            User toUserId;
+            for(User user : request.getToUserIds()) {
+                toUserId = user;
+                if(!userRepository.existsById(toUserId.getId())) {
+                    throw new CustomException(ErrorCode.NOT_EXIST_MEMBER);
+                }
+
+                Message message = Message.builder()
+                        .title(request.getTitle())
+                        .contents(request.getContents())
+                        .fromUserId(userDetails.getUser())
+                        .toUserId(toUserId)
+                        .createdAt(LocalDateTime.now())
+                        .build();
+
+                Message mkMessage = messageRepository.save(message);
+
+                String pushMessage = "쪽지가 왔습니다. 확인해주세요.";
+                pushService.registerPush(2, mkMessage.getId(), toUserId, pushMessage);
+            }
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+
+        return true;
+    }
 }
