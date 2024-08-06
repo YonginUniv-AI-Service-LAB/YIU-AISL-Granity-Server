@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 public class UserGraduationRequestDto {
+    private List<Integer> ids;
     private List<User> users;
 //    private User user;
     private Integer target;

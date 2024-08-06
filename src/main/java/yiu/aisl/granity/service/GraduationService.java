@@ -167,10 +167,25 @@ public class GraduationService {
         return true;
     }
 
-    // [API] 학생 졸업 요건 삭제
-//    public Boolean deleteStudentGraduation(UserGraduationRequestDto request) throws Exception {
-//
-//    }
+    // [API] 학생 졸업 요건 삭제 (특정 학생의 특정 졸업 요건 삭제)
+    public Boolean deleteStudentGraduation(Integer id) throws Exception {
+        UserGraduation userGraduation = userGraduationRepository.findById(id).orElseThrow(() ->
+                new CustomException(ErrorCode.NOT_EXIST_ID));
+
+        userGraduationRepository.deleteById(userGraduation.getId());
+        return true;
+    }
+
+    // [API] 학생 졸업 요건 삭제 (선택된 졸업 요건 삭제)
+    public Boolean deleteStudentGraduationSelected(UserGraduationRequestDto request) throws Exception {
+        List<Integer> userGraduations = request.getIds();
+
+        for(Integer userGraduation : userGraduations) {
+            userGraduationRepository.deleteById(userGraduation);
+        }
+
+        return true;
+    }
 
     // [API] 졸업 요건 제출
     public Boolean applyGraduation(CustomUserDetails userDetails, Integer id, Major major, UserGraduationRequestDto request) throws Exception {

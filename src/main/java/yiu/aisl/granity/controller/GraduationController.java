@@ -59,11 +59,17 @@ public class GraduationController {
         return new ResponseEntity<>(graduationService.registerStudentGraduation(request), HttpStatus.OK);
     }
 
-    // 학생 졸업 요건 삭제
-//    @DeleteMapping(value = "/manager/student/graduation")
-//    public ResponseEntity<Boolean> deleteStudentGraduation(@RequestParam(value = "id") Integer id) throws Exception {
-//        return new ResponseEntity<>(graduationService.deleteStudentGraduation(id), HttpStatus.OK);
-//    }
+    // 학생 졸업 요건 삭제 (특정 학생의 특정 졸업 요건 삭제)
+    @DeleteMapping(value = "/manager/student/graduation")
+    public ResponseEntity<Boolean> deleteStudentGraduation(@RequestParam(value = "id") Integer id) throws Exception {
+        return new ResponseEntity<>(graduationService.deleteStudentGraduation(id), HttpStatus.OK);
+    }
+
+    // 학생 졸업 요건 삭제 (선택된 졸업 요건 삭제)
+    @DeleteMapping(value = "/manager/student/graduations", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Boolean> deleteStudentGraduationSelected(UserGraduationRequestDto request) throws Exception {
+        return new ResponseEntity<>(graduationService.deleteStudentGraduationSelected(request), HttpStatus.OK);
+    }
 
     // 졸업 요건 제출
     @PostMapping(value = "/graduation/apply", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
