@@ -26,19 +26,19 @@ public class NoticeController {
     }
 
     // 공지 및 뉴스 등록
-    @PostMapping(value = "/notice", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/user/notice", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Boolean> postNotice(@AuthenticationPrincipal CustomUserDetails userDetails, NoticeRequestDto request) throws Exception {
         return new ResponseEntity<Boolean>(noticeService.postNotice(userDetails, request), HttpStatus.OK);
     }
 
     // 공지 및 뉴스 삭제
-    @DeleteMapping(value = "/notice")
+    @DeleteMapping(value = "/user/notice")
     public ResponseEntity<Boolean> deleteNotice(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam(value = "id") Integer noticeId) throws Exception {
         return new ResponseEntity<Boolean>(noticeService.deleteNotice(userDetails, noticeId), HttpStatus.OK);
     }
 
     // 공지 및 뉴스 수정
-    @PutMapping(value = "/notice", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/user/notice", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Boolean> updateNotice(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam(value = "id") Integer noticeId, NoticeRequestDto request) throws Exception {
         return new ResponseEntity<>(noticeService.updateNotice(userDetails, noticeId, request), HttpStatus.OK);
     }
