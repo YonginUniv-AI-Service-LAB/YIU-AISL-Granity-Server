@@ -19,6 +19,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.collect.Lists.reverse;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -41,7 +43,7 @@ public class BoardService {
             List<Comment> comments = commentRepository.findByBoard(board);
             getListDto.add(BoardResponseDto.GetBoardDto(board, files, comments));
         }
-        return getListDto;
+        return reverse(getListDto);
     }
 
     // [API] 게시글 등록

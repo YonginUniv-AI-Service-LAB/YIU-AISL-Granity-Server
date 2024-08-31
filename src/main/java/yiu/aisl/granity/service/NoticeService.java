@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.google.common.collect.Lists.reverse;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -45,7 +47,7 @@ public class NoticeService {
             } else files = fileRepository.findAllByTypeAndTypeId(1, notice.getId());
             getListDto.add(NoticeResponseDto.GetNoticeDto(notice, files));
         }
-        return getListDto;
+        return reverse(getListDto);
     }
 
     // [API] 공지 및 뉴스 등록
