@@ -1,6 +1,7 @@
 package yiu.aisl.granity.controller;
 
 import com.google.api.Http;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,6 +12,8 @@ import yiu.aisl.granity.domain.MajorGroup;
 import yiu.aisl.granity.domain.MajorGroupCode;
 import yiu.aisl.granity.dto.Request.*;
 import yiu.aisl.granity.dto.Response.*;
+import yiu.aisl.granity.exception.CustomException;
+import yiu.aisl.granity.exception.ErrorCode;
 import yiu.aisl.granity.service.MajorService;
 
 import java.util.List;
@@ -24,6 +27,11 @@ public class MajorController {
     @GetMapping(value = "/major")
     public List<MajorResponseDto> getMajors() throws Exception {
         return new ResponseEntity<>(majorService.getMajors(), HttpStatus.OK).getBody();
+    }
+
+    @GetMapping(value = "/major/detail")
+    public MajorGroupResponseDto getMajorDetail(@RequestParam(value = "id") Major id) throws Exception {
+        return new ResponseEntity<>(majorService.getMajorDetail(id), HttpStatus.OK).getBody();
     }
 
     // 학과 학생 조회
@@ -122,7 +130,7 @@ public class MajorController {
         return new ResponseEntity<>(majorService.deleteCouncil(majorMemberId), HttpStatus.OK);
     }
 
-    // 학생회 삭제
+    // 학생회 수정
     @PutMapping(value = "/manager/major/council", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Boolean> updateCouncil(@RequestParam(value = "id") Integer majorMemberId, MajorMemberRequestDto request) throws Exception {
         return new ResponseEntity<>(majorService.updateCouncil(majorMemberId, request), HttpStatus.OK);

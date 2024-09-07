@@ -14,6 +14,8 @@ import yiu.aisl.granity.repository.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -43,6 +45,24 @@ public class MajorService {
             getListDto.add(MajorResponseDto.GetMajorDto(code));
         }
         return getListDto;
+    }
+
+    // [API] 학과 상세 조회
+    public MajorGroupResponseDto getMajorDetail(Major id) throws Exception {
+        MajorGroup majorGroup = majorGroupRepository.findByMajor(id);
+
+        List<MajorGroup> majorGroups = majorGroupRepository.findByCode(majorGroup.getCode());
+        System.out.println(majorGroups);
+        List<String> majorIds = majorGroups.stream()
+                .map(mg -> mg.getMajor().getId())  // 각 Major의 ID 추출
+                .distinct()  // 중복된 Major ID가 있을 경우 제거
+                .collect(Collectors.toList());
+
+
+        System.out.println(majorIds);
+
+        List<Major> majors = majorRepository.findByIdIn(majorIds);
+        return MajorGroupResponseDto.GetMajorGroupDto(majorGroup, majors);
     }
 
     // [API] 학과 학생 조회

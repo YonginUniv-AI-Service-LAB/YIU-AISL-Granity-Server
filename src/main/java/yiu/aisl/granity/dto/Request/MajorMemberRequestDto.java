@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 public class MajorMemberRequestDto {
+    private Integer id;
     private MajorGroup majorGroup;
     private MajorGroupCode majorGroupCode;
     private Integer role;
