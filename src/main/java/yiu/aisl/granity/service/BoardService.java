@@ -53,6 +53,8 @@ public class BoardService {
             throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
         }
 
+
+
         // user 없음 - 404
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_MEMBER));
