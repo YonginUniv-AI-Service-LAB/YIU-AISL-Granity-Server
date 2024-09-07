@@ -375,12 +375,16 @@ public class MajorService {
         // id 없음 - 404
         MajorMember professor = majorMemberRepository.findById(majorMemberId).orElseThrow(() ->
                  new CustomException(ErrorCode.NOT_EXIST_ID));
-        List<FileResponseDto> deleteFiles = fileService.findAllFileByTypeAndTypeId(8, majorMemberId);
 
-        majorMemberRepository.deleteById(professor.getId());
-        fileController.deleteFiles(deleteFiles);
-        fileService.deleteAllFileByTypeAndTypeId(8, majorMemberId); // DB 삭제
-        return true;
+        if(professor.getRole() == 2) {
+            List<FileResponseDto> deleteFiles = fileService.findAllFileByTypeAndTypeId(8, majorMemberId);
+
+            majorMemberRepository.deleteById(professor.getId());
+            fileController.deleteFiles(deleteFiles);
+            fileService.deleteAllFileByTypeAndTypeId(8, majorMemberId); // DB 삭제
+
+            return true;
+        } else throw new CustomException(ErrorCode.USER_DATA_INCONSISTENCY);
     }
 
     // [API] 교수님 수정
@@ -392,6 +396,10 @@ public class MajorService {
         // 데이터 미입력 - 400
         if(request.getRole() == null || request.getName().isEmpty() || request.getContent1().isEmpty() || request.getTel().isEmpty() || request.getAddress().isEmpty() || request.getEmail().isEmpty()) {
             throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        if(professor.getRole() != 2) {
+            throw new CustomException(ErrorCode.USER_DATA_INCONSISTENCY);
         }
 
         try {
@@ -482,6 +490,10 @@ public class MajorService {
         MajorMember council = majorMemberRepository.findById(majorMemberId).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_ID));
 
+        if(council.getRole() == 2) {
+            throw new CustomException(ErrorCode.USER_DATA_INCONSISTENCY);
+        }
+
         List<FileResponseDto> deleteFiles = fileService.findAllFileByTypeAndTypeId(8, majorMemberId);
 
         majorMemberRepository.deleteById(council.getId());
@@ -499,6 +511,10 @@ public class MajorService {
         // 데이터 미입력 - 400
         if(request.getRole() == null || request.getName().isEmpty() || request.getContent1().isEmpty() || request.getTel().isEmpty() || request.getAddress().isEmpty() || request.getEmail().isEmpty()) {
             throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        if(council.getRole() == 2) {
+            throw new CustomException(ErrorCode.USER_DATA_INCONSISTENCY);
         }
 
         try {
@@ -683,6 +699,8 @@ public class MajorService {
 
         fileController.deleteFiles(deleteFiles);
         fileService.deleteAllFileByTypeAndTypeId(8, majorLabId); // DB 삭제
+
+        majorLabRepository.deleteById(majorLabId);
 
         return true;
     }
