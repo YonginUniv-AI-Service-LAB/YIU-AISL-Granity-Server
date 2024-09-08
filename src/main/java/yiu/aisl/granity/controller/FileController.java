@@ -1,15 +1,28 @@
 package yiu.aisl.granity.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import yiu.aisl.granity.dto.Request.FileRequestDto;
 import yiu.aisl.granity.dto.Response.FileResponseDto;
+import yiu.aisl.granity.repository.FileRepository;
+import yiu.aisl.granity.service.FileService;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -21,6 +34,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 public class FileController {
+    private final FileRepository fileRepository;
     private final Path uploadPath = Paths.get("C:", "develop", "granity", "upload-files");
 
     // 다중 파일 업로드
@@ -97,6 +111,79 @@ public class FileController {
             }
         } else {
             System.out.println("File not found: " + filePath);
+        }
+    }
+
+    public Resource readFileAsResource(yiu.aisl.granity.domain.File file) {
+        String uploadedDate = file.getCreatedAt().toLocalDate().format(DateTimeFormatter.ofPattern("yyMMdd"));
+        String filename = file.getSaveName();
+        Path filePath = uploadPath.resolve(uploadedDate).resolve(filename);
+        System.out.println(filePath);
+        try {
+            Resource resource = new UrlResource(filePath.toUri());
+            if(resource.exists() == false || resource.isFile() == false) {
+                throw new RuntimeException("file not found: " +filePath.toString());
+            }
+            return resource;
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("file not found: " +filePath.toString());
+        }
+    }
+
+    @GetMapping(value = "/files/download")
+    public ResponseEntity<Resource> downloadFile(@RequestParam(value = "id") Integer fileId) {
+        yiu.aisl.granity.domain.File file = fileRepository.findById(fileId).orElseThrow();
+        Resource resource = readFileAsResource(file);
+
+        try {
+            // 파일명 인코딩 처리
+            String encodedFilename = URLEncoder.encode(file.getOriginName(), "UTF-8").replaceAll("\\+", "%20");
+
+            // 파일 MIME 타입 동적 처리
+            Path filePath = Paths.get(file.getSaveName());
+            String contentType = Files.probeContentType(filePath);
+            if (contentType == null) {
+                contentType = "application/octet-stream";
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFilename + "\"")
+                    .header(HttpHeaders.CONTENT_LENGTH, String.valueOf(file.getSize()))
+                    .body(resource);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Filename encoding failed: " + file.getOriginName(), e);
+        } catch (IOException e) {
+            throw new RuntimeException("Could not determine file content type", e);
+        }
+
+
+    }
+
+    @GetMapping(value = "/files/show")
+    public ResponseEntity<Resource> showFile(@RequestParam(value = "id") Integer fileId) {
+        yiu.aisl.granity.domain.File file = fileRepository.findById(fileId).orElseThrow();
+        Resource resource = readFileAsResource(file);
+
+        try {
+            // 파일명 인코딩 처리
+            String encodedFilename = URLEncoder.encode(file.getOriginName(), "UTF-8").replaceAll("\\+", "%20");
+
+            // 파일 MIME 타입 동적 처리
+            Path filePath = Paths.get(file.getSaveName());
+            String contentType = Files.probeContentType(filePath);
+            if (contentType == null) {
+                contentType = "application/octet-stream";
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + encodedFilename + "\"")
+                    .body(resource);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Filename encoding failed: " + file.getOriginName(), e);
+        } catch (IOException e) {
+            throw new RuntimeException("Could not determine file content type", e);
         }
     }
 }
