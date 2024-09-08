@@ -204,6 +204,7 @@ public class GraduationService {
         try {
             userGraduation.setContents(request.getContents());
             userGraduation.setUpdatedAt(LocalDateTime.now());
+            userGraduation.setStatus(0);
 
             // 업로드할 파일 정보
             List<FileRequestDto> files = fileController.uploadFiles(request.getFiles());
