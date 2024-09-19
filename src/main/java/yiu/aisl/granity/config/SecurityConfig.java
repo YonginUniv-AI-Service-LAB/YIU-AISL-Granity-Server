@@ -55,7 +55,7 @@ public class SecurityConfig {
                         configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/register", "/register/email", "/token/refresh", "/main", "/faq", "/major", "/major/history", "/major/professor", "/major/council", "/major/curriculum", "/major/lab", "/notice", "/notice/hit", "/board/hit", "/files/download", "/files/show").permitAll()
+                        .requestMatchers("/login", "/register", "/register/email", "/token/refresh", "/main", "/faq", "/major", "/major/history", "/major/professor", "/major/council", "/major/curriculum", "/major/lab", "/notice", "/notice/hit", "/board/hit", "/files/download", "/files/show", "/major/detail").permitAll()
                         .requestMatchers("/manager/*").hasAnyRole("ADMIN", "MANAGER")
                         .requestMatchers("/manager/**").hasAnyRole("ADMIN", "MANAGER")
                         .anyRequest().authenticated())
