@@ -52,15 +52,38 @@ public class BoardResponseDto {
         );
 
         List<CommentResponseDto> commentDtos = comments.stream()
-                .map(comment -> new CommentResponseDto(
-                        comment.getId(),
-                        comment.getBoard().getId(),
-                        comment.getContents(),
-                        comment.getChecks(),
-                        comment.getCheckUser() != null ? comment.getCheckUser().getId() : null,
-                        comment.getCreatedAt(),
-                        comment.getUpdatedAt()
-                ))
+                .map(comment -> {
+                    // checkUserId 처리
+                    String checkUserId = comment.getCheckUser() != null ? comment.getCheckUser().getId().toString() : null;
+
+                    // UserMajorResponseDto 리스트 생성
+                    List<UserMajorResponseDto> commentUserMajorDtos = comment.getUser().getUserMajors().stream()
+                            .map(UserMajorResponseDto::from)
+                            .collect(Collectors.toList());
+
+                    // UserResponseDto 생성
+                    UserResponseDto commentUserDto = new UserResponseDto(
+                            comment.getUser().getId(),
+                            comment.getUser().getName(),
+                            comment.getUser().getGrade(),
+                            comment.getUser().getRole(),
+                            comment.getUser().getStatus(),
+                            comment.getUser().getPush(),
+                            commentUserMajorDtos
+                    );
+
+                    // CommentResponseDto 반환
+                    return new CommentResponseDto(
+                            comment.getId(),
+                            comment.getBoard().getId(),
+                            commentUserDto,
+                            comment.getContents(),
+                            comment.getChecks(),
+                            checkUserId,
+                            comment.getCreatedAt(),
+                            comment.getUpdatedAt()
+                    );
+                })
                 .collect(Collectors.toList());
 
         return new BoardResponseDto(
