@@ -15,6 +15,9 @@ public class BoardResponseDto {
     private String title;
     private String contents;
     private List<FileResponseDto> files;
+    private String user;
+    private String name;
+    private Integer grade;
     private Integer checks;
     private String majorGroupCodeId;
     private Integer hit;
@@ -42,7 +45,7 @@ public class BoardResponseDto {
                         comment.getBoard().getId(),
                         comment.getContents(),
                         comment.getChecks(),
-                        comment.getCheckUser().getId(),
+                        comment.getCheckUser() != null ? comment.getCheckUser().getId() : null,
                         comment.getCreatedAt(),
                         comment.getUpdatedAt()
                 ))
@@ -53,6 +56,9 @@ public class BoardResponseDto {
                 board.getTitle(),
                 board.getContents(),
                 fileDtos,
+                board.getUser().getId(),
+                board.getUser().getName(),
+                board.getUser().getGrade(),
                 board.getChecks(),
                 board.getMajorGroupCode().getId(),
                 board.getHit(),
