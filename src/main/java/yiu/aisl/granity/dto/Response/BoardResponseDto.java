@@ -15,9 +15,7 @@ public class BoardResponseDto {
     private String title;
     private String contents;
     private List<FileResponseDto> files;
-    private String user;
-    private String name;
-    private Integer grade;
+    private UserResponseDto user;
     private Integer checks;
     private String majorGroupCodeId;
     private Integer hit;
@@ -39,6 +37,20 @@ public class BoardResponseDto {
                 ))
                 .collect(Collectors.toList());
 
+        List<UserMajorResponseDto> majorDtos = board.getUser().getUserMajors().stream()
+                .map(UserMajorResponseDto::from)
+                .collect(Collectors.toList());
+
+        UserResponseDto userDto = new UserResponseDto(
+                board.getUser().getId(),
+                board.getUser().getName(),
+                board.getUser().getGrade(),
+                board.getUser().getRole(),
+                board.getUser().getStatus(),
+                board.getUser().getPush(),
+                majorDtos
+        );
+
         List<CommentResponseDto> commentDtos = comments.stream()
                 .map(comment -> new CommentResponseDto(
                         comment.getId(),
@@ -56,9 +68,7 @@ public class BoardResponseDto {
                 board.getTitle(),
                 board.getContents(),
                 fileDtos,
-                board.getUser().getId(),
-                board.getUser().getName(),
-                board.getUser().getGrade(),
+                userDto,
                 board.getChecks(),
                 board.getMajorGroupCode().getId(),
                 board.getHit(),
