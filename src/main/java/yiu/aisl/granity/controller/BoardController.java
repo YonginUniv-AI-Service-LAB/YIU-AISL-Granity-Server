@@ -34,7 +34,7 @@ public class BoardController {
     }
 
     // 게시글 삭제
-    @DeleteMapping(value = "/board", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @DeleteMapping(value = "/board")
     public ResponseEntity<Boolean> deleteBoard(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam(value = "id") Integer boardId) throws Exception {
         return new ResponseEntity<>(boardService.deleteBoard(userDetails, boardId), HttpStatus.OK);
     }
@@ -52,7 +52,7 @@ public class BoardController {
     }
 
     // 댓글 삭제
-    @DeleteMapping(value = "/board/comment", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @DeleteMapping(value = "/board/comment")
     public ResponseEntity<Boolean> deleteComment(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam(value = "id") Integer commentId) throws Exception {
         return new ResponseEntity<>(boardService.deleteComment(userDetails, commentId), HttpStatus.OK);
     }
