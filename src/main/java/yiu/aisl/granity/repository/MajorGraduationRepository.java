@@ -9,5 +9,5 @@ import java.util.List;
 public interface MajorGraduationRepository extends JpaRepository<MajorGraduation, Integer> {
     List<MajorGraduation> findAllByMajor(Major major);
 
-    List<MajorGraduation> findAllByTarget(Integer target);
+    List<MajorGraduation> findAllByTargetAndMajor(Integer target, Major major);
 }

@@ -137,12 +137,12 @@ public class GraduationService {
 
     // [API] 학생 졸업 요건 등록
     public Boolean registerStudentGraduation(UserGraduationRequestDto request) throws Exception {
-        if(request.getUsers() == null || request.getTarget() == null) {
+        if(request.getUsers() == null || request.getTarget() == null || request.getMajor() == null) {
             throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
         }
 
         List<User> users = request.getUsers();
-        List<MajorGraduation> majorGraduations = majorGraduationRepository.findAllByTarget(request.getTarget());
+        List<MajorGraduation> majorGraduations = majorGraduationRepository.findAllByTargetAndMajor(request.getTarget(), request.getMajor());
 
         try {
             for(User user : users) {

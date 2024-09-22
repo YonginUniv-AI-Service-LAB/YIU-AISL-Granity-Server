@@ -18,6 +18,7 @@ public class UserGraduationRequestDto {
     private Integer target;
     private Integer status;
     private String contents;
+    private Major major;
     private List<MultipartFile> files = new ArrayList<>();
     private String feedback;
     private LocalDateTime createdAt;
