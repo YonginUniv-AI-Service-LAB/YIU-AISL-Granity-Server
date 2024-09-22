@@ -15,6 +15,8 @@ public class MajorLabRequestDto {
     private String description;
     private List<MultipartFile> files = new ArrayList<>();
     private List<Integer> removeFileId = new ArrayList<>();
+    private String professor;
+    private String address;
 //    private String file;
     private String link;
     private String tel;

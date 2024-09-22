@@ -21,6 +21,8 @@ public class MajorLabResponseDto {
     private String link;
     private String tel;
     private String email;
+    private String professor;
+    private String address;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -46,6 +48,8 @@ public class MajorLabResponseDto {
                 majorLab.getLink(),
                 majorLab.getTel(),
                 majorLab.getEmail(),
+                majorLab.getProfessor(),
+                majorLab.getAddress(),
                 majorLab.getCreatedAt(),
                 majorLab.getUpdatedAt()
         );

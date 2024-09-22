@@ -674,7 +674,7 @@ public class MajorService {
     public Boolean registerLab(MajorLabRequestDto request) throws Exception {
         // 데이터 없음 - 400
         if(request.getName().isEmpty() || request.getDescription().isEmpty() || request.getLink().isEmpty() ||
-        request.getTel().isEmpty() || request.getEmail().isEmpty()) {
+        request.getTel().isEmpty() || request.getEmail().isEmpty() || request.getProfessor().isEmpty() || request.getAddress().isEmpty()) {
             throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
         }
 
@@ -697,6 +697,8 @@ public class MajorService {
                     .link(request.getLink())
                     .tel(request.getTel())
                     .email(request.getEmail())
+                    .professor(request.getProfessor())
+                    .address(request.getAddress())
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build();
@@ -733,7 +735,7 @@ public class MajorService {
 
         // 데이터 없음 - 400
         if(request.getName().isEmpty() || request.getDescription().isEmpty() || request.getLink().isEmpty() ||
-                request.getTel().isEmpty() || request.getEmail().isEmpty()) {
+                request.getTel().isEmpty() || request.getEmail().isEmpty() || request.getProfessor().isEmpty() || request.getAddress().isEmpty()) {
             throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
         }
 
@@ -743,6 +745,8 @@ public class MajorService {
             lab.setLink(request.getLink());
             lab.setTel(request.getTel());
             lab.setEmail(request.getEmail());
+            lab.setProfessor(request.getProfessor());
+            lab.setAddress(request.getAddress());
 
             // 삭제할 파일 정보 조회
             List<FileResponseDto> deleteFiles = fileService.findAllFileByTypeAndTypeId(8, majorLabId);

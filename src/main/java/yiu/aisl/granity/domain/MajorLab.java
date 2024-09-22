@@ -40,6 +40,12 @@ public class MajorLab {
     @Column
     private String email;
 
+    @Column
+    private String professor;
+
+    @Column
+    private String address;
+
     @CreationTimestamp
     @Column
     private LocalDateTime createdAt;
