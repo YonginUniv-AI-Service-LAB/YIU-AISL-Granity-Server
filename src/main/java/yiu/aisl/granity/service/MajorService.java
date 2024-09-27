@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.google.common.collect.Lists.reverse;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -280,7 +282,7 @@ public class MajorService {
     // [API] 연혁 조회
     public List<YearlyEvents> getHistories(Major major) throws Exception {
         List<MajorHistory> histories = majorHistoryRepository.findAllByMajor(major);
-        return MajorHistoryResponseDto.groupByYear(histories);
+        return reverse(MajorHistoryResponseDto.groupByYear(histories));
     }
 
     // [API] 연혁 등록

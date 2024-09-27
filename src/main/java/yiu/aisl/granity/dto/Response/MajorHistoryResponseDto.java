@@ -5,9 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import yiu.aisl.granity.domain.MajorHistory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
@@ -33,8 +31,14 @@ public class MajorHistoryResponseDto {
                 .map(MajorHistoryResponseDto::fromMajorHistory)
                 .collect(Collectors.groupingBy(MajorHistoryResponseDto::getYear));
 
+// 각 연도의 이벤트를 month 기준으로 최신 순서대로 정렬
         return groupedByYear.entrySet().stream()
-                .map(YearlyEvents::fromMapEntry)
+                .map(entry -> {
+                    List<MajorHistoryResponseDto> sortedList = entry.getValue().stream()
+                            .sorted(Comparator.comparing(MajorHistoryResponseDto::getMonth).reversed()) // month 기준으로 내림차순 정렬
+                            .collect(Collectors.toList());
+                    return YearlyEvents.fromMapEntry(new AbstractMap.SimpleEntry<>(entry.getKey(), sortedList));
+                })
                 .collect(Collectors.toList());
     }
 }
