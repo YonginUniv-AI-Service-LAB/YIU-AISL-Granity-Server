@@ -31,13 +31,13 @@ public class MajorMember {
     @Column
     private String file;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String content1; // 커리어, 연구과제, 경력사항 etc
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String content2; // 커리어, 연구과제, 경력사항 etc
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String content3; // 커리어, 연구과제, 경력사항 etc
 
     @Column(nullable = false)
