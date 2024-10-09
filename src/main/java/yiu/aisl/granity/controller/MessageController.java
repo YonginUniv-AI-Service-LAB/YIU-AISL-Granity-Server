@@ -21,7 +21,7 @@ public class MessageController {
     private final MessageService messageService;
 
     // 쪽지 조회
-    @GetMapping(value = "/manager/message")
+    @GetMapping(value = "/message")
     public ResponseEntity<List<MessageResponseDto>> getMessages(@AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
         return new ResponseEntity<>(messageService.getMessages(userDetails), HttpStatus.OK);
     }
