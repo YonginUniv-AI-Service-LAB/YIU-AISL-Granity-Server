@@ -27,7 +27,10 @@ public class MessageService {
 
     // [API] 쪽지 조회
     public List<MessageResponseDto> getMessages(CustomUserDetails userDetails) throws Exception {
-        List<Message> messages = messageRepository.findByFromUserId(userDetails.getUser());
+        List<Message> messages;
+        if(userDetails.getUser().getRole() == 1) {
+            messages = messageRepository.findByToUserId(userDetails.getUser());
+        } else messages = messageRepository.findByFromUserId(userDetails.getUser());
 
         List<MessageResponseDto> getListDto = new ArrayList<>();
         for(Message message : messages) {
