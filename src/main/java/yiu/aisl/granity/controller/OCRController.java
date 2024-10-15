@@ -20,7 +20,6 @@ public class OCRController {
     @PostMapping(value = "/ocr", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity ocr(OCRRequestDto request) {
         String result = ocrService.callApi("POST", request, "pdf");
-        System.out.println(result);
         return new ResponseEntity(result, HttpStatus.OK);
     }
 }
