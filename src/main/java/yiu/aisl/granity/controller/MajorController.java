@@ -52,6 +52,12 @@ public class MajorController {
         return new ResponseEntity<>(majorService.registerMajorGroup(request), HttpStatus.OK);
     }
 
+    // 학과 그룹 수정
+    @PutMapping(value = "/manager/majorGroupInfo", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Boolean> updateMajorGroup(@RequestParam(value = "id") Major major, MajorGroupRequestDto request) throws Exception {
+        return new ResponseEntity<>(majorService.updateMajorGroup(major, request), HttpStatus.OK);
+    }
+
     // 학과 그룹 코드 조회
     @GetMapping(value = "/majorGroupCode")
     public List<MajorGroupCodeResponseDto> getMajorGroupCode() throws Exception {

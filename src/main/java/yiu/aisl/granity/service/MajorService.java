@@ -155,6 +155,33 @@ public class MajorService {
         return mkMajorGroup;
     }
 
+    // [API] 학과 그룹 수정
+    public Boolean updateMajorGroup(Major major, MajorGroupRequestDto request) throws Exception {
+        MajorGroup majorGroup;
+        if(majorGroupRepository.existsByMajor(major)) {
+            majorGroup = majorGroupRepository.findByMajor(major);
+        } else throw new CustomException(ErrorCode.NOT_EXIST_ID);
+
+        // 데이터 미입력 - 400
+        if(request.getGreetings().isEmpty() || request.getAddress().isEmpty() || request.getTel().isEmpty() ||
+                request.getEmail().isEmpty() || request.getFax().isEmpty()) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        try {
+            majorGroup.setGreetings(request.getGreetings());
+            majorGroup.setAddress(request.getAddress());
+            majorGroup.setTel(request.getTel());
+            majorGroup.setEmail(request.getEmail());
+            majorGroup.setFax(request.getFax());
+
+            majorGroupRepository.save(majorGroup);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+        return true;
+    }
+
     // [API] 학과 그룹 코드 조회
     public List<MajorGroupCodeResponseDto> getMajorGroupCode() throws Exception {
         List<MajorGroupCode> codes = majorGroupCodeRepository.findAll();
