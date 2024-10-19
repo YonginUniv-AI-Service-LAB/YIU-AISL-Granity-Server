@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.collect.Lists.reverse;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -37,7 +39,7 @@ public class MessageService {
             getListDto.add(MessageResponseDto.GetMessageDto(message));
         }
 
-        return getListDto;
+        return reverse(getListDto);
     }
 
     // [API] 쪽지 보내기
