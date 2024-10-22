@@ -15,8 +15,8 @@ public class RequiredSubject {
     private Integer id;
 
     @Column(nullable = false)
-    @JoinColumn(name = "majorGroupCode_id", nullable = false)
-    private String majorGroupCode;
+    @JoinColumn(name = "major_id", nullable = false)
+    private String major;
 
     @Column(nullable = false)
     private Integer year;

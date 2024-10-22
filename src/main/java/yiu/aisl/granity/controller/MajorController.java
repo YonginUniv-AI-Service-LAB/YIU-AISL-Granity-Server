@@ -197,7 +197,7 @@ public class MajorController {
     }
 
     @PostMapping(value = "/manager/requiredsubject", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<Boolean> addRequiredSubject(@RequestParam(value = "id") String majorGroupCode, RequiredSubjectRequestDto request) throws Exception {
-        return new ResponseEntity<>(majorService.addRequiredSubject(majorGroupCode, request), HttpStatus.OK);
+    public ResponseEntity<Boolean> addRequiredSubject(@RequestParam(value = "id") String major, RequiredSubjectRequestDto request) throws Exception {
+        return new ResponseEntity<>(majorService.addRequiredSubject(major, request), HttpStatus.OK);
     }
 }

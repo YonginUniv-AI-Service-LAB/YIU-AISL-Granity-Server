@@ -819,9 +819,9 @@ public class MajorService {
     }
 
     // [API] 필수 이수 과목 생성
-    public Boolean addRequiredSubject(String majorGroupCode, RequiredSubjectRequestDto request) throws Exception {
+    public Boolean addRequiredSubject(String major, RequiredSubjectRequestDto request) throws Exception {
         // id 없음(majorGroupCode)
-        if(!majorGroupCodeRepository.existsById(String.valueOf(majorGroupCode))) {
+        if(!majorRepository.existsById(String.valueOf(major))) {
             throw new CustomException(ErrorCode.NOT_EXIST_ID);
         }
 
@@ -832,7 +832,7 @@ public class MajorService {
 
         try {
             RequiredSubject requiredSubject = RequiredSubject.builder()
-                    .majorGroupCode(majorGroupCode)
+                    .major(major)
                     .year(request.getYear())
                     .common(request.getCommon())
                     .ai(request.getAi())
