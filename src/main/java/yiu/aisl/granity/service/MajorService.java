@@ -14,7 +14,6 @@ import yiu.aisl.granity.repository.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.google.common.collect.Lists.reverse;
@@ -38,6 +37,7 @@ public class MajorService {
     private final FileController fileController;
     private final FileService fileService;
     private final FileRepository fileRepository;
+    private final RequiredSubjectRepository requiredSubjectRepository;
 
     // [API] 전체 학과 조회
     public List<MajorResponseDto> getMajors() throws Exception {
@@ -815,6 +815,35 @@ public class MajorService {
         } catch (Exception e) {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
+        return true;
+    }
+
+    // [API] 필수 이수 과목 생성
+    public Boolean addRequiredSubject(String majorGroupCode, RequiredSubjectRequestDto request) throws Exception {
+        // id 없음(majorGroupCode)
+        if(!majorGroupCodeRepository.existsById(String.valueOf(majorGroupCode))) {
+            throw new CustomException(ErrorCode.NOT_EXIST_ID);
+        }
+
+        // 데이터 미입력
+        if(request.getYear() == null || request.getCommon().isEmpty() || request.getAi().isEmpty() || request.getBigdata().isEmpty()) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        try {
+            RequiredSubject requiredSubject = RequiredSubject.builder()
+                    .majorGroupCode(majorGroupCode)
+                    .year(request.getYear())
+                    .common(request.getCommon())
+                    .ai(request.getAi())
+                    .bigdata(request.getBigdata())
+                    .build();
+
+            requiredSubjectRepository.save(requiredSubject);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+
         return true;
     }
 }
