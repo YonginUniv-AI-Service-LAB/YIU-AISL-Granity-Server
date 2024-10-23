@@ -46,6 +46,15 @@ public class BoardService {
         return reverse(getListDto);
     }
 
+    // [API] 게시글 상세 조회
+    public BoardResponseDto getBoard(Integer id) throws Exception {
+        Board board = boardRepository.findById(id).orElseThrow();
+        List<File> files = fileRepository.findAllByTypeAndTypeId(3, board.getId());
+        List<Comment> comments = commentRepository.findByBoard(board);
+        BoardResponseDto boardResponseDto = BoardResponseDto.GetBoardDto(board, files, comments);
+        return boardResponseDto;
+    }
+
     // [API] 게시글 등록
     public boolean registerBoard(CustomUserDetails userDetails, BoardRequestDto request) throws Exception {
         // 데이터 없음 - 400

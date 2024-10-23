@@ -27,6 +27,12 @@ public class BoardController {
         return new ResponseEntity<>(boardService.getBoards(majorGroupCode), HttpStatus.OK);
     }
 
+    // 게시글 상세 조회
+    @GetMapping(value = "/board/detail")
+    public ResponseEntity<BoardResponseDto> getBoard(@RequestParam(value = "id") Integer id) throws Exception {
+        return new ResponseEntity<>(boardService.getBoard(id), HttpStatus.OK);
+    }
+
     // 게시글 등록
     @PostMapping(value = "/board", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Boolean> registerBoard(@AuthenticationPrincipal CustomUserDetails userDetails, BoardRequestDto request) throws Exception {
