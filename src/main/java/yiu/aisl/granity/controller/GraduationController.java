@@ -8,12 +8,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import yiu.aisl.granity.config.CustomUserDetails;
 import yiu.aisl.granity.domain.Major;
+import yiu.aisl.granity.domain.User;
 import yiu.aisl.granity.dto.Request.MajorGraduationRequestDto;
 import yiu.aisl.granity.dto.Request.UserGraduationRequestDto;
-import yiu.aisl.granity.dto.Response.MajorGraduationResponseDto;
-import yiu.aisl.granity.dto.Response.UserGraduationGroupResponseDto;
-import yiu.aisl.granity.dto.Response.UserGraduationResponseDto;
-import yiu.aisl.granity.dto.Response.UserResponseDto;
+import yiu.aisl.granity.dto.Response.*;
 import yiu.aisl.granity.service.GraduationService;
 
 import java.util.List;
@@ -93,5 +91,11 @@ public class GraduationController {
     @GetMapping(value = "/manager/graduation/student")
     public ResponseEntity<List<UserResponseDto>> getGraduationStudents(@RequestParam("id") String id) throws Exception {
         return new ResponseEntity<>(graduationService.getGraduationStudents(id), HttpStatus.OK);
+    }
+
+    // 특정 학생 필수 이수 과목 조회
+    @GetMapping(value = "/manager/requiredsubject")
+    public ResponseEntity<RequiredSubjectResponseDto> getRequiredSubject(@RequestParam("id") String user) throws Exception {
+        return new ResponseEntity<>(graduationService.getStudentRequiredSubject(user), HttpStatus.OK);
     }
 }

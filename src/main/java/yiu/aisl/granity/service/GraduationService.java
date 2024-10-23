@@ -28,10 +28,12 @@ public class GraduationService {
     private final MajorGraduationRepository majorGraduationRepository;
     private final UserGraduationRepository userGraduationRepository;
     private final UserRepository userRepository;
+    private final UserMajorRepository userMajorRepository;
     private final PushService pushService;
     private final FileController fileController;
     private final FileService fileService;
     private final FileRepository fileRepository;
+    private final RequiredSubjectRepository requiredSubjectRepository;
 
     // [API] 졸업요건 처리 현황 조회
     public List<UserGraduationGroupResponseDto> getUserGraduationStatus(String id) throws Exception {
@@ -267,5 +269,17 @@ public class GraduationService {
         }
 
         return getListDto;
+    }
+
+    // [API] 학생 별 이수과목 조회
+    public RequiredSubjectResponseDto getStudentRequiredSubject(String user) throws Exception {
+        User student = userRepository.findById(user).orElseThrow(() -> {
+            throw new CustomException(ErrorCode.NOT_EXIST_MEMBER);
+        });
+        UserMajor userMajor = userMajorRepository.findSingleByUser(student);
+        String year = user.substring(0, 4);
+        RequiredSubject requiredSubject = requiredSubjectRepository.findByYearAndMajor(Integer.parseInt(year), userMajor.getMajor().getId());
+
+        return RequiredSubjectResponseDto.GetRequiredDto(requiredSubject, student);
     }
 }
