@@ -56,7 +56,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/login", "/register", "/register/email", "/token/refresh", "/main", "/faq", "/major", "/major/history", "/major/professor", "/major/council", "/major/curriculum", "/major/lab", "/notice", "/notice/hit", "/board/hit", "/files/download", "/files/show", "/major/detail", "/pwd/change", "/pwd/email").permitAll()
-                        .requestMatchers("/manager/*").hasAnyRole("ADMIN", "MANAGER")
+                        .requestMatchers("/manager/*", "/ocr").hasAnyRole("ADMIN", "MANAGER")
                         .requestMatchers("/manager/**").hasAnyRole("ADMIN", "MANAGER")
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider),
