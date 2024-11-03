@@ -27,6 +27,6 @@ public class MajorHistory {
     @Column(nullable = false)
     private Integer month;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String event;
 }

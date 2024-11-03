@@ -28,7 +28,7 @@ public class MajorGroup {
     @JoinColumn(name = "major_id", nullable = false)
     private Major major;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String greetings;
 
     @Column(nullable = false)

@@ -30,13 +30,13 @@ public class UserGraduation {
     @Column
     private Integer status;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String contents;
 
     @Column
     private String file;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String feedback;
 
     @CreationTimestamp

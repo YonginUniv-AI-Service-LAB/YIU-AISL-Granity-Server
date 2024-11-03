@@ -25,7 +25,7 @@ public class MajorLab {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String description; // 랩실 설명
 
     @Column

@@ -21,7 +21,7 @@ public class MajorGraduation {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String contents;
 
     @Column(nullable = false)

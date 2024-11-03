@@ -52,7 +52,7 @@ public class MajorCurriculum {
     @Column(nullable = false)
     private Integer required; // 필수 이수 과목 여부
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String contents;
 
     @CreationTimestamp
